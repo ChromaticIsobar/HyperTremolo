@@ -53,7 +53,7 @@ Tremolo<SampleType>::Tremolo()
 template <typename SampleType>
 void Tremolo<SampleType>::setRate (SampleType newRateHz)
 {
-    rate = std::max (newRateHz, (SampleType) 0);
+    rate = juce::jmax (newRateHz, (SampleType) 0);
 }
 
 template <typename SampleType>
@@ -95,7 +95,7 @@ void Tremolo<SampleType>::reset()
 template <typename SampleType>
 void Tremolo<SampleType>::advance (SampleType p)
 {
-    phase.advance (std::max (p, (SampleType) 0));
+    phase.advance (juce::jmax (p, (SampleType) 0));
 }
 
 //==============================================================================
