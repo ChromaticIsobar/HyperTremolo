@@ -26,7 +26,6 @@
 */
 
 #include "CrossoverWithBuffer.h"
-#include <algorithm>
 
 //==============================================================================
 template <typename SampleType>
