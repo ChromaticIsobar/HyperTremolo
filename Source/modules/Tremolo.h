@@ -59,6 +59,9 @@ public:
     /** Sets the rate (in Hz) of the modulant LFO. */
     void setRate (SampleType newRateHz);
 
+    /** Sets the AM to be through zero or not. */
+    void setThroughZero (bool);
+
     /** Sets the wave shape function of the modulant LFO. */
     void setShape (std::function<SampleType (SampleType)>);
 
@@ -101,13 +104,19 @@ public:
 
         dryWet.pushDrySamples (inputBlock);
 
+        SampleType a = 0.0;
         for (size_t channel = 0; channel < numChannels; ++channel)
         {
             auto* inputSamples = inputBlock.getChannelPointer (channel);
             auto* outputSamples = outputBlock.getChannelPointer (channel);
 
             for (size_t i = 0; i < numSamples; ++i)
-                outputSamples[i] = inputSamples[i] * waveShapeFunc (phaseAfter (i));
+            {
+                a = waveShapeFunc (phaseAfter (i));
+                if (throughZero)
+                    a = ((SampleType) 2) * a - ((SampleType) 1);
+                outputSamples[i] = inputSamples[i] * a;
+            }
         }
         advance (samplesToPhase (numSamples));
 
@@ -129,4 +138,5 @@ private:
     //==============================================================================
     std::function<SampleType (SampleType)> waveShapeFunc;
     SampleType sampleRate = 44100.0, rate = 1.0;
+    bool throughZero = false;
 };
