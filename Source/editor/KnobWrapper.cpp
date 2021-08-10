@@ -46,11 +46,16 @@ void KnobWrapper::applyTo (juce::AudioProcessorEditor& editor,
     attachment.reset (
         new juce::AudioProcessorValueTreeState::SliderAttachment (
             vts, id, slider));
-    slider.setTextValueSuffix (param->getLabel());
+
+    auto paramLabel = param->getLabel();
+    if (paramLabel.isNotEmpty())
+        slider.setTextValueSuffix (" " + paramLabel);
     slider.setTextBoxStyle (juce::Slider::TextEntryBoxPosition::TextBoxBelow,
                             false,
                             labelWidth,
                             labelHeight);
+    slider.setColour(juce::Slider::textBoxOutlineColourId,
+        juce::Colour::fromRGBA(0, 0, 0, 0));
     editor.addAndMakeVisible (label);
     editor.addAndMakeVisible (slider);
 }
