@@ -52,9 +52,9 @@ HyperTremoloPlugin::HyperTremoloPlugin()
               juce::NormalisableRange<float> (0.0f, 20.0f, 0.0001f, 0.333f), 2.5f, "Hz"),
           std::make_unique<juce::AudioParameterBool> ("tremZero", "Through-0", false),
           std::make_unique<juce::AudioParameterFloat> ("xoverFreq", "Crossover",
-              FrequencyRange<float> (50.0f, 20000.0f, 0.01f), 1000.0f, "Hz"),
+              LogRange<float> (50.0f, 20000.0f, 0.01f), 1000.0f, "Hz"),
           std::make_unique<juce::AudioParameterFloat> ("xoverReson", "Resonance",
-              FrequencyRange<float> (0.125f, 4.0f, 0.001f), 1.0f / juce::MathConstants<float>::sqrt2),
+              LogRange<float> (0.125f, 4.0f, 0.001f), 1.0f / juce::MathConstants<float>::sqrt2),
           std::make_unique<juce::AudioParameterFloat> ("xoverBalance", "Balance",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f) })
 {

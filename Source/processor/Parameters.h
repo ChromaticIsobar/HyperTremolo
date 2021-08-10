@@ -30,10 +30,10 @@
 #include <JuceHeader.h>
 
 template <typename ValueType>
-class FrequencyRange  : public juce::NormalisableRange<ValueType>
+class LogRange  : public juce::NormalisableRange<ValueType>
 {
 public:
-    FrequencyRange (
+    LogRange (
         ValueType rangeStart,
         ValueType rangeEnd,
         ValueType intervalValue)
