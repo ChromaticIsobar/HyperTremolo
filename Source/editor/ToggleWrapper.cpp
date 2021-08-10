@@ -28,7 +28,14 @@
 #include "ToggleWrapper.h"
 
 //==============================================================================
-juce::Image throughZeroImage (juce::Colour colour, int imageWidth, int imageHeight, float thickness, bool clearImage, int nCircles, juce::Image::PixelFormat format)
+juce::Image throughZeroImage (
+    juce::Colour colour,
+    int imageWidth,
+    int imageHeight,
+    float thickness,
+    bool clearImage,
+    int nCircles,
+    juce::Image::PixelFormat format)
 {
     juce::Image img (format, imageWidth, imageHeight, clearImage);
     juce::Graphics g (img);
