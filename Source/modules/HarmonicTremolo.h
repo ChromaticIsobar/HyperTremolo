@@ -66,6 +66,9 @@ public:
     /** Sets the rate (in Hz) of the tremolo. */
     void setTremoloRate (SampleType);
 
+    /** Sets the tremolo to be through zero or not. */
+    void setTremoloThroughZero (bool);
+
     /** Sets the wave shape function of the tremolo. */
     void setTremoloShape (std::function<SampleType (SampleType)>);
 
