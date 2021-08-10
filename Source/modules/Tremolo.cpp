@@ -57,6 +57,12 @@ void Tremolo<SampleType>::setRate (SampleType newRateHz)
 }
 
 template <typename SampleType>
+void Tremolo<SampleType>::setThroughZero (bool newThroughZero)
+{
+    throughZero = newThroughZero;
+}
+
+template <typename SampleType>
 void Tremolo<SampleType>::setShape (
     std::function<SampleType (SampleType)> newWaveShapeFunc)
 {
@@ -82,7 +88,7 @@ template <typename SampleType>
 void Tremolo<SampleType>::prepare (const juce::dsp::ProcessSpec& spec)
 {
     dryWet.prepare (spec);
-    sampleRate = spec.sampleRate;
+    sampleRate = (SampleType) spec.sampleRate;
 }
 
 template <typename SampleType>

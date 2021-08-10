@@ -65,6 +65,13 @@ void HarmonicTremolo<SampleType>::setTremoloRate (SampleType f)
 }
 
 template <typename SampleType>
+void HarmonicTremolo<SampleType>::setTremoloThroughZero (bool f)
+{
+    lpfTrem.setThroughZero (f);
+    hpfTrem.setThroughZero (f);
+}
+
+template <typename SampleType>
 void HarmonicTremolo<SampleType>::setTremoloShape (std::function<SampleType (SampleType)> f)
 {
     lpfTrem.setShape (f);
