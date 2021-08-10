@@ -27,8 +27,9 @@
 
 #pragma once
 
-#include <JuceHeader.h>
+#include "ToggleWrapper.h"
 #include "KnobWrapper.h"
+#include <JuceHeader.h>
 
 //==============================================================================
 /**
@@ -56,6 +57,7 @@ private:
     //==============================================================================
     KnobWrapper mixKnob, gainKnob, tremRateKnob,
         xoverFreqKnob, xoverResonKnob, xoverBalanceKnob;
+    ToggleWrapper tremZeroToggle;
 
     //==============================================================================
     juce::AudioProcessorValueTreeState& valueTreeState;
