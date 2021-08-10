@@ -25,6 +25,7 @@
   ==============================================================================
 */
 
+#include "../editor/Editor.h"
 #include "Parameters.h"
 #include "Plugin.h"
 
@@ -172,12 +173,12 @@ void HyperTremoloPlugin::processBlock (juce::AudioBuffer<float>& buffer, juce::M
 //==============================================================================
 bool HyperTremoloPlugin::hasEditor() const
 {
-    return false;
+    return true;
 }
 
 juce::AudioProcessorEditor* HyperTremoloPlugin::createEditor()
 {
-    return nullptr;
+    return new HyperTremoloPluginEditor(*this, valueTreeState);
 }
 
 //==============================================================================
