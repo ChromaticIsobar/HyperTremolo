@@ -13,6 +13,9 @@
         <FILE id="GNXtMW" name="Plugin.h" compile="0" resource="0" file="Source/processor/Plugin.h"/>
       </GROUP>
       <GROUP id="{BDB92388-2DF1-EC37-2481-088492CBE9C8}" name="editor">
+        <FILE id="sMzEIy" name="ToggleWrapper.cpp" compile="1" resource="0"
+              file="Source/editor/ToggleWrapper.cpp"/>
+        <FILE id="Mg1QsF" name="ToggleWrapper.h" compile="0" resource="0" file="Source/editor/ToggleWrapper.h"/>
         <FILE id="qw7T9g" name="Editor.cpp" compile="1" resource="0" file="Source/editor/Editor.cpp"/>
         <FILE id="EfD6z5" name="Editor.h" compile="0" resource="0" file="Source/editor/Editor.h"/>
         <FILE id="RpvsEP" name="KnobWrapper.cpp" compile="1" resource="0" file="Source/editor/KnobWrapper.cpp"/>
