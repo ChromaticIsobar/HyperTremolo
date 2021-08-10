@@ -203,8 +203,12 @@ void HyperTremoloPlugin::update()
 {
     dryWet.setWetMixProportion (*valueTreeState.getRawParameterValue ("mix"));
     gain.setGainDecibels (*valueTreeState.getRawParameterValue ("gain"));
-    processor.setTremoloRate (*valueTreeState.getRawParameterValue ("tremRate"));
-    processor.setTremoloThroughZero (*valueTreeState.getRawParameterValue ("tremZero"));
+
+    // Halven the rate if through-zero to keep the perceived rate the same
+    float throughZero = *valueTreeState.getRawParameterValue ("tremZero");
+    processor.setTremoloRate (*valueTreeState.getRawParameterValue ("tremRate") / (throughZero + 1.0f));
+    processor.setTremoloThroughZero (throughZero);
+
     processor.setCrossoverFrequency (*valueTreeState.getRawParameterValue ("xoverFreq"));
     processor.setCrossoverResonance (*valueTreeState.getRawParameterValue ("xoverReson"));
     processor.setCrossoverBalance (*valueTreeState.getRawParameterValue ("xoverBalance"));
