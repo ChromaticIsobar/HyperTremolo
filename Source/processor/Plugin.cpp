@@ -129,6 +129,10 @@ void HyperTremoloPlugin::prepareToPlay (double sampleRate, int samplesPerBlock)
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getMainBusNumOutputChannels();
 
+    gain.reset();
+    dryWet.reset();
+    processor.reset();
+
     gain.prepare (spec);
     dryWet.prepare (spec);
     processor.prepare (spec);
