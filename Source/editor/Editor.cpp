@@ -73,40 +73,81 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
 }
 
 //==============================================================================
+template <typename ValueType>
+void drawRoundedRectangleHelper (juce::Graphics& g,
+                                 juce::Rectangle<ValueType> r,
+                                 float cornerSize = 1.0f,
+                                 float lineThickness = 1.0f)
+{
+    g.fillRoundedRectangle (r.getX() + lineThickness / 2.0f,
+                            r.getY() + lineThickness / 2.0f,
+                            r.getWidth() - lineThickness,
+                            r.getHeight() - lineThickness,
+                            cornerSize);
+}
+
 void HyperTremoloPluginEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    // g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    // g.setColour (getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId));
+    g.fillAll (getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId));
+    g.setColour (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    drawRoundedRectangleHelper (g, mixRect, 15.0f, 2.0f);
+    drawRoundedRectangleHelper (g, tremRect, 15.0f, 2.0f);
+    drawRoundedRectangleHelper (g, xoverRect, 15.0f, 2.0f);
+}
+
+template <typename ValueType>
+void rectTrimHelper(juce::Rectangle<ValueType>& rect, ValueType hpad, ValueType vpad)
+{
+    rect.removeFromTop (vpad);
+    rect.removeFromBottom (vpad);
+    rect.removeFromLeft (hpad);
+    rect.removeFromRight (hpad);
 }
 
 void HyperTremoloPluginEditor::resized()
 {
     auto rect = getLocalBounds();
-    auto row = rect.removeFromTop (knobHeight + knobLabelHeight);
+    
+    // Group rectangles
+    rectTrimHelper (rect, knobGroupColSep, knobGroupRowSep);
+    mixRect = rect.removeFromRight (knobWidth + knobMatrixColSep);
+    rect.removeFromRight (knobGroupColSep);
+    tremRect = rect.removeFromTop (knobHeight + knobLabelHeight + 2 * knobMatrixRowSep);
+    rect.removeFromTop (knobGroupRowSep);
+    xoverRect = rect.removeFromTop (knobHeight + knobLabelHeight + 2 * knobMatrixRowSep);
 
-    tremZeroToggle.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    tremRateKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
+    // Mixer
+    juce::Rectangle<int> mixRectConsumable (mixRect);
+    rectTrimHelper (mixRectConsumable, knobMatrixColSep, knobMatrixRowSep);
+    gainKnob.setBounds (mixRectConsumable.removeFromTop (knobHeight + knobLabelHeight));
+    mixRectConsumable.removeFromTop (knobMatrixRowSep * 2 + knobGroupColSep);
+    mixKnob.setBounds (mixRectConsumable.removeFromTop (knobHeight + knobLabelHeight));
 
-    auto ratioBounds = row.removeFromLeft (knobWidth);
-    tremSyncButton.setBounds (juce::Rectangle<int>(ratioBounds));
+    // Tremolo
+    juce::Rectangle<int> tremRectConsumable (tremRect);
+    rectTrimHelper (tremRectConsumable, knobMatrixColSep, knobMatrixRowSep);
+    tremZeroToggle.setBounds (tremRectConsumable.removeFromLeft (knobWidth));
+    tremRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    tremRateKnob.setBounds (tremRectConsumable.removeFromLeft (knobWidth));
+    tremRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+
+    auto ratioBounds = tremRectConsumable.removeFromLeft (knobWidth);
+    tremSyncButton.setBounds (juce::Rectangle<int> (ratioBounds));
     tremRatioKnob.setBounds (ratioBounds);
 
-    row.removeFromLeft (knobMatrixColSep);
-    tremMixKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    gainKnob.setBounds (row.removeFromLeft (knobWidth));
+    tremRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    tremMixKnob.setBounds (tremRectConsumable.removeFromLeft (knobWidth));
 
-    row = rect.removeFromTop (knobMatrixRowSep);
-    row = rect.removeFromTop (knobHeight + knobLabelHeight);
-
-    xoverFreqKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    xoverResonKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    xoverBalanceKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    xoverMixKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    mixKnob.setBounds (row.removeFromLeft (knobWidth));
+    // Crossover
+    juce::Rectangle<int> xoverRectConsumable (xoverRect);
+    rectTrimHelper (xoverRectConsumable, knobMatrixColSep, knobMatrixRowSep);
+    xoverFreqKnob.setBounds (xoverRectConsumable.removeFromLeft (knobWidth));
+    xoverRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    xoverResonKnob.setBounds (xoverRectConsumable.removeFromLeft (knobWidth));
+    xoverRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    xoverBalanceKnob.setBounds (xoverRectConsumable.removeFromLeft (knobWidth));
+    xoverRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    xoverMixKnob.setBounds (xoverRectConsumable.removeFromLeft (knobWidth));
 }
