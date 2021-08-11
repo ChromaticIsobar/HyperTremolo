@@ -36,15 +36,15 @@ template <typename SampleType>
 void DualTremolo<SampleType>::sync()
 {
     DBG ("Syncing DualTremolo:");
-    DBG ("  Current phases:           " << lpfTrem.getPhase() << ", " << hpfTrem.getPhase());
+    DBG ("  Current phases:           " << lpfTrem.getPhase() << " (L) " << hpfTrem.getPhase() << " (H)");
     DBG ("  Current phase difference: " << std::fmod (
         juce::MathConstants<SampleType>::twoPi + hpfTrem.getPhase() - lpfTrem.getPhase(),
         juce::MathConstants<SampleType>::twoPi));
     auto p = juce::MathConstants<SampleType>::twoPi + phase;
     p += lpfTrem.getPhase() - hpfTrem.getPhase();
-    DBG ("  Advancing LPF tremolo by: " << p);
+    DBG ("  Advancing HPF tremolo by: " << p);
     hpfTrem.advance (p);
-    DBG ("  New phases:               " << lpfTrem.getPhase() << ", " << hpfTrem.getPhase());
+    DBG ("  New phases:               " << lpfTrem.getPhase() << " (L) " << hpfTrem.getPhase() << " (H)");
     DBG ("  New phase difference:     " << std::fmod (
              juce::MathConstants<SampleType>::twoPi + hpfTrem.getPhase() - lpfTrem.getPhase(),
              juce::MathConstants<SampleType>::twoPi));
