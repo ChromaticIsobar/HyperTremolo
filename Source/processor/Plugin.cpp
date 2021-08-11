@@ -50,11 +50,11 @@ HyperTremoloPlugin::HyperTremoloPlugin()
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f),
           std::make_unique<juce::AudioParameterFloat> ("tremRate", "Rate",
               juce::NormalisableRange<float> (0.0f, 20.0f, 0.0001f, 0.333f), 2.5f, "Hz"),
-          std::make_unique<juce::AudioParameterBool> ("tremZero", "Through-Zero", true),
+          std::make_unique<juce::AudioParameterBool> ("tremZero", "Through-0", false),
           std::make_unique<juce::AudioParameterFloat> ("xoverFreq", "Crossover",
-              FrequencyRange<float> (112.5f, 20000.0f, 0.01f), 1500.0f, "Hz"),
+              LogRange<float> (50.0f, 20000.0f, 0.01f), 1000.0f, "Hz"),
           std::make_unique<juce::AudioParameterFloat> ("xoverReson", "Resonance",
-              FrequencyRange<float> (0.125f, 4.0f, 0.001f), 1.0f / juce::MathConstants<float>::sqrt2),
+              LogRange<float> (0.125f, 4.0f, 0.001f), 1.0f / juce::MathConstants<float>::sqrt2),
           std::make_unique<juce::AudioParameterFloat> ("xoverBalance", "Balance",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f) })
 {
@@ -129,6 +129,10 @@ void HyperTremoloPlugin::prepareToPlay (double sampleRate, int samplesPerBlock)
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getMainBusNumOutputChannels();
 
+    gain.reset();
+    dryWet.reset();
+    processor.reset();
+
     gain.prepare (spec);
     dryWet.prepare (spec);
     processor.prepare (spec);
@@ -199,8 +203,12 @@ void HyperTremoloPlugin::update()
 {
     dryWet.setWetMixProportion (*valueTreeState.getRawParameterValue ("mix"));
     gain.setGainDecibels (*valueTreeState.getRawParameterValue ("gain"));
-    processor.setTremoloRate (*valueTreeState.getRawParameterValue ("tremRate"));
-    processor.setTremoloThroughZero (*valueTreeState.getRawParameterValue ("tremZero"));
+
+    // Halven the rate if through-zero to keep the perceived rate the same
+    float throughZero = *valueTreeState.getRawParameterValue ("tremZero");
+    processor.setTremoloRate (*valueTreeState.getRawParameterValue ("tremRate") / (throughZero + 1.0f));
+    processor.setTremoloThroughZero (throughZero);
+
     processor.setCrossoverFrequency (*valueTreeState.getRawParameterValue ("xoverFreq"));
     processor.setCrossoverResonance (*valueTreeState.getRawParameterValue ("xoverReson"));
     processor.setCrossoverBalance (*valueTreeState.getRawParameterValue ("xoverBalance"));
