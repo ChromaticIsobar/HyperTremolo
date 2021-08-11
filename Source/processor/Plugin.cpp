@@ -62,7 +62,7 @@ HyperTremoloPlugin::HyperTremoloPlugin()
               LogRange<float> (0.125f, 4.0f, 0.001f), 1.0f / juce::MathConstants<float>::sqrt2),
           std::make_unique<juce::AudioParameterFloat> ("xoverBalance", "Balance",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f),
-          std::make_unique<juce::AudioParameterFloat> ("xoverMix", "Amount",
+          std::make_unique<juce::AudioParameterFloat> ("xoverMix", "Harmonic",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f) })
 {
 }
