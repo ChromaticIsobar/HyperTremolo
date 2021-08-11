@@ -59,6 +59,7 @@ private:
     KnobWrapper mixKnob, gainKnob, tremRateKnob, tremRatioKnob, tremMixKnob,
         xoverFreqKnob, xoverResonKnob, xoverBalanceKnob, xoverMixKnob;
     ToggleWrapper tremZeroToggle, tremSyncButton;
+    juce::TooltipWindow tooltipWindow;
 
     //==============================================================================
     juce::AudioProcessorValueTreeState& valueTreeState;

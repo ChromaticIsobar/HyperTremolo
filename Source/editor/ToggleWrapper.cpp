@@ -161,3 +161,8 @@ void ToggleWrapper::setOnClick (std::function<void()> f)
 {
     toggle.onClick = f;
 }
+
+void ToggleWrapper::setTooltip (const juce::String& newToolTip)
+{
+    toggle.setTooltip (newToolTip);
+}

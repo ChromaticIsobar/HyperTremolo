@@ -64,10 +64,10 @@ public:
                   int labelWidth,
                   int newLabelHeight);
 
-    /** Set the bounding boxes of the slider and label */
+    /** Set the bounding boxes of the slider and label. */
     void setBounds (juce::Rectangle<int>&);
 
-    /** Sets up the images to draw in various states */
+    /** Sets up the images to draw in various states. */
     void setImages (bool resizeButtonNowToFitThisImage,
                     bool rescaleImagesWhenButtonSizeChanges,
                     bool preserveImageProportions,
@@ -82,8 +82,11 @@ public:
                     juce::Colour overlayColourWhenDown,
                     float hitTestAlphaThreshold = 0.0f);
 
-    /** Sets the callback function */
+    /** Sets the callback function. */
     void setOnClick (std::function<void()>);
+
+    /** Sets the tooltip for the button.  */
+    void setTooltip (const juce::String&);
 
 private:
     //==============================================================================

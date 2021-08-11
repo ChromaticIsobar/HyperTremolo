@@ -57,6 +57,8 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
     tremSyncButton.setOnClick (std::bind (
         &HyperTremoloPlugin::sync,
         &p));
+    addAndMakeVisible (tooltipWindow);
+    tremSyncButton.setTooltip ("Sync the two tremolos. Click\nthis when setting ratio to 1");
 
     // Apply controls to the editor
     mixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
