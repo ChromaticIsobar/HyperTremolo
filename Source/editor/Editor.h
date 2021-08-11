@@ -27,6 +27,7 @@
 
 #pragma once
 
+#include "../processor/Plugin.h"
 #include "ToggleWrapper.h"
 #include "KnobWrapper.h"
 #include <JuceHeader.h>
@@ -38,7 +39,7 @@
 class HyperTremoloPluginEditor  : public juce::AudioProcessorEditor
 {
 public:
-    HyperTremoloPluginEditor (juce::AudioProcessor&,
+    HyperTremoloPluginEditor (HyperTremoloPlugin&,
                               juce::AudioProcessorValueTreeState&);
 
     //==============================================================================
@@ -57,7 +58,7 @@ private:
     //==============================================================================
     KnobWrapper mixKnob, gainKnob, tremRateKnob, tremRatioKnob, tremMixKnob,
         xoverFreqKnob, xoverResonKnob, xoverBalanceKnob, xoverMixKnob;
-    ToggleWrapper tremZeroToggle;
+    ToggleWrapper tremZeroToggle, tremSyncButton;
 
     //==============================================================================
     juce::AudioProcessorValueTreeState& valueTreeState;

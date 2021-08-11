@@ -28,22 +28,35 @@
 #include "Editor.h"
 
 //==============================================================================
-HyperTremoloPluginEditor::HyperTremoloPluginEditor (juce::AudioProcessor& p,
+HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
                                                     juce::AudioProcessorValueTreeState& vts)
     : AudioProcessorEditor (&p), valueTreeState (vts), mixKnob ("mix"), gainKnob ("gain"),
     tremZeroToggle ("tremZero"), tremRateKnob ("tremRate"), tremRatioKnob ("tremRatio"), tremMixKnob ("tremMix"),
-    xoverFreqKnob ("xoverFreq"), xoverResonKnob ("xoverReson"), xoverBalanceKnob ("xoverBalance"), xoverMixKnob ("xoverMix")
+    xoverFreqKnob ("xoverFreq"), xoverResonKnob ("xoverReson"), xoverBalanceKnob ("xoverBalance"), xoverMixKnob ("xoverMix"),
+    tremSyncButton ("tremSync", false)
 {
-    // Set up through-zero toggle images
+    // Set up button images
     auto offColour = getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId);
+    auto overColour = getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderOutlineColourId);
     auto onColour = getLookAndFeel().findColour (juce::Slider::ColourIds::thumbColourId);
     auto imgWidth = knobWidth - knobLabelHeight - knobMatrixColSep;
     float lineThick = 8.0f;
     auto onImg = throughZeroImage (onColour, imgWidth, imgWidth, lineThick);
+    auto overImg = throughZeroImage (overColour, imgWidth, imgWidth, lineThick);
     auto offImg = throughZeroImage (offColour, imgWidth, imgWidth, lineThick);
 
     tremZeroToggle.setImages (
-        true, false, true, offImg, 1.0f, {}, onImg, 0.666f, {}, onImg, 1.0f, {}, 0.9f);
+        true, false, true, offImg, 1.0f, {}, overImg, 1.0f, {}, onImg, 1.0f, {}, 0.9f);
+
+    lineThick *= 0.75f;
+    onImg = smallCircleImage (onColour, imgWidth, imgWidth, lineThick);
+    offImg = smallCircleImage (offColour, imgWidth, imgWidth, lineThick);
+
+    tremSyncButton.setImages (
+        true, false, true, offImg, 1.0f, {}, onImg, 0.333f, {}, onImg, 1.0f, {}, 0.9f);
+    tremSyncButton.setOnClick (std::bind (
+        &HyperTremoloPlugin::sync,
+        &p));
 
     // Apply controls to the editor
     mixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
@@ -51,6 +64,7 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (juce::AudioProcessor& p,
     tremZeroToggle.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremRateKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremRatioKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    tremSyncButton.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremMixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverFreqKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverResonKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
@@ -75,7 +89,11 @@ void HyperTremoloPluginEditor::resized()
     row.removeFromLeft (knobMatrixColSep);
     tremRateKnob.setBounds (row.removeFromLeft (knobWidth));
     row.removeFromLeft (knobMatrixColSep);
-    tremRatioKnob.setBounds (row.removeFromLeft (knobWidth));
+
+    auto ratioBounds = row.removeFromLeft (knobWidth);
+    tremSyncButton.setBounds (juce::Rectangle<int>(ratioBounds));
+    tremRatioKnob.setBounds (ratioBounds);
+
     row.removeFromLeft (knobMatrixColSep);
     tremMixKnob.setBounds (row.removeFromLeft (knobWidth));
 

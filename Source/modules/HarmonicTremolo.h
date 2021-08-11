@@ -119,6 +119,7 @@ public:
 protected:
     //==============================================================================
     Tremolo<SampleType> lpfTrem, hpfTrem;
+    SampleType phase = juce::MathConstants<SampleType>::halfPi;
 
 private:
     //==============================================================================

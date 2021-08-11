@@ -74,6 +74,10 @@ public:
     void setMix (SampleType newMix);
 
     //==============================================================================
+    /** Gets the current phase of the modulant LFO. */
+    SampleType getPhase();
+
+    //==============================================================================
     /** Initialises the processor. */
     void prepare (const juce::dsp::ProcessSpec&);
 

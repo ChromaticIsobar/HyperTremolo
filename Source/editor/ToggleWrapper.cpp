@@ -53,12 +53,33 @@ juce::Image throughZeroImage (
     return img;
 }
 
+juce::Image smallCircleImage (
+    juce::Colour colour,
+    int imageWidth,
+    int imageHeight,
+    float radius,
+    bool clearImage,
+    juce::Image::PixelFormat format)
+{
+    juce::Image img (format, imageWidth, imageHeight, clearImage);
+    juce::Graphics g (img);
+
+    g.setColour (colour);
+    g.fillEllipse (
+        imageWidth / 2.0f - radius,
+        imageHeight / 2.0f - radius,
+        2 * radius,
+        2 * radius);
+
+    return img;
+}
+
 //==============================================================================
-ToggleWrapper::ToggleWrapper (juce::String id)
+ToggleWrapper::ToggleWrapper (juce::String id, bool clickingTogglesState)
     : id (id)
 {
     label.setJustificationType (juce::Justification::centred);
-    toggle.setClickingTogglesState (true);
+    toggle.setClickingTogglesState (clickingTogglesState);
 }
 
 void ToggleWrapper::applyTo (juce::AudioProcessorEditor& editor,
@@ -134,4 +155,9 @@ void ToggleWrapper::setImages (bool resizeButtonNowToFitThisImage,
                       imageOpacityWhenDown,
                       overlayColourWhenDown,
                       hitTestAlphaThreshold);
+}
+
+void ToggleWrapper::setOnClick (std::function<void()> f)
+{
+    toggle.onClick = f;
 }

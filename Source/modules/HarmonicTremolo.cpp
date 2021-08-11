@@ -123,7 +123,7 @@ void HarmonicTremolo<SampleType>::reset()
     crossover.reset();
     lpfTrem.reset();
     hpfTrem.reset();
-    hpfTrem.advance (juce::MathConstants<SampleType>::halfPi);
+    hpfTrem.advance (phase);
 }
 
 //==============================================================================

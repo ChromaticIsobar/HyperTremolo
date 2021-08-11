@@ -29,7 +29,7 @@
 
 #include <JuceHeader.h>
 
-/** Produce an image for the through-zero toggle */
+/** Produces an image for the through-zero toggle */
 juce::Image throughZeroImage (
     juce::Colour colour = juce::Colours::black,
     int imageWidth = 32,
@@ -37,8 +37,16 @@ juce::Image throughZeroImage (
     float thickness = 3.0f,
     bool clearImage = true,
     int nCircles = 3,
-    juce::Image::PixelFormat format = juce::Image::ARGB
-);
+    juce::Image::PixelFormat format = juce::Image::ARGB);
+
+/** Produces an image with a small circle */
+juce::Image smallCircleImage (
+    juce::Colour colour = juce::Colours::black,
+    int imageWidth = 32,
+    int imageHeight = 32,
+    float radius = 3.0f,
+    bool clearImage = true,
+    juce::Image::PixelFormat format = juce::Image::ARGB);
 
 /**
     Wrapper class for a toggle, its label and ValueTreeState attachment
@@ -48,7 +56,7 @@ class ToggleWrapper
 public:
     //==============================================================================
     /** Constructor. */
-    ToggleWrapper (juce::String id);
+    ToggleWrapper (juce::String id, bool clickingTogglesState = true);
 
     /** Apply a knob onto a processor editor. */
     void applyTo (juce::AudioProcessorEditor&,
@@ -73,6 +81,9 @@ public:
                     float imageOpacityWhenDown,
                     juce::Colour overlayColourWhenDown,
                     float hitTestAlphaThreshold = 0.0f);
+
+    /** Sets the callback function */
+    void setOnClick (std::function<void()>);
 
 private:
     //==============================================================================

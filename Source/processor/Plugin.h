@@ -50,6 +50,9 @@ public:
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
 
     //==============================================================================
+    void sync();
+
+    //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
 

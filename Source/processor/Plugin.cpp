@@ -55,6 +55,7 @@ HyperTremoloPlugin::HyperTremoloPlugin()
           std::make_unique<juce::AudioParameterFloat> ("tremMix", "Depth",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f),
           std::make_unique<juce::AudioParameterBool> ("tremZero", "Through-0", false),
+          std::make_unique<juce::AudioParameterBool> ("tremSync", "", false),
           std::make_unique<juce::AudioParameterFloat> ("xoverFreq", "Crossover",
               LogRange<float> (50.0f, 20000.0f, 0.01f), 1000.0f, "Hz"),
           std::make_unique<juce::AudioParameterFloat> ("xoverReson", "Resonance",
@@ -191,6 +192,11 @@ void HyperTremoloPlugin::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     processor.process (context);
     gain.process (context);
     dryWet.mixWetSamples (context.getOutputBlock());
+}
+
+void HyperTremoloPlugin::sync()
+{
+    processor.sync();
 }
 
 //==============================================================================
