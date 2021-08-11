@@ -44,7 +44,7 @@ HyperTremoloPlugin::HyperTremoloPlugin()
               ),
 #endif
       valueTreeState (*this, nullptr, "HyperTremolo", {
-          std::make_unique<juce::AudioParameterFloat> ("gain", "Makeup Gain",
+          std::make_unique<juce::AudioParameterFloat> ("gain", "Gain",
               juce::NormalisableRange<float> (-20.0f, 20.0f, 0.01f), 0.0f, "dB"),
           std::make_unique<juce::AudioParameterFloat> ("mix", "Mix",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f),

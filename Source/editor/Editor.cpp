@@ -94,6 +94,8 @@ void HyperTremoloPluginEditor::resized()
 
     row.removeFromLeft (knobMatrixColSep);
     tremMixKnob.setBounds (row.removeFromLeft (knobWidth));
+    row.removeFromLeft (knobMatrixColSep);
+    gainKnob.setBounds (row.removeFromLeft (knobWidth));
 
     row = rect.removeFromTop (knobMatrixRowSep);
     row = rect.removeFromTop (knobHeight + knobLabelHeight);
@@ -105,11 +107,6 @@ void HyperTremoloPluginEditor::resized()
     xoverBalanceKnob.setBounds (row.removeFromLeft (knobWidth));
     row.removeFromLeft (knobMatrixColSep);
     xoverMixKnob.setBounds (row.removeFromLeft (knobWidth));
-
-    row = rect.removeFromTop (knobMatrixRowSep);
-    row = rect.removeFromTop (knobHeight + knobLabelHeight);
-
-    gainKnob.setBounds (row.removeFromLeft (knobWidth));
     row.removeFromLeft (knobMatrixColSep);
     mixKnob.setBounds (row.removeFromLeft (knobWidth));
 }

@@ -48,7 +48,7 @@ public:
 
 private:
     //==============================================================================
-    static const int knobMatrixCols = 4, knobMatrixRows = 3,
+    static const int knobMatrixCols = 5, knobMatrixRows = 2,
                      knobMatrixRowSep = 4, knobMatrixColSep = 4,
                      knobWidth = 80, knobLabelHeight = 16,
                      knobHeight = knobWidth + knobLabelHeight,
