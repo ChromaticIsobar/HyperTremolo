@@ -109,6 +109,10 @@ public:
         lpf.process (juce::dsp::ProcessContextNonReplacing<SampleType> (inputBlock, lpfBlock));
         hpf.process (juce::dsp::ProcessContextNonReplacing<SampleType> (inputBlock, hpfBlock));
 
+        // Dry/wet mix on filters
+        dryWet.mixWetSamples (lpfBlock);
+        dryWet.mixWetSamples (hpfBlock);
+
         // Apply band-wise process functions
         process_lpf (juce::dsp::ProcessContextReplacing<SampleType> (lpfBlock));
         process_hpf (juce::dsp::ProcessContextReplacing<SampleType> (hpfBlock));
@@ -119,7 +123,6 @@ public:
         outputBlock.replaceWithProductOf (lpfBlock, b);
         b = 2 - b;
         outputBlock.addProductOf (hpfBlock, b);
-        dryWet.mixWetSamples (outputBlock);
     }
 
 private:

@@ -27,6 +27,7 @@
 
 #pragma once
 
+#include "../processor/Plugin.h"
 #include "ToggleWrapper.h"
 #include "KnobWrapper.h"
 #include <JuceHeader.h>
@@ -38,7 +39,7 @@
 class HyperTremoloPluginEditor  : public juce::AudioProcessorEditor
 {
 public:
-    HyperTremoloPluginEditor (juce::AudioProcessor&,
+    HyperTremoloPluginEditor (HyperTremoloPlugin&,
                               juce::AudioProcessorValueTreeState&);
 
     //==============================================================================
@@ -47,17 +48,21 @@ public:
 
 private:
     //==============================================================================
-    static const int knobMatrixCols = 3, knobMatrixRows = 3,
-                     knobMatrixRowSep = 4, knobMatrixColSep = 4,
-                     knobWidth = 80, knobLabelHeight = 16,
+    static const int knobMatrixCols = 5, knobMatrixRows = 2,
+                     knobMatrixRowSep = 3, knobMatrixColSep = 2,
+                     knobWidth = 78, knobLabelHeight = 13,
                      knobHeight = knobWidth + knobLabelHeight,
-                     knobMatrixHeight = knobMatrixRows * (knobHeight + knobLabelHeight + knobMatrixRowSep) - knobMatrixRowSep,
-                     knobMatrixWidth = knobMatrixCols * (knobWidth + knobMatrixColSep) - knobMatrixColSep;
+                     nRowGroups = 2, nColGroups = 2, 
+                     knobGroupRowSep = 2, knobGroupColSep = 2,
+                     knobMatrixHeight = knobMatrixRows * (knobHeight + knobLabelHeight + 2 * knobMatrixRowSep) + (nRowGroups + 1) * knobGroupRowSep,
+                     knobMatrixWidth = knobMatrixCols * (knobWidth + 2 * knobMatrixColSep) + (nColGroups + 1) * knobGroupColSep;
 
     //==============================================================================
-    KnobWrapper mixKnob, gainKnob, tremRateKnob,
-        xoverFreqKnob, xoverResonKnob, xoverBalanceKnob;
-    ToggleWrapper tremZeroToggle;
+    KnobWrapper mixKnob, gainKnob, tremRateKnob, tremRatioKnob, tremMixKnob,
+        xoverFreqKnob, xoverResonKnob, xoverBalanceKnob, xoverMixKnob;
+    ToggleWrapper tremZeroToggle, tremSyncButton;
+    juce::TooltipWindow tooltipWindow;
+    juce::Rectangle<int> tremRect, xoverRect, mixRect;
 
     //==============================================================================
     juce::AudioProcessorValueTreeState& valueTreeState;

@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include "../modules/HarmonicTremolo.h"
+#include "../modules/DualTremolo.h"
 
 //==============================================================================
 /**
@@ -48,6 +48,9 @@ public:
 #endif
 
     void processBlock (juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+
+    //==============================================================================
+    void sync();
 
     //==============================================================================
     juce::AudioProcessorEditor* createEditor() override;
@@ -79,7 +82,7 @@ private:
 
     //==============================================================================
     juce::dsp::DryWetMixer<float> dryWet;
-    HarmonicTremolo<float> processor;
+    DualTremolo<float> processor;
     juce::dsp::Gain<float> gain;
 
     //==============================================================================

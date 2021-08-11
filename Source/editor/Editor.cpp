@@ -28,13 +28,14 @@
 #include "Editor.h"
 
 //==============================================================================
-HyperTremoloPluginEditor::HyperTremoloPluginEditor (juce::AudioProcessor& p,
+HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
                                                     juce::AudioProcessorValueTreeState& vts)
-    : AudioProcessorEditor (&p), valueTreeState (vts),
-    mixKnob ("mix"), gainKnob ("gain"), tremZeroToggle ("tremZero"), tremRateKnob ("tremRate"),
-    xoverFreqKnob ("xoverFreq"), xoverResonKnob ("xoverReson"), xoverBalanceKnob ("xoverBalance")
+    : AudioProcessorEditor (&p), valueTreeState (vts), mixKnob ("mix"), gainKnob ("gain"),
+    tremZeroToggle ("tremZero"), tremRateKnob ("tremRate"), tremRatioKnob ("tremRatio"), tremMixKnob ("tremMix"),
+    xoverFreqKnob ("xoverFreq"), xoverResonKnob ("xoverReson"), xoverBalanceKnob ("xoverBalance"), xoverMixKnob ("xoverMix"),
+    tremSyncButton ("tremSync", false)
 {
-    // Set up through-zero toggle images
+    // Set up button images
     auto offColour = getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId);
     auto onColour = getLookAndFeel().findColour (juce::Slider::ColourIds::thumbColourId);
     auto imgWidth = knobWidth - knobLabelHeight - knobMatrixColSep;
@@ -43,48 +44,110 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (juce::AudioProcessor& p,
     auto offImg = throughZeroImage (offColour, imgWidth, imgWidth, lineThick);
 
     tremZeroToggle.setImages (
-        true, false, true, offImg, 1.0f, {}, onImg, 0.666f, {}, onImg, 1.0f, {}, 0.9f);
+        true, false, true, offImg, 1.0f, {}, onImg, 0.333f, {}, onImg, 1.0f, {}, 0.9f);
+
+    lineThick *= 0.75f;
+    onImg = smallCircleImage (onColour, imgWidth, imgWidth, lineThick);
+    offImg = smallCircleImage (offColour, imgWidth, imgWidth, lineThick);
+
+    tremSyncButton.setImages (
+        true, false, true, offImg, 1.0f, {}, onImg, 0.333f, {}, onImg, 1.0f, {}, 0.9f);
+    tremSyncButton.setOnClick (std::bind (&HyperTremoloPlugin::sync, &p));
+    addAndMakeVisible (tooltipWindow);
+    tremSyncButton.setTooltip ("Sync the two tremolos. Click\nthis when setting ratio to 1");
 
     // Apply controls to the editor
     mixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     gainKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremZeroToggle.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremRateKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    tremRatioKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    tremSyncButton.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    tremMixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverFreqKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverResonKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverBalanceKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    xoverMixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
 
     setSize(knobMatrixWidth, knobMatrixHeight);
 }
 
 //==============================================================================
+template <typename ValueType>
+void drawRoundedRectangleHelper (juce::Graphics& g,
+                                 juce::Rectangle<ValueType> r,
+                                 float cornerSize = 1.0f,
+                                 float lineThickness = 1.0f)
+{
+    g.fillRoundedRectangle (r.getX() + lineThickness / 2.0f,
+                            r.getY() + lineThickness / 2.0f,
+                            r.getWidth() - lineThickness,
+                            r.getHeight() - lineThickness,
+                            cornerSize);
+}
+
 void HyperTremoloPluginEditor::paint (juce::Graphics& g)
 {
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    // g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    // g.setColour (getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId));
+    g.fillAll (getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId));
+    g.setColour (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    drawRoundedRectangleHelper (g, mixRect, 15.0f, 2.0f);
+    drawRoundedRectangleHelper (g, tremRect, 15.0f, 2.0f);
+    drawRoundedRectangleHelper (g, xoverRect, 15.0f, 2.0f);
+}
+
+template <typename ValueType>
+void rectTrimHelper(juce::Rectangle<ValueType>& rect, ValueType hpad, ValueType vpad)
+{
+    rect.removeFromTop (vpad);
+    rect.removeFromBottom (vpad);
+    rect.removeFromLeft (hpad);
+    rect.removeFromRight (hpad);
 }
 
 void HyperTremoloPluginEditor::resized()
 {
     auto rect = getLocalBounds();
-    auto row = rect.removeFromTop (knobHeight + knobLabelHeight);
+    
+    // Group rectangles
+    rectTrimHelper (rect, knobGroupColSep, knobGroupRowSep);
+    mixRect = rect.removeFromRight (knobWidth + knobMatrixColSep);
+    rect.removeFromRight (knobGroupColSep);
+    tremRect = rect.removeFromTop (knobHeight + knobLabelHeight + 2 * knobMatrixRowSep);
+    rect.removeFromTop (knobGroupRowSep);
+    xoverRect = rect.removeFromTop (knobHeight + knobLabelHeight + 2 * knobMatrixRowSep);
 
-    tremZeroToggle.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    tremRateKnob.setBounds (row.removeFromLeft (knobWidth));
+    // Mixer
+    juce::Rectangle<int> mixRectConsumable (mixRect);
+    rectTrimHelper (mixRectConsumable, knobMatrixColSep, knobMatrixRowSep);
+    gainKnob.setBounds (mixRectConsumable.removeFromTop (knobHeight + knobLabelHeight));
+    mixRectConsumable.removeFromTop (knobMatrixRowSep * 2 + knobGroupColSep);
+    mixKnob.setBounds (mixRectConsumable.removeFromTop (knobHeight + knobLabelHeight));
 
-    row = rect.removeFromTop (knobMatrixRowSep);
-    row = rect.removeFromTop (knobHeight + knobLabelHeight);
+    // Tremolo
+    juce::Rectangle<int> tremRectConsumable (tremRect);
+    rectTrimHelper (tremRectConsumable, knobMatrixColSep, knobMatrixRowSep);
+    tremZeroToggle.setBounds (tremRectConsumable.removeFromLeft (knobWidth));
+    tremRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    tremRateKnob.setBounds (tremRectConsumable.removeFromLeft (knobWidth));
+    tremRectConsumable.removeFromLeft (2 * knobMatrixColSep);
 
-    xoverFreqKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    xoverResonKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    xoverBalanceKnob.setBounds (row.removeFromLeft (knobWidth));
+    auto ratioBounds = tremRectConsumable.removeFromLeft (knobWidth);
+    tremSyncButton.setBounds (juce::Rectangle<int> (ratioBounds));
+    tremRatioKnob.setBounds (ratioBounds);
 
-    row = rect.removeFromTop (knobMatrixRowSep);
-    row = rect.removeFromTop (knobHeight + knobLabelHeight);
+    tremRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    tremMixKnob.setBounds (tremRectConsumable.removeFromLeft (knobWidth));
 
-    gainKnob.setBounds (row.removeFromLeft (knobWidth));
-    row.removeFromLeft (knobMatrixColSep);
-    mixKnob.setBounds (row.removeFromLeft (knobWidth));
+    // Crossover
+    juce::Rectangle<int> xoverRectConsumable (xoverRect);
+    rectTrimHelper (xoverRectConsumable, knobMatrixColSep, knobMatrixRowSep);
+    xoverFreqKnob.setBounds (xoverRectConsumable.removeFromLeft (knobWidth));
+    xoverRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    xoverResonKnob.setBounds (xoverRectConsumable.removeFromLeft (knobWidth));
+    xoverRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    xoverBalanceKnob.setBounds (xoverRectConsumable.removeFromLeft (knobWidth));
+    xoverRectConsumable.removeFromLeft (2 * knobMatrixColSep);
+    xoverMixKnob.setBounds (xoverRectConsumable.removeFromLeft (knobWidth));
 }

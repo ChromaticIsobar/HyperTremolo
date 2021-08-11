@@ -53,12 +53,33 @@ juce::Image throughZeroImage (
     return img;
 }
 
+juce::Image smallCircleImage (
+    juce::Colour colour,
+    int imageWidth,
+    int imageHeight,
+    float radius,
+    bool clearImage,
+    juce::Image::PixelFormat format)
+{
+    juce::Image img (format, imageWidth, imageHeight, clearImage);
+    juce::Graphics g (img);
+
+    g.setColour (colour);
+    g.fillEllipse (
+        imageWidth / 2.0f - radius,
+        imageHeight / 2.0f - radius,
+        2 * radius,
+        2 * radius);
+
+    return img;
+}
+
 //==============================================================================
-ToggleWrapper::ToggleWrapper (juce::String id)
+ToggleWrapper::ToggleWrapper (juce::String id, bool clickingTogglesState)
     : id (id)
 {
     label.setJustificationType (juce::Justification::centred);
-    toggle.setClickingTogglesState (true);
+    toggle.setClickingTogglesState (clickingTogglesState);
 }
 
 void ToggleWrapper::applyTo (juce::AudioProcessorEditor& editor,
@@ -79,6 +100,7 @@ void ToggleWrapper::applyTo (juce::AudioProcessorEditor& editor,
 
 void ToggleWrapper::setBounds (juce::Rectangle<int>& newBounds)
 {
+    newBounds.removeFromBottom (labelHeight / 2);
     label.setBounds (newBounds.removeFromBottom (labelHeight));
 
     // Get image dimensions
@@ -95,7 +117,7 @@ void ToggleWrapper::setBounds (juce::Rectangle<int>& newBounds)
 
     // Crop away extra space
     int hpad = juce::jmax (0, newBounds.getWidth() - imgWidth) / 2;
-    int tpad = juce::jmax (0, newBounds.getHeight() - labelHeight - imgHeight) / 2;
+    int tpad = juce::jmax (0, newBounds.getHeight() - labelHeight / 2 - imgHeight) / 2;
     int bpad = juce::jmax (0, newBounds.getHeight() - tpad - imgHeight);
 
     newBounds.removeFromLeft (hpad);
@@ -133,4 +155,14 @@ void ToggleWrapper::setImages (bool resizeButtonNowToFitThisImage,
                       imageOpacityWhenDown,
                       overlayColourWhenDown,
                       hitTestAlphaThreshold);
+}
+
+void ToggleWrapper::setOnClick (std::function<void()> f)
+{
+    toggle.onClick = f;
+}
+
+void ToggleWrapper::setTooltip (const juce::String& newToolTip)
+{
+    toggle.setTooltip (newToolTip);
 }

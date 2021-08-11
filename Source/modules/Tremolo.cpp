@@ -85,6 +85,13 @@ void Tremolo<SampleType>::setMix (SampleType newMix)
 
 //==============================================================================
 template <typename SampleType>
+SampleType Tremolo<SampleType>::getPhase()
+{
+    return phase.phase;
+}
+
+//==============================================================================
+template <typename SampleType>
 void Tremolo<SampleType>::prepare (const juce::dsp::ProcessSpec& spec)
 {
     dryWet.prepare (spec);
