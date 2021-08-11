@@ -79,6 +79,7 @@ void ToggleWrapper::applyTo (juce::AudioProcessorEditor& editor,
 
 void ToggleWrapper::setBounds (juce::Rectangle<int>& newBounds)
 {
+    newBounds.removeFromBottom (labelHeight / 2);
     label.setBounds (newBounds.removeFromBottom (labelHeight));
 
     // Get image dimensions
@@ -95,7 +96,7 @@ void ToggleWrapper::setBounds (juce::Rectangle<int>& newBounds)
 
     // Crop away extra space
     int hpad = juce::jmax (0, newBounds.getWidth() - imgWidth) / 2;
-    int tpad = juce::jmax (0, newBounds.getHeight() - labelHeight - imgHeight) / 2;
+    int tpad = juce::jmax (0, newBounds.getHeight() - labelHeight / 2 - imgHeight) / 2;
     int bpad = juce::jmax (0, newBounds.getHeight() - tpad - imgHeight);
 
     newBounds.removeFromLeft (hpad);
