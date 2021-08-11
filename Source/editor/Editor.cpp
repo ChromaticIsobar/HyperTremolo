@@ -37,16 +37,14 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
 {
     // Set up button images
     auto offColour = getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId);
-    auto overColour = getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderOutlineColourId);
     auto onColour = getLookAndFeel().findColour (juce::Slider::ColourIds::thumbColourId);
     auto imgWidth = knobWidth - knobLabelHeight - knobMatrixColSep;
     float lineThick = 8.0f;
     auto onImg = throughZeroImage (onColour, imgWidth, imgWidth, lineThick);
-    auto overImg = throughZeroImage (overColour, imgWidth, imgWidth, lineThick);
     auto offImg = throughZeroImage (offColour, imgWidth, imgWidth, lineThick);
 
     tremZeroToggle.setImages (
-        true, false, true, offImg, 1.0f, {}, overImg, 1.0f, {}, onImg, 1.0f, {}, 0.9f);
+        true, false, true, offImg, 1.0f, {}, onImg, 0.333f, {}, onImg, 1.0f, {}, 0.9f);
 
     lineThick *= 0.75f;
     onImg = smallCircleImage (onColour, imgWidth, imgWidth, lineThick);
@@ -54,9 +52,7 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
 
     tremSyncButton.setImages (
         true, false, true, offImg, 1.0f, {}, onImg, 0.333f, {}, onImg, 1.0f, {}, 0.9f);
-    tremSyncButton.setOnClick (std::bind (
-        &HyperTremoloPlugin::sync,
-        &p));
+    tremSyncButton.setOnClick (std::bind (&HyperTremoloPlugin::sync, &p));
     addAndMakeVisible (tooltipWindow);
     tremSyncButton.setTooltip ("Sync the two tremolos. Click\nthis when setting ratio to 1");
 
