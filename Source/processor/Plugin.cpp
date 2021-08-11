@@ -50,6 +50,8 @@ HyperTremoloPlugin::HyperTremoloPlugin()
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f),
           std::make_unique<juce::AudioParameterFloat> ("tremRate", "Rate",
               juce::NormalisableRange<float> (0.0f, 20.0f, 0.0001f, 0.333f), 2.5f, "Hz"),
+          std::make_unique<juce::AudioParameterFloat> ("tremRatio", "Ratio",
+              LogRange<float> (0.1f, 10.0f, 0.001f), 1.0f),
           std::make_unique<juce::AudioParameterFloat> ("tremMix", "Depth",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f),
           std::make_unique<juce::AudioParameterBool> ("tremZero", "Through-0", false),
@@ -209,6 +211,7 @@ void HyperTremoloPlugin::update()
     gain.setGainDecibels (*valueTreeState.getRawParameterValue ("gain"));
 
     processor.setTremoloMix (*valueTreeState.getRawParameterValue ("tremMix"));
+    processor.setTremoloRatio (*valueTreeState.getRawParameterValue ("tremRatio"));
     // Halven the rate if through-zero to keep the perceived rate the same
     float throughZero = *valueTreeState.getRawParameterValue ("tremZero");
     processor.setTremoloRate (*valueTreeState.getRawParameterValue ("tremRate") / (throughZero + 1.0f));

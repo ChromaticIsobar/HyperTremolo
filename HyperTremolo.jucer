@@ -51,6 +51,8 @@
               file="Source/modules/CrossoverWithBuffer.cpp"/>
         <FILE id="U0wiah" name="CrossoverWithBuffer.h" compile="0" resource="0"
               file="Source/modules/CrossoverWithBuffer.h"/>
+        <FILE id="lpIEfc" name="DualTremolo.cpp" compile="1" resource="0" file="Source/modules/DualTremolo.cpp"/>
+        <FILE id="i8ksV6" name="DualTremolo.h" compile="0" resource="0" file="Source/modules/DualTremolo.h"/>
         <FILE id="bbYh3c" name="HarmonicTremolo.cpp" compile="1" resource="0"
               file="Source/modules/HarmonicTremolo.cpp"/>
         <FILE id="VlMkXJ" name="HarmonicTremolo.h" compile="0" resource="0"

@@ -64,7 +64,7 @@ public:
     void setCrossoverBalance (SampleType);
 
     /** Sets the rate (in Hz) of the tremolo. */
-    void setTremoloRate (SampleType);
+    virtual void setTremoloRate (SampleType);
 
     /** Sets the tremolo to be through zero or not. */
     void setTremoloThroughZero (bool);
@@ -116,9 +116,12 @@ public:
         dryWet.mixWetSamples (outputBlock);
     }
 
+protected:
+    //==============================================================================
+    Tremolo<SampleType> lpfTrem, hpfTrem;
+
 private:
     //==============================================================================
     CrossoverWithBuffer<SampleType> crossover;
-    Tremolo<SampleType> lpfTrem, hpfTrem;
     juce::dsp::DryWetMixer<SampleType> dryWet;
 };

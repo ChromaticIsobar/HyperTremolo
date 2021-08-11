@@ -55,7 +55,7 @@ private:
                      knobMatrixWidth = knobMatrixCols * (knobWidth + knobMatrixColSep) - knobMatrixColSep;
 
     //==============================================================================
-    KnobWrapper mixKnob, gainKnob, tremRateKnob, tremMixKnob,
+    KnobWrapper mixKnob, gainKnob, tremRateKnob, tremRatioKnob, tremMixKnob,
         xoverFreqKnob, xoverResonKnob, xoverBalanceKnob, xoverMixKnob;
     ToggleWrapper tremZeroToggle;
 

@@ -30,8 +30,8 @@
 //==============================================================================
 HyperTremoloPluginEditor::HyperTremoloPluginEditor (juce::AudioProcessor& p,
                                                     juce::AudioProcessorValueTreeState& vts)
-    : AudioProcessorEditor (&p), valueTreeState (vts),
-    mixKnob ("mix"), gainKnob ("gain"), tremZeroToggle ("tremZero"), tremRateKnob ("tremRate"), tremMixKnob ("tremMix"),
+    : AudioProcessorEditor (&p), valueTreeState (vts), mixKnob ("mix"), gainKnob ("gain"),
+    tremZeroToggle ("tremZero"), tremRateKnob ("tremRate"), tremRatioKnob ("tremRatio"), tremMixKnob ("tremMix"),
     xoverFreqKnob ("xoverFreq"), xoverResonKnob ("xoverReson"), xoverBalanceKnob ("xoverBalance"), xoverMixKnob ("xoverMix")
 {
     // Set up through-zero toggle images
@@ -50,6 +50,7 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (juce::AudioProcessor& p,
     gainKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremZeroToggle.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremRateKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    tremRatioKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremMixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverFreqKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverResonKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
@@ -73,6 +74,8 @@ void HyperTremoloPluginEditor::resized()
     tremZeroToggle.setBounds (row.removeFromLeft (knobWidth));
     row.removeFromLeft (knobMatrixColSep);
     tremRateKnob.setBounds (row.removeFromLeft (knobWidth));
+    row.removeFromLeft (knobMatrixColSep);
+    tremRatioKnob.setBounds (row.removeFromLeft (knobWidth));
     row.removeFromLeft (knobMatrixColSep);
     tremMixKnob.setBounds (row.removeFromLeft (knobWidth));
 

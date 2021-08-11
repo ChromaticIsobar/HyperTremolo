@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include "../modules/HarmonicTremolo.h"
+#include "../modules/DualTremolo.h"
 
 //==============================================================================
 /**
@@ -79,7 +79,7 @@ private:
 
     //==============================================================================
     juce::dsp::DryWetMixer<float> dryWet;
-    HarmonicTremolo<float> processor;
+    DualTremolo<float> processor;
     juce::dsp::Gain<float> gain;
 
     //==============================================================================
