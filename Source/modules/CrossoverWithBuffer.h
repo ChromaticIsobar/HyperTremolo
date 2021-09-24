@@ -103,14 +103,14 @@ public:
         jassert (lpfBlock.getNumSamples() >= numSamples);
         jassert (hpfBlock.getNumSamples() >= numSamples);
 
-        dryWet.pushDrySamples (inputBlock);
-
         // Split signals
         lpf.process (juce::dsp::ProcessContextNonReplacing<SampleType> (inputBlock, lpfBlock));
         hpf.process (juce::dsp::ProcessContextNonReplacing<SampleType> (inputBlock, hpfBlock));
 
         // Dry/wet mix on filters
+        dryWet.pushDrySamples (inputBlock);
         dryWet.mixWetSamples (lpfBlock);
+        dryWet.pushDrySamples (inputBlock);
         dryWet.mixWetSamples (hpfBlock);
 
         // Apply band-wise process functions
