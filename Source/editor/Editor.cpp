@@ -56,6 +56,29 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
     addAndMakeVisible (tooltipWindow);
     tremSyncButton.setTooltip ("Sync the two tremolos. Click\nthis when setting ratio to 1");
 
+    // Footer
+    auto footerLabelColor = getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId);
+    juce::Font footerFont (footerHeight - 2, getLookAndFeel().getLabelFont (footerLeftLabel).getStyleFlags());
+    footerLeftLabel.setFont (footerFont);
+    footerRightLabel.setFont (footerFont);
+    footerLeftLabel.setColour (juce::Label::ColourIds::textColourId, footerLabelColor);
+    footerRightLabel.setColour (juce::Label::ColourIds::textColourId, footerLabelColor);
+    footerLeftLabel.setJustificationType (juce::Justification::left);
+    footerRightLabel.setJustificationType (juce::Justification::right);
+
+    footerLeftString = juce::String (ProjectInfo::projectName);
+    footerLeftString += juce::String (" v");
+    footerLeftString += juce::String (ProjectInfo::versionString);
+
+    footerRightString = juce::String ("Coded at Laboratorio di Informatica Musicale by ");
+    footerRightString += juce::String (ProjectInfo::companyName);
+
+    footerLeftLabel.setText (footerLeftString, juce::dontSendNotification);
+    footerRightLabel.setText (footerRightString, juce::dontSendNotification);
+
+    addAndMakeVisible (footerLeftLabel);
+    addAndMakeVisible (footerRightLabel);
+
     // Apply controls to the editor
     mixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     gainKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
@@ -69,7 +92,7 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
     xoverBalanceKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverMixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
 
-    setSize(knobMatrixWidth, knobMatrixHeight);
+    setSize(knobMatrixWidth, knobMatrixHeight + footerHeight);
 }
 
 //==============================================================================
@@ -112,11 +135,18 @@ void HyperTremoloPluginEditor::resized()
     
     // Group rectangles
     rectTrimHelper (rect, knobGroupColSep, knobGroupRowSep);
+    footerRect = rect.removeFromBottom (footerHeight);
     mixRect = rect.removeFromRight (knobWidth + knobMatrixColSep);
     rect.removeFromRight (knobGroupColSep);
     tremRect = rect.removeFromTop (knobHeight + knobLabelHeight + 2 * knobMatrixRowSep);
     rect.removeFromTop (knobGroupRowSep);
     xoverRect = rect.removeFromTop (knobHeight + knobLabelHeight + 2 * knobMatrixRowSep);
+
+    // Footer
+    juce::Rectangle<int> footerRectConsumable (footerRect);
+    rectTrimHelper (footerRectConsumable, 1, 1);
+    footerLeftLabel.setBounds (footerRectConsumable.removeFromLeft (footerRectConsumable.getWidth() / 3));
+    footerRightLabel.setBounds (footerRectConsumable.removeFromRight (footerRectConsumable.getWidth()));
 
     // Mixer
     juce::Rectangle<int> mixRectConsumable (mixRect);
