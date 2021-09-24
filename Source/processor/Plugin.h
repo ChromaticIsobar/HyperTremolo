@@ -27,7 +27,7 @@
 
 #pragma once
 
-#include "../modules/DualTremolo.h"
+#include "../dsp/DualTremolo.h"
 
 //==============================================================================
 /**

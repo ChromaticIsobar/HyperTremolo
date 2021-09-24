@@ -186,7 +186,7 @@ void HyperTremoloPlugin::processBlock (juce::AudioBuffer<float>& buffer, juce::M
 
     juce::dsp::AudioBlock<float> block (buffer);
     juce::dsp::ProcessContextReplacing<float> context (block);
-
+    
     update();
     dryWet.pushDrySamples (context.getInputBlock());
     processor.process (context);

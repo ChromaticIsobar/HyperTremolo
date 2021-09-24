@@ -37,6 +37,20 @@
         <FILE id="rKjG5Y" name="Plugin.cpp" compile="1" resource="0" file="Source/processor/Plugin.cpp"/>
         <FILE id="GNXtMW" name="Plugin.h" compile="0" resource="0" file="Source/processor/Plugin.h"/>
       </GROUP>
+      <GROUP id="{34CBAD0D-1319-FB43-DD9C-F41416F95AF8}" name="dsp">
+        <FILE id="ZJKjBc" name="CrossoverWithBuffer.cpp" compile="1" resource="0"
+              file="Source/dsp/CrossoverWithBuffer.cpp"/>
+        <FILE id="m0Ew1Q" name="CrossoverWithBuffer.h" compile="0" resource="0"
+              file="Source/dsp/CrossoverWithBuffer.h"/>
+        <FILE id="w8JKea" name="DualTremolo.cpp" compile="1" resource="0" file="Source/dsp/DualTremolo.cpp"/>
+        <FILE id="oWWBVJ" name="DualTremolo.h" compile="0" resource="0" file="Source/dsp/DualTremolo.h"/>
+        <FILE id="Ld40Mp" name="HarmonicTremolo.cpp" compile="1" resource="0"
+              file="Source/dsp/HarmonicTremolo.cpp"/>
+        <FILE id="UDRWXI" name="HarmonicTremolo.h" compile="0" resource="0"
+              file="Source/dsp/HarmonicTremolo.h"/>
+        <FILE id="B6dhee" name="Tremolo.cpp" compile="1" resource="0" file="Source/dsp/Tremolo.cpp"/>
+        <FILE id="DD31YC" name="Tremolo.h" compile="0" resource="0" file="Source/dsp/Tremolo.h"/>
+      </GROUP>
       <GROUP id="{BDB92388-2DF1-EC37-2481-088492CBE9C8}" name="editor">
         <FILE id="sMzEIy" name="ToggleWrapper.cpp" compile="1" resource="0"
               file="Source/editor/ToggleWrapper.cpp"/>
@@ -45,20 +59,6 @@
         <FILE id="EfD6z5" name="Editor.h" compile="0" resource="0" file="Source/editor/Editor.h"/>
         <FILE id="RpvsEP" name="KnobWrapper.cpp" compile="1" resource="0" file="Source/editor/KnobWrapper.cpp"/>
         <FILE id="v7VzTj" name="KnobWrapper.h" compile="0" resource="0" file="Source/editor/KnobWrapper.h"/>
-      </GROUP>
-      <GROUP id="{2C042B49-358D-627F-6548-18BB2F55EDCA}" name="modules">
-        <FILE id="aTK2wp" name="CrossoverWithBuffer.cpp" compile="1" resource="0"
-              file="Source/modules/CrossoverWithBuffer.cpp"/>
-        <FILE id="U0wiah" name="CrossoverWithBuffer.h" compile="0" resource="0"
-              file="Source/modules/CrossoverWithBuffer.h"/>
-        <FILE id="lpIEfc" name="DualTremolo.cpp" compile="1" resource="0" file="Source/modules/DualTremolo.cpp"/>
-        <FILE id="i8ksV6" name="DualTremolo.h" compile="0" resource="0" file="Source/modules/DualTremolo.h"/>
-        <FILE id="bbYh3c" name="HarmonicTremolo.cpp" compile="1" resource="0"
-              file="Source/modules/HarmonicTremolo.cpp"/>
-        <FILE id="VlMkXJ" name="HarmonicTremolo.h" compile="0" resource="0"
-              file="Source/modules/HarmonicTremolo.h"/>
-        <FILE id="ygvsYM" name="Tremolo.cpp" compile="1" resource="0" file="Source/modules/Tremolo.cpp"/>
-        <FILE id="aFiG7q" name="Tremolo.h" compile="0" resource="0" file="Source/modules/Tremolo.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>
