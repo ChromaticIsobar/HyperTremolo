@@ -39,11 +39,6 @@ The parameters are divided in three sections
  - __Gain__: Gain for the wet signal
  - __Mix__: The mix between the wet and dry signals
 
-
-## Known Limitations
- - _Sync_ button is not automatable
- - Using the _Through-0_ button makes a click (sudden change in waveshape)
-
 ## Example Settings
 |                    | Through-0 | Rate | Ratio | Sync | Depth | Crossover | Resonance | Balance | Harmonic | Gain | Mix  |
 |--------------------|-----------|------|-------|------|-------|-----------|-----------|---------|----------|------|------|
@@ -53,6 +48,10 @@ The parameters are divided in three sections
 | Rotary Cabinet     |     ✓     | 1.33 | 4.50  |   ✗  | 1.00  |  1000.0   |   1.25    |  0.50   |   1.00   | 0.00 | 1.00 |
 | Dual Trem          |     ✗     | 2.00 | 4.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   0.00   | 0.00 | 1.00 |
 | Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.666  |   0.50   | 3.00 | 1.00 |
+
+## Known Limitations
+ - _Sync_ button is not automatable
+ - Using the _Through-0_ button makes a click (sudden change in waveshape)
 
 ## Contacts
 This software was developed by Marco Tiraboschi at the _Laboratorio di Informatica Musicale_
