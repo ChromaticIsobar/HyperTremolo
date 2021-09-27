@@ -44,10 +44,15 @@ The parameters are divided in three sections
 TODO
 -->
 
-<!--
 ## Example Settings
-TODO
--->
+|                    | Through-0 | Rate | Ratio | Sync | Depth | Crossover | Resonance | Balance | Harmonic | Gain | Mix  |
+|--------------------|-----------|------|-------|------|-------|-----------|-----------|---------|----------|------|------|
+| Fast Pulsar        |     ✗     | 6.00 | 1.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   1.00   | 3.00 | 1.00 |
+| Slow Phaser        |     ✗     | 0.75 | 1.00  |   ✓  | 0.90  |  1000.0   |   0.707   |  0.50   |   1.00   | 3.00 | 1.00 |
+| Subtle Rotary      |     ✗     | 1.33 | 4.50  |   ✗  | 0.75  |  1000.0   |   0.707   |  0.40   |   1.00   | 3.00 | 1.00 |
+| Rotary Cabinet     |     ✓     | 1.33 | 4.50  |   ✗  | 1.00  |  1000.0   |   1.25    |  0.50   |   1.00   | 0.00 | 1.00 |
+| Dual Trem          |     ✗     | 2.00 | 4.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   0.00   | 0.00 | 1.00 |
+| Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.666  |   0.50   | 3.00 | 1.00 |
 
 ## Contacts
 This software was developed by Marco Tiraboschi at the _Laboratorio di Informatica Musicale_
