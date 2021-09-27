@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    Parameters.h
+    Parameters.cpp
 
     Copyright (c) 2021 Marco Tiraboschi
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,33 +25,14 @@
   ==============================================================================
 */
 
-#pragma once
+#include "Parameters.h"
 
-#include <JuceHeader.h>
-
-template <typename ValueType>
-class LogRange  : public juce::NormalisableRange<ValueType>
+SetterListener::SetterListener (std::function<void (float)> f)
+    : setterFunction(f)
 {
-public:
-    LogRange (
-        ValueType rangeStart,
-        ValueType rangeEnd,
-        ValueType intervalValue)
-        : juce::NormalisableRange<ValueType> (rangeStart, rangeEnd, intervalValue, ((ValueType) 1) / std::log2 (((ValueType) 1) + std::sqrt (rangeEnd / rangeStart)))
-    {
-    }
-};
+}
 
-/**
-    A simple listener for setting values from an AudioProcessorValueTreeState
-*/
-class SetterListener  : public juce::AudioProcessorValueTreeState::Listener
+void SetterListener::parameterChanged (const juce::String& id, float newValue)
 {
-public:
-    SetterListener (std::function<void (float)>);
-    void parameterChanged (const juce::String& , float) override;
-
-private:
-    juce::String parameterID;
-    std::function<void (float)> setterFunction;
-};
+    setterFunction (newValue);
+}

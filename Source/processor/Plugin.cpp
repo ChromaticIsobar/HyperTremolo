@@ -65,6 +65,54 @@ HyperTremoloPlugin::HyperTremoloPlugin()
           std::make_unique<juce::AudioParameterFloat> ("xoverMix", "Harmonic",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f) })
 {
+    // Set gain to 0 (problem with default value == 0)
+    gain.setGainDecibels (0);
+
+    // Mixer
+    valueTreeState.addParameterListener (
+        "gain",
+        new SetterListener (
+            std::bind (&juce::dsp::Gain<float>::setGainDecibels, &gain, std::placeholders::_1)));
+    valueTreeState.addParameterListener (
+        "mix",
+        new SetterListener (
+            std::bind (&juce::dsp::DryWetMixer<float>::setWetMixProportion, &dryWet, std::placeholders::_1)));
+    // Tremolo
+    // TODO: halven when through-zero
+    valueTreeState.addParameterListener (
+        "tremRate",
+        new SetterListener (
+            std::bind (&DualTremolo<float>::setTremoloRate, &processor, std::placeholders::_1)));
+    valueTreeState.addParameterListener (
+        "tremRatio",
+        new SetterListener (
+            std::bind (&DualTremolo<float>::setTremoloRatio, &processor, std::placeholders::_1)));
+    valueTreeState.addParameterListener (
+        "tremMix",
+        new SetterListener (
+            std::bind (&DualTremolo<float>::setTremoloMix, &processor, std::placeholders::_1)));
+    valueTreeState.addParameterListener (
+        "tremZero",
+        new SetterListener (
+            std::bind (&DualTremolo<float>::setTremoloThroughZero, &processor, std::placeholders::_1)));
+    // Crossover
+    valueTreeState.addParameterListener (
+        "xoverFreq",
+        new SetterListener (
+            std::bind (&DualTremolo<float>::setCrossoverFrequency, &processor, std::placeholders::_1)));
+    valueTreeState.addParameterListener (
+        "xoverReson",
+        new SetterListener (
+            std::bind (&DualTremolo<float>::setCrossoverResonance, &processor, std::placeholders::_1)));
+    valueTreeState.addParameterListener (
+        "xoverBalance",
+        new SetterListener (
+            std::bind (&DualTremolo<float>::setCrossoverBalance, &processor, std::placeholders::_1)));
+    valueTreeState.addParameterListener (
+        "xoverMix",
+        new SetterListener (
+            std::bind (&DualTremolo<float>::setCrossoverMix, &processor, std::placeholders::_1)));
+
 }
 
 //==============================================================================
@@ -187,7 +235,6 @@ void HyperTremoloPlugin::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     juce::dsp::AudioBlock<float> block (buffer);
     juce::dsp::ProcessContextReplacing<float> context (block);
     
-    update();
     dryWet.pushDrySamples (context.getInputBlock());
     processor.process (context);
     gain.process (context);
@@ -211,24 +258,6 @@ juce::AudioProcessorEditor* HyperTremoloPlugin::createEditor()
 }
 
 //==============================================================================
-void HyperTremoloPlugin::update()
-{
-    dryWet.setWetMixProportion (*valueTreeState.getRawParameterValue ("mix"));
-    gain.setGainDecibels (*valueTreeState.getRawParameterValue ("gain"));
-
-    processor.setTremoloMix (*valueTreeState.getRawParameterValue ("tremMix"));
-    processor.setTremoloRatio (*valueTreeState.getRawParameterValue ("tremRatio"));
-    // Halven the rate if through-zero to keep the perceived rate the same
-    float throughZero = *valueTreeState.getRawParameterValue ("tremZero");
-    processor.setTremoloRate (*valueTreeState.getRawParameterValue ("tremRate") / (throughZero + 1.0f));
-    processor.setTremoloThroughZero (throughZero);
-
-    processor.setCrossoverFrequency (*valueTreeState.getRawParameterValue ("xoverFreq"));
-    processor.setCrossoverResonance (*valueTreeState.getRawParameterValue ("xoverReson"));
-    processor.setCrossoverBalance (*valueTreeState.getRawParameterValue ("xoverBalance"));
-    processor.setCrossoverMix (*valueTreeState.getRawParameterValue ("xoverMix"));
-}
-
 void HyperTremoloPlugin::getStateInformation (juce::MemoryBlock& destData)
 {
     auto state = valueTreeState.copyState();

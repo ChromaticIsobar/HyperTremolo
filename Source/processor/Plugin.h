@@ -77,10 +77,6 @@ public:
 
 private:
     //==============================================================================
-    /** Updates the processors parameters using the ValueTreeState */
-    void update();
-
-    //==============================================================================
     juce::dsp::DryWetMixer<float> dryWet;
     DualTremolo<float> processor;
     juce::dsp::Gain<float> gain;
