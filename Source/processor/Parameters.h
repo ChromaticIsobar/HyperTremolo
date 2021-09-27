@@ -40,4 +40,39 @@ public:
         : juce::NormalisableRange<ValueType> (rangeStart, rangeEnd, intervalValue, ((ValueType) 1) / std::log2 (((ValueType) 1) + std::sqrt (rangeEnd / rangeStart)))
     {
     }
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LogRange<ValueType>)
+};
+
+/**
+    A simple listener for setting values from an AudioProcessorValueTreeState
+*/
+class SetterListener  : public juce::AudioProcessorValueTreeState::Listener
+{
+public:
+    SetterListener (std::function<void (float)>);
+    void parameterChanged (const juce::String&, float) override;
+
+private:
+    std::function<void (float)> setterFunction;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SetterListener)
+};
+
+/**
+    A listener for setting values of AM Frequency and Through-0
+*/
+class ThroughZeroAndFrequencySetterListener  : public juce::AudioProcessorValueTreeState::Listener
+{
+public:
+    ThroughZeroAndFrequencySetterListener (std::function<void (float)> frequencySetter, std::function<void (bool)> throughZeroSetter, std::function<std::atomic<float>*(juce::StringRef)> vtsGetter, juce::String freqID, juce::String tzeroID);
+    void parameterChanged (const juce::String&, float) override;
+
+private:
+    juce::String frequencyParameterID, throughZeroParameterID;
+    std::function<void (float)> frequencySetterFunction, throughZeroSetterFunction;
+    std::function<std::atomic<float>*(juce::StringRef)> valueTreeStateGetterFunction;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThroughZeroAndFrequencySetterListener)
 };

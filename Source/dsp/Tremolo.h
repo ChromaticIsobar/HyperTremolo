@@ -143,4 +143,6 @@ private:
     std::function<SampleType (SampleType)> waveShapeFunc;
     SampleType sampleRate = 44100.0, rate = 1.0;
     bool throughZero = false;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Tremolo<SampleType>)
 };

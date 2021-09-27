@@ -18,6 +18,9 @@ class DualTremolo  : public HarmonicTremolo<SampleType>
 {
 public:
     //==============================================================================
+    DualTremolo();
+
+    //==============================================================================
     /** Sets the rate (in Hz) of the tremolo. */
     void setTremoloRate (SampleType) override;
 
@@ -38,4 +41,6 @@ private:
 
     //==============================================================================
     SampleType rate = 1.0, ratio = 1.0;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DualTremolo<SampleType>)
 };

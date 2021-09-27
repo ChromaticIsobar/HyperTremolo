@@ -12,6 +12,12 @@
 
 //==============================================================================
 template <typename SampleType>
+DualTremolo<SampleType>::DualTremolo()
+{
+}
+
+//==============================================================================
+template <typename SampleType>
 void DualTremolo<SampleType>::setTremoloRate (SampleType f)
 {
     rate = f;

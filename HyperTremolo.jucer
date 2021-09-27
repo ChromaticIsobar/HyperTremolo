@@ -35,6 +35,7 @@
     <GROUP id="{EBBF67A8-FA47-5B0B-BE9E-7AA1024B3821}" name="Source">
       <FILE id="zX6gx0" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <GROUP id="{A055111E-CEFD-DE47-313C-10A2B011B73A}" name="processor">
+        <FILE id="toYSWP" name="Parameters.cpp" compile="1" resource="0" file="Source/processor/Parameters.cpp"/>
         <FILE id="FmxLli" name="Parameters.h" compile="0" resource="0" file="Source/processor/Parameters.h"/>
         <FILE id="rKjG5Y" name="Plugin.cpp" compile="1" resource="0" file="Source/processor/Plugin.cpp"/>
         <FILE id="GNXtMW" name="Plugin.h" compile="0" resource="0" file="Source/processor/Plugin.h"/>

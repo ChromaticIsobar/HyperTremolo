@@ -26,7 +26,6 @@
 */
 
 #include "../editor/Editor.h"
-#include "Parameters.h"
 #include "Plugin.h"
 
 //==============================================================================
@@ -63,8 +62,37 @@ HyperTremoloPlugin::HyperTremoloPlugin()
           std::make_unique<juce::AudioParameterFloat> ("xoverBalance", "Balance",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f),
           std::make_unique<juce::AudioParameterFloat> ("xoverMix", "Harmonic",
-              juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f) })
+              juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f) }),
+      gainSetter (std::bind (&juce::dsp::Gain<float>::setGainDecibels, &gain, std::placeholders::_1)),
+      mixSetter (std::bind (&juce::dsp::DryWetMixer<float>::setWetMixProportion, &dryWet, std::placeholders::_1)),
+      tremT0AndFSetter (
+          std::bind (&DualTremolo<float>::setTremoloRate, &processor, std::placeholders::_1),
+          std::bind (&DualTremolo<float>::setTremoloThroughZero, &processor, std::placeholders::_1),
+          std::bind (&juce::AudioProcessorValueTreeState::getRawParameterValue, &valueTreeState, std::placeholders::_1),
+          "tremRate", "tremZero"),
+      tremRatioSetter (std::bind (&DualTremolo<float>::setTremoloRatio, &processor, std::placeholders::_1)),
+      tremMixSetter (std::bind (&DualTremolo<float>::setTremoloMix, &processor, std::placeholders::_1)),
+      xoverFreqSetter (std::bind (&DualTremolo<float>::setCrossoverFrequency, &processor, std::placeholders::_1)),
+      xoverResonSetter (std::bind (&DualTremolo<float>::setCrossoverResonance, &processor, std::placeholders::_1)),
+      xoverBalanceSetter (std::bind (&DualTremolo<float>::setCrossoverBalance, &processor, std::placeholders::_1)),
+      xoverMixSetter (std::bind (&DualTremolo<float>::setCrossoverMix, &processor, std::placeholders::_1))
 {
+    // Set gain to 0 (problem with default value == 0)
+    gain.setGainDecibels (0);
+
+    // Mixer
+    valueTreeState.addParameterListener ("gain", &gainSetter);
+    valueTreeState.addParameterListener ("mix", &mixSetter);
+    // Tremolo
+    valueTreeState.addParameterListener ("tremRate", &tremT0AndFSetter);
+    valueTreeState.addParameterListener ("tremRatio", &tremRatioSetter);
+    valueTreeState.addParameterListener ("tremMix", &tremMixSetter);
+    valueTreeState.addParameterListener ("tremZero", &tremT0AndFSetter);
+    // Crossover
+    valueTreeState.addParameterListener ("xoverFreq", &xoverFreqSetter);
+    valueTreeState.addParameterListener ("xoverReson", &xoverResonSetter);
+    valueTreeState.addParameterListener ("xoverBalance", &xoverBalanceSetter);
+    valueTreeState.addParameterListener ("xoverMix", &xoverMixSetter);
 }
 
 //==============================================================================
@@ -187,7 +215,6 @@ void HyperTremoloPlugin::processBlock (juce::AudioBuffer<float>& buffer, juce::M
     juce::dsp::AudioBlock<float> block (buffer);
     juce::dsp::ProcessContextReplacing<float> context (block);
     
-    update();
     dryWet.pushDrySamples (context.getInputBlock());
     processor.process (context);
     gain.process (context);
@@ -211,24 +238,6 @@ juce::AudioProcessorEditor* HyperTremoloPlugin::createEditor()
 }
 
 //==============================================================================
-void HyperTremoloPlugin::update()
-{
-    dryWet.setWetMixProportion (*valueTreeState.getRawParameterValue ("mix"));
-    gain.setGainDecibels (*valueTreeState.getRawParameterValue ("gain"));
-
-    processor.setTremoloMix (*valueTreeState.getRawParameterValue ("tremMix"));
-    processor.setTremoloRatio (*valueTreeState.getRawParameterValue ("tremRatio"));
-    // Halven the rate if through-zero to keep the perceived rate the same
-    float throughZero = *valueTreeState.getRawParameterValue ("tremZero");
-    processor.setTremoloRate (*valueTreeState.getRawParameterValue ("tremRate") / (throughZero + 1.0f));
-    processor.setTremoloThroughZero (throughZero);
-
-    processor.setCrossoverFrequency (*valueTreeState.getRawParameterValue ("xoverFreq"));
-    processor.setCrossoverResonance (*valueTreeState.getRawParameterValue ("xoverReson"));
-    processor.setCrossoverBalance (*valueTreeState.getRawParameterValue ("xoverBalance"));
-    processor.setCrossoverMix (*valueTreeState.getRawParameterValue ("xoverMix"));
-}
-
 void HyperTremoloPlugin::getStateInformation (juce::MemoryBlock& destData)
 {
     auto state = valueTreeState.copyState();
