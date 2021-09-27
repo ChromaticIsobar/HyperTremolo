@@ -28,6 +28,7 @@
 #pragma once
 
 #include "../dsp/DualTremolo.h"
+#include "Parameters.h"
 
 //==============================================================================
 /**
@@ -83,6 +84,8 @@ private:
 
     //==============================================================================
     juce::AudioProcessorValueTreeState valueTreeState;
+    SetterListener gainSetter, mixSetter, tremRatioSetter, tremMixSetter, xoverFreqSetter, xoverResonSetter, xoverBalanceSetter, xoverMixSetter;
+    ThroughZeroAndFrequencySetterListener tremT0AndFSetter;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HyperTremoloPlugin)

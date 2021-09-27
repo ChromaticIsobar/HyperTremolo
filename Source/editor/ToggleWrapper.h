@@ -95,4 +95,6 @@ private:
     juce::Label label;
     juce::ImageButton toggle;
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> attachment;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ToggleWrapper)
 };

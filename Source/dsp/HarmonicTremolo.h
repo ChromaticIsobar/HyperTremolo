@@ -125,4 +125,6 @@ private:
     //==============================================================================
     CrossoverWithBuffer<SampleType> crossover;
     juce::dsp::DryWetMixer<SampleType> dryWet;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HarmonicTremolo<SampleType>)
 };

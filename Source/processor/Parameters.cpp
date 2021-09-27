@@ -28,11 +28,46 @@
 #include "Parameters.h"
 
 SetterListener::SetterListener (std::function<void (float)> f)
-    : setterFunction(f)
+    : setterFunction (f)
 {
 }
 
 void SetterListener::parameterChanged (const juce::String& id, float newValue)
 {
     setterFunction (newValue);
+}
+
+//==============================================================================
+ThroughZeroAndFrequencySetterListener::ThroughZeroAndFrequencySetterListener (
+    std::function<void (float)> frequencySetter,
+    std::function<void (bool)> throughZeroSetter,
+    std::function<std::atomic<float>*(juce::StringRef)> vtsGetter,
+    juce::String freqID,
+    juce::String tzeroID)
+    : frequencySetterFunction (frequencySetter), throughZeroSetterFunction (throughZeroSetter), valueTreeStateGetterFunction (vtsGetter), frequencyParameterID (freqID), throughZeroParameterID (tzeroID)
+{
+}
+
+void ThroughZeroAndFrequencySetterListener::parameterChanged (const juce::String& id, float newValue)
+{
+    float freq;
+    bool throughZero;
+    if (id.compare (frequencyParameterID) == 0)
+    {
+        freq = newValue;
+        throughZero = 0.0f != *valueTreeStateGetterFunction (throughZeroParameterID);
+    }
+    else if (id.compare (throughZeroParameterID) == 0)
+    {
+        freq = *valueTreeStateGetterFunction (frequencyParameterID);
+        throughZero = 0.0f != newValue;
+        throughZeroSetterFunction (throughZero);
+    }
+    else
+    {
+        // The listened parameter should be either the frequency
+        // value or the through-0 flag
+        jassertfalse;
+    }
+    frequencySetterFunction (freq / (throughZero + 1.0f));
 }

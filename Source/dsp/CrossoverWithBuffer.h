@@ -145,4 +145,6 @@ private:
                balance = 0.5;
     std::function<void (juce::dsp::ProcessContextReplacing<SampleType>)> process_lpf,
         process_hpf;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrossoverWithBuffer<SampleType>)
 };

@@ -26,7 +26,6 @@
 */
 
 #include "../editor/Editor.h"
-#include "Parameters.h"
 #include "Plugin.h"
 
 //==============================================================================
@@ -63,56 +62,37 @@ HyperTremoloPlugin::HyperTremoloPlugin()
           std::make_unique<juce::AudioParameterFloat> ("xoverBalance", "Balance",
               juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f),
           std::make_unique<juce::AudioParameterFloat> ("xoverMix", "Harmonic",
-              juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f) })
+              juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f) }),
+      gainSetter (std::bind (&juce::dsp::Gain<float>::setGainDecibels, &gain, std::placeholders::_1)),
+      mixSetter (std::bind (&juce::dsp::DryWetMixer<float>::setWetMixProportion, &dryWet, std::placeholders::_1)),
+      tremT0AndFSetter (
+          std::bind (&DualTremolo<float>::setTremoloRate, &processor, std::placeholders::_1),
+          std::bind (&DualTremolo<float>::setTremoloThroughZero, &processor, std::placeholders::_1),
+          std::bind (&juce::AudioProcessorValueTreeState::getRawParameterValue, &valueTreeState, std::placeholders::_1),
+          "tremRate", "tremZero"),
+      tremRatioSetter (std::bind (&DualTremolo<float>::setTremoloRatio, &processor, std::placeholders::_1)),
+      tremMixSetter (std::bind (&DualTremolo<float>::setTremoloMix, &processor, std::placeholders::_1)),
+      xoverFreqSetter (std::bind (&DualTremolo<float>::setCrossoverFrequency, &processor, std::placeholders::_1)),
+      xoverResonSetter (std::bind (&DualTremolo<float>::setCrossoverResonance, &processor, std::placeholders::_1)),
+      xoverBalanceSetter (std::bind (&DualTremolo<float>::setCrossoverBalance, &processor, std::placeholders::_1)),
+      xoverMixSetter (std::bind (&DualTremolo<float>::setCrossoverMix, &processor, std::placeholders::_1))
 {
     // Set gain to 0 (problem with default value == 0)
     gain.setGainDecibels (0);
 
     // Mixer
-    valueTreeState.addParameterListener (
-        "gain",
-        new SetterListener (
-            std::bind (&juce::dsp::Gain<float>::setGainDecibels, &gain, std::placeholders::_1)));
-    valueTreeState.addParameterListener (
-        "mix",
-        new SetterListener (
-            std::bind (&juce::dsp::DryWetMixer<float>::setWetMixProportion, &dryWet, std::placeholders::_1)));
+    valueTreeState.addParameterListener ("gain", &gainSetter);
+    valueTreeState.addParameterListener ("mix", &mixSetter);
     // Tremolo
-    // TODO: halven when through-zero
-    valueTreeState.addParameterListener (
-        "tremRate",
-        new SetterListener (
-            std::bind (&DualTremolo<float>::setTremoloRate, &processor, std::placeholders::_1)));
-    valueTreeState.addParameterListener (
-        "tremRatio",
-        new SetterListener (
-            std::bind (&DualTremolo<float>::setTremoloRatio, &processor, std::placeholders::_1)));
-    valueTreeState.addParameterListener (
-        "tremMix",
-        new SetterListener (
-            std::bind (&DualTremolo<float>::setTremoloMix, &processor, std::placeholders::_1)));
-    valueTreeState.addParameterListener (
-        "tremZero",
-        new SetterListener (
-            std::bind (&DualTremolo<float>::setTremoloThroughZero, &processor, std::placeholders::_1)));
+    valueTreeState.addParameterListener ("tremRate", &tremT0AndFSetter);
+    valueTreeState.addParameterListener ("tremRatio", &tremRatioSetter);
+    valueTreeState.addParameterListener ("tremMix", &tremMixSetter);
+    valueTreeState.addParameterListener ("tremZero", &tremT0AndFSetter);
     // Crossover
-    valueTreeState.addParameterListener (
-        "xoverFreq",
-        new SetterListener (
-            std::bind (&DualTremolo<float>::setCrossoverFrequency, &processor, std::placeholders::_1)));
-    valueTreeState.addParameterListener (
-        "xoverReson",
-        new SetterListener (
-            std::bind (&DualTremolo<float>::setCrossoverResonance, &processor, std::placeholders::_1)));
-    valueTreeState.addParameterListener (
-        "xoverBalance",
-        new SetterListener (
-            std::bind (&DualTremolo<float>::setCrossoverBalance, &processor, std::placeholders::_1)));
-    valueTreeState.addParameterListener (
-        "xoverMix",
-        new SetterListener (
-            std::bind (&DualTremolo<float>::setCrossoverMix, &processor, std::placeholders::_1)));
-
+    valueTreeState.addParameterListener ("xoverFreq", &xoverFreqSetter);
+    valueTreeState.addParameterListener ("xoverReson", &xoverResonSetter);
+    valueTreeState.addParameterListener ("xoverBalance", &xoverBalanceSetter);
+    valueTreeState.addParameterListener ("xoverMix", &xoverMixSetter);
 }
 
 //==============================================================================
