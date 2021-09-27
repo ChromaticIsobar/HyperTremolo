@@ -39,10 +39,10 @@ The parameters are divided in three sections
  - __Gain__: Gain for the wet signal
  - __Mix__: The mix between the wet and dry signals
 
-<!--
+
 ## Known Limitations
-TODO
--->
+ - _Sync_ button is not automatable
+ - Using the _Through-0_ button makes a click (sudden change in waveshape)
 
 ## Example Settings
 |                    | Through-0 | Rate | Ratio | Sync | Depth | Crossover | Resonance | Balance | Harmonic | Gain | Mix  |
