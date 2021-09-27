@@ -54,6 +54,7 @@ private:
                      knobHeight = knobWidth + knobLabelHeight,
                      nRowGroups = 2, nColGroups = 2, 
                      knobGroupRowSep = 2, knobGroupColSep = 2,
+                     footerHeight = 12,
                      knobMatrixHeight = knobMatrixRows * (knobHeight + knobLabelHeight + 2 * knobMatrixRowSep) + (nRowGroups + 1) * knobGroupRowSep,
                      knobMatrixWidth = knobMatrixCols * (knobWidth + 2 * knobMatrixColSep) + (nColGroups + 1) * knobGroupColSep;
 
@@ -62,7 +63,9 @@ private:
         xoverFreqKnob, xoverResonKnob, xoverBalanceKnob, xoverMixKnob;
     ToggleWrapper tremZeroToggle, tremSyncButton;
     juce::TooltipWindow tooltipWindow;
-    juce::Rectangle<int> tremRect, xoverRect, mixRect;
+    juce::Rectangle<int> tremRect, xoverRect, mixRect, footerRect;
+    juce::Label footerLeftLabel, footerRightLabel;
+    juce::String footerLeftString, footerRightString;
 
     //==============================================================================
     juce::AudioProcessorValueTreeState& valueTreeState;
