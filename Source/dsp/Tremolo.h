@@ -27,14 +27,8 @@
 
 #pragma once
 
+#include "PhaseControlledOscillator.h"
 #include <JuceHeader.h>
-
-/** Wave shape for amplitude modulation LFO modulant */
-enum class TremoloWaveShape
-{
-    sine,
-    sawtooth
-};
 
 /**
     A simple amplitude modulation DSP widget.
@@ -66,7 +60,7 @@ public:
     void setShape (std::function<SampleType (SampleType)>);
 
     /** Sets the shape of the modulant LFO. */
-    void setShape (TremoloWaveShape waveShape);
+    void setShape (PhaseControlledOscillatorWaveShape waveShape);
 
     /** Sets the amount of dry and wet signal in the output of the
         tremolo (between 0 for full dry and 1 for full wet).
@@ -108,41 +102,24 @@ public:
 
         dryWet.pushDrySamples (inputBlock);
 
-        SampleType a = 0.0;
-        for (size_t channel = 0; channel < numChannels; ++channel)
-        {
-            auto* inputSamples = inputBlock.getChannelPointer (channel);
-            auto* outputSamples = outputBlock.getChannelPointer (channel);
-
-            for (size_t i = 0; i < numSamples; ++i)
-            {
-                a = waveShapeFunc (phaseAfter (i));
-                if (throughZero)
-                    a = ((SampleType) 2) * a - ((SampleType) 1);
-                outputSamples[i] = inputSamples[i] * a;
-            }
-        }
-        advance (samplesToPhase (numSamples));
+        juce::dsp::AudioBlock<SampleType> amBlock (*amBuffer);
+        juce::dsp::ProcessContextReplacing<SampleType> amPC (amBlock);
+        lfo.process (amPC);
+        amScale.process (amPC);
+        amBias.process (amPC);
+        outputBlock.replaceWithProductOf (inputBlock, amBlock);
 
         dryWet.mixWetSamples (outputBlock);
     }
 
 private:
     //==============================================================================
-    /** Get the LFO phase after a given delay (in samples) */
-    SampleType phaseAfter (size_t);
-
-    /** Convert a value in samples to the corresponding LFO phase */
-    SampleType samplesToPhase (size_t);
-
-    //==============================================================================
     juce::dsp::DryWetMixer<SampleType> dryWet;
-    juce::dsp::Phase<SampleType> phase;
-
-    //==============================================================================
-    std::function<SampleType (SampleType)> waveShapeFunc;
-    SampleType sampleRate = 44100.0, rate = 1.0;
-    bool throughZero = false;
+    juce::dsp::Gain<SampleType> amScale;
+    juce::dsp::Bias<SampleType> amBias;
+    PhaseControlledOscillator<SampleType> lfo;
+    std::unique_ptr<juce::AudioBuffer<SampleType>> amBuffer;
+    SampleType rampLength = 0.005;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Tremolo<SampleType>)
 };

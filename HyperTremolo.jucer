@@ -51,6 +51,10 @@
               file="Source/dsp/HarmonicTremolo.cpp"/>
         <FILE id="UDRWXI" name="HarmonicTremolo.h" compile="0" resource="0"
               file="Source/dsp/HarmonicTremolo.h"/>
+        <FILE id="jnMrHO" name="PhaseControlledOscillator.cpp" compile="1"
+              resource="0" file="Source/dsp/PhaseControlledOscillator.cpp"/>
+        <FILE id="IiqVyh" name="PhaseControlledOscillator.h" compile="0" resource="0"
+              file="Source/dsp/PhaseControlledOscillator.h"/>
         <FILE id="B6dhee" name="Tremolo.cpp" compile="1" resource="0" file="Source/dsp/Tremolo.cpp"/>
         <FILE id="DD31YC" name="Tremolo.h" compile="0" resource="0" file="Source/dsp/Tremolo.h"/>
       </GROUP>

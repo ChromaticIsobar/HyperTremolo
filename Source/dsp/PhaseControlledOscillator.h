@@ -1,7 +1,7 @@
 /*
   ==============================================================================
 
-    HarmonicTremolo.h
+    PhaseControlledOscillator.h
 
     Copyright (c) 2021 Marco Tiraboschi
     Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,73 +27,56 @@
 
 #pragma once
 
-#include "CrossoverWithBuffer.h"
-#include "Tremolo.h"
 #include <JuceHeader.h>
 
-/**
-    A simple DSP widget that implements an Harmonic Tremolo. 
+/** Wave shapes for oscillator */
+enum class PhaseControlledOscillatorWaveShape
+{
+    sine,
+    sawtooth
+};
 
-    This audio effect can be controlled via the speed, shape, and mix of the
-    tremolo, and the frequency, resonance, mix and balance of the crossover filter.
+/**
+    Oscillator which can be controlled with an external phase
 
     @tags{DSP}
 */
 template <typename SampleType>
-class HarmonicTremolo
+class PhaseControlledOscillator
 {
 public:
     //==============================================================================
-    HarmonicTremolo();
+    /** Constructor. */
+    PhaseControlledOscillator();
+
+    /** Sets the wave shape function of the oscillator. */
+    void setShape (std::function<SampleType (SampleType)>);
+
+    /** Sets the wave shape function of the oscillator. */
+    void setShape (PhaseControlledOscillatorWaveShape);
+
+    /** Sets the rate (in Hz) of the oscillator */
+    void setRate (SampleType);
 
     //==============================================================================
-    /** Sets the cutoff frequency (in Hz) of the crossover filters. */
-    void setCrossoverFrequency (SampleType);
-
-    /** Sets the resonance of the crossover filters. */
-    void setCrossoverResonance (SampleType);
-
-    /** Sets the amount of dry and wet signal in the output of the
-        crossover filter (between 0 for full dry and 1 for full wet).
-    */
-    void setCrossoverMix (SampleType);
-
-    /** Sets the balance of the crossover filter (between 0 for full low-pass
-        and 1 for full high-pass).
-    */
-    void setCrossoverBalance (SampleType);
-
-    /** Sets the rate (in Hz) of the tremolo. */
-    virtual void setTremoloRate (SampleType);
-
-    /** Sets the tremolo to be through zero or not. */
-    void setTremoloThroughZero (bool);
-
-    /** Sets the wave shape function of the tremolo. */
-    void setTremoloShape (std::function<SampleType (SampleType)>);
-
-    /** Sets the wave shape of the tremolo. */
-    void setTremoloShape (PhaseControlledOscillatorWaveShape);
-
-    /** Sets the amount of dry and wet signal in the output of the
-        tremolo (between 0 for full dry and 1 for full wet).
-    */
-    void setTremoloMix (SampleType);
-
-    /** Sets the amount of dry and wet signal in the output of the
-        overall effect (between 0 for full dry and 1 for full wet).
-    */
-    void setMix (SampleType);
+    /** Gets the current phase of the oscillator.
+            If a delay in samples is specified, then it gets the phase of the
+            oscillator after said delay
+        */
+    SampleType getPhase (int delay = 0);
 
     //==============================================================================
-    /** Initialises the processor. */
+    /** Initialises the oscillator. */
     void prepare (const juce::dsp::ProcessSpec&);
 
-    /** Resets the internal state variables of the processor. */
+    /** Resets the internal state variables of the oscillator. */
     void reset();
 
+    /** Advances the oscillator by the given phase amount. */
+    void advance (SampleType);
+
     //==============================================================================
-    /** Processes the input and output samples supplied in the processing context. */
+    /** Writes the output samples for the oscillator waveshape. */
     template <typename ProcessContext>
     void process (const ProcessContext& context) noexcept
     {
@@ -107,24 +90,37 @@ public:
 
         if (context.isBypassed)
         {
-            outputBlock.copyFrom (inputBlock);
+            outputBlock.fill ((SampleType) 0);
             return;
         }
 
-        dryWet.pushDrySamples (inputBlock);
-        crossover.process (context);
-        dryWet.mixWetSamples (outputBlock);
-    }
+        if (numChannels > 0)
+        {
+            auto* outputSamples = outputBlock.getChannelPointer (0);
 
-protected:
-    //==============================================================================
-    Tremolo<SampleType> lpfTrem, hpfTrem;
-    SampleType phase = juce::MathConstants<SampleType>::halfPi;
+            for (size_t i = 0; i < numSamples; ++i)
+                outputSamples[i] = waveShapeFunc (getPhase (i));
+            auto firstChannelBlock = outputBlock.getSingleChannelBlock (0);
+            for (size_t channel = 1; channel < numChannels; ++channel)
+                outputBlock.getSingleChannelBlock (channel).copyFrom (firstChannelBlock);
+        }
+        advance (samplesToPhase (numSamples));
+    }
 
 private:
     //==============================================================================
-    CrossoverWithBuffer<SampleType> crossover;
-    juce::dsp::DryWetMixer<SampleType> dryWet;
+    /** Convert a value in samples to the corresponding oscillator phase */
+    SampleType samplesToPhase (int);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HarmonicTremolo<SampleType>)
+    //==============================================================================
+    std::function<SampleType (SampleType)> waveShapeFunc;
+
+    SampleType sampleRate = 44100.0;
+    // Phase derivative (not frequency)
+    SampleType rate = 1.0;
+
+    //==============================================================================
+    juce::dsp::Phase<SampleType> phase;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PhaseControlledOscillator<SampleType>)
 };

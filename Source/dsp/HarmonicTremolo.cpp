@@ -79,7 +79,7 @@ void HarmonicTremolo<SampleType>::setTremoloShape (std::function<SampleType (Sam
 }
 
 template <typename SampleType>
-void HarmonicTremolo<SampleType>::setTremoloShape (TremoloWaveShape f)
+void HarmonicTremolo<SampleType>::setTremoloShape (PhaseControlledOscillatorWaveShape f)
 {
     lpfTrem.setShape (f);
     hpfTrem.setShape (f);

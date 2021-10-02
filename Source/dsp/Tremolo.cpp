@@ -29,52 +29,44 @@
 
 //==============================================================================
 template <typename SampleType>
-SampleType sineWaveFunc (SampleType phase)
-{
-    return (std::sin (phase) + ((SampleType) 1)) / ((SampleType) 2);
-}
-
-template <typename SampleType>
-SampleType sawtoothWaveFunc (SampleType phase)
-{
-    return fmod (
-        phase / juce::MathConstants<SampleType>::twoPi,
-        (SampleType) 1.0);
-}
-
-//==============================================================================
-template <typename SampleType>
 Tremolo<SampleType>::Tremolo()
-    : waveShapeFunc (sineWaveFunc<SampleType>)
 {
+    setThroughZero (false);
 }
 
 //==============================================================================
 template <typename SampleType>
 void Tremolo<SampleType>::setRate (SampleType newRateHz)
 {
-    rate = juce::jmax (newRateHz, (SampleType) 0);
+    lfo.setRate (newRateHz);
 }
 
 template <typename SampleType>
 void Tremolo<SampleType>::setThroughZero (bool newThroughZero)
 {
-    throughZero = newThroughZero;
+    if (newThroughZero)
+    {
+        amScale.setGainLinear (2);
+        amBias.setBias (-1);
+    }
+    else
+    {
+        amScale.setGainLinear (1);
+        amBias.setBias (0);
+    }
 }
 
 template <typename SampleType>
 void Tremolo<SampleType>::setShape (
-    std::function<SampleType (SampleType)> newWaveShapeFunc)
+    std::function<SampleType (SampleType)> waveShapeFunc)
 {
-    waveShapeFunc = newWaveShapeFunc;
+    lfo.setShape (waveShapeFunc);
 }
 
 template <typename SampleType>
-void Tremolo<SampleType>::setShape (TremoloWaveShape waveShape)
+void Tremolo<SampleType>::setShape (PhaseControlledOscillatorWaveShape waveShape)
 {
-    if (waveShape == TremoloWaveShape::sawtooth)
-        return setShape (sawtoothWaveFunc<SampleType>);
-    setShape (sineWaveFunc<SampleType>);
+    lfo.setShape (waveShape);
 }
 
 template <typename SampleType>
@@ -87,7 +79,7 @@ void Tremolo<SampleType>::setMix (SampleType newMix)
 template <typename SampleType>
 SampleType Tremolo<SampleType>::getPhase()
 {
-    return phase.phase;
+    return lfo.getPhase();
 }
 
 //==============================================================================
@@ -95,35 +87,30 @@ template <typename SampleType>
 void Tremolo<SampleType>::prepare (const juce::dsp::ProcessSpec& spec)
 {
     dryWet.prepare (spec);
-    sampleRate = (SampleType) spec.sampleRate;
+    lfo.prepare (spec);
+    amBuffer.reset (
+        new juce::AudioBuffer<SampleType> (
+            spec.numChannels, spec.maximumBlockSize));
+
+    amScale.prepare (spec);
+    amBias.prepare (spec);
+    amScale.setRampDurationSeconds (rampLength);
+    amBias.setRampDurationSeconds (rampLength);
 }
 
 template <typename SampleType>
 void Tremolo<SampleType>::reset()
 {
+    lfo.reset();
     dryWet.reset();
-    phase.reset();
+    amScale.reset();
+    // amBias.reset();
 }
 
 template <typename SampleType>
 void Tremolo<SampleType>::advance (SampleType p)
 {
-    phase.advance (juce::jmax (p, (SampleType) 0));
-}
-
-//==============================================================================
-template <typename SampleType>
-SampleType Tremolo<SampleType>::phaseAfter (size_t delaySamples)
-{
-    return fmod (
-        phase.phase + samplesToPhase (delaySamples),
-        juce::MathConstants<SampleType>::twoPi);
-}
-
-template <typename SampleType>
-SampleType Tremolo<SampleType>::samplesToPhase (size_t s)
-{
-    return juce::MathConstants<SampleType>::twoPi * rate * s / sampleRate;
+    lfo.advance (p);
 }
 
 //==============================================================================

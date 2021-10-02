@@ -51,7 +51,6 @@ The parameters are divided in three sections
 
 ## Known Limitations
  - _Sync_ button is not automatable
- - Using the _Through-0_ button makes a click (sudden change in waveshape)
 
 ## Contacts
 This software was developed by Marco Tiraboschi at the _Laboratorio di Informatica Musicale_
