@@ -46,7 +46,7 @@ public:
                   int newLabelHeight);
 
     /** Set the bounding boxes of the slider and label */
-    void setBounds (juce::Rectangle<int>&);
+    void setBounds (juce::Rectangle<int>);
 
 private:
     //==============================================================================

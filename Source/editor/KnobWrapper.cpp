@@ -60,7 +60,7 @@ void KnobWrapper::applyTo (juce::AudioProcessorEditor& editor,
     editor.addAndMakeVisible (slider);
 }
 
-void KnobWrapper::setBounds (juce::Rectangle<int>& newBounds)
+void KnobWrapper::setBounds (juce::Rectangle<int> newBounds)
 {
     label.setBounds (newBounds.removeFromBottom (labelHeight));
     slider.setBounds (newBounds);

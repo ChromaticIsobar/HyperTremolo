@@ -51,7 +51,7 @@ void DualTremolo<SampleType>::setTremoloRatio (SampleType f)
 template <typename SampleType>
 void DualTremolo<SampleType>::setTremoloPhase (SampleType f)
 {
-    phase = f;
+    this->phase = f;
 }
 
 //==============================================================================
@@ -59,27 +59,27 @@ template <typename SampleType>
 void DualTremolo<SampleType>::sync()
 {
     DBG ("Syncing DualTremolo:");
-    DBG ("  Current phases:           " << lpfTrem.getPhase() << " (L) " << hpfTrem.getPhase() << " (H)");
+    DBG ("  Current phases:           " << this->lpfTrem.getPhase() << " (L) " << this->hpfTrem.getPhase() << " (H)");
     DBG ("  Current phase difference: " << std::fmod (
-        juce::MathConstants<SampleType>::twoPi + hpfTrem.getPhase() - lpfTrem.getPhase(),
+        juce::MathConstants<SampleType>::twoPi + this->hpfTrem.getPhase() - this->lpfTrem.getPhase(),
         juce::MathConstants<SampleType>::twoPi));
-    auto p = juce::MathConstants<SampleType>::twoPi + phase;
-    p += lpfTrem.getPhase() - hpfTrem.getPhase();
+    auto p = juce::MathConstants<SampleType>::twoPi + this->phase;
+    p += this->lpfTrem.getPhase() - this->hpfTrem.getPhase();
     DBG ("  Advancing HPF tremolo by: " << p);
-    hpfTrem.advance (p);
-    DBG ("  New phases:               " << lpfTrem.getPhase() << " (L) " << hpfTrem.getPhase() << " (H)");
+    this->hpfTrem.advance (p);
+    DBG ("  New phases:               " << this->lpfTrem.getPhase() << " (L) " << this->hpfTrem.getPhase() << " (H)");
     DBG ("  New phase difference:     " << std::fmod (
-             juce::MathConstants<SampleType>::twoPi + hpfTrem.getPhase() - lpfTrem.getPhase(),
+             juce::MathConstants<SampleType>::twoPi + this->hpfTrem.getPhase() - this->lpfTrem.getPhase(),
              juce::MathConstants<SampleType>::twoPi));
-    DBG ("  Target phase difference:  " << phase);
+    DBG ("  Target phase difference:  " << this->phase);
 }
 
 //==============================================================================
 template <typename SampleType>
 void DualTremolo<SampleType>::update()
 {
-    lpfTrem.setRate (rate);
-    hpfTrem.setRate (rate * ratio);
+    this->lpfTrem.setRate (rate);
+    this->hpfTrem.setRate (rate * ratio);
 }
 
 //==============================================================================

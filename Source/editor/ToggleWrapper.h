@@ -65,7 +65,7 @@ public:
                   int newLabelHeight);
 
     /** Set the bounding boxes of the slider and label. */
-    void setBounds (juce::Rectangle<int>&);
+    void setBounds (juce::Rectangle<int>);
 
     /** Sets up the images to draw in various states. */
     void setImages (bool resizeButtonNowToFitThisImage,

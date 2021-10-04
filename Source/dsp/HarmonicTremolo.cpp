@@ -107,11 +107,11 @@ void HarmonicTremolo<SampleType>::prepare (const juce::dsp::ProcessSpec& spec)
     lpfTrem.prepare (spec);
     hpfTrem.prepare (spec);
     crossover.setLPFProcess (std::bind (
-        &Tremolo<SampleType>::process<juce::dsp::ProcessContextReplacing<SampleType>>,
+        &Tremolo<SampleType>::template process<juce::dsp::ProcessContextReplacing<SampleType>>,
         &lpfTrem,
         std::placeholders::_1));
     crossover.setHPFProcess (std::bind (
-        &Tremolo<SampleType>::process<juce::dsp::ProcessContextReplacing<SampleType>>,
+        &Tremolo<SampleType>::template process<juce::dsp::ProcessContextReplacing<SampleType>>,
         &hpfTrem,
         std::placeholders::_1));
 }
