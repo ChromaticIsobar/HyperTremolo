@@ -68,6 +68,7 @@ void ThroughZeroAndFrequencySetterListener::parameterChanged (const juce::String
         // The listened parameter should be either the frequency
         // value or the through-0 flag
         jassertfalse;
+        return;
     }
     frequencySetterFunction (freq / (throughZero + 1.0f));
 }
