@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ==============================================================================
+
+    HyperTremolo.jucer
+
+    Copyright (c) 2021 Marco Tiraboschi
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to
+    deal in the Software without restriction, including without limitation the
+    rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+    sell copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+
+  ==============================================================================
+-->
+<JUCERPROJECT id="Kf9WwY" name="HyperTremolo" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="0" jucerFormatVersion="1"
+              companyName="ChromaticIsobar" pluginVST3Category="Modulation"
+              pluginRTASCategory="32" pluginAAXCategory="32" version="0.0.0"
+              pluginManufacturer="LIM" pluginManufacturerCode="LIM" pluginDesc="Dual Amplitude Modulator effect. It is designed to be an Harmonic Tremolo, but can be tweaked to get a lot of different effects, e.g. a Rotary Simulator"
+              companyEmail="marco.tiraboschi@unimi.it">
+  <MAINGROUP id="ZafoNp" name="HyperTremolo">
+    <GROUP id="{EBBF67A8-FA47-5B0B-BE9E-7AA1024B3821}" name="Source">
+      <FILE id="zX6gx0" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <GROUP id="{A055111E-CEFD-DE47-313C-10A2B011B73A}" name="processor">
+        <FILE id="toYSWP" name="Parameters.cpp" compile="1" resource="0" file="Source/processor/Parameters.cpp"/>
+        <FILE id="FmxLli" name="Parameters.h" compile="0" resource="0" file="Source/processor/Parameters.h"/>
+        <FILE id="rKjG5Y" name="Plugin.cpp" compile="1" resource="0" file="Source/processor/Plugin.cpp"/>
+        <FILE id="GNXtMW" name="Plugin.h" compile="0" resource="0" file="Source/processor/Plugin.h"/>
+      </GROUP>
+      <GROUP id="{34CBAD0D-1319-FB43-DD9C-F41416F95AF8}" name="dsp">
+        <FILE id="ZJKjBc" name="CrossoverWithBuffer.cpp" compile="1" resource="0"
+              file="Source/dsp/CrossoverWithBuffer.cpp"/>
+        <FILE id="m0Ew1Q" name="CrossoverWithBuffer.h" compile="0" resource="0"
+              file="Source/dsp/CrossoverWithBuffer.h"/>
+        <FILE id="w8JKea" name="DualTremolo.cpp" compile="1" resource="0" file="Source/dsp/DualTremolo.cpp"/>
+        <FILE id="oWWBVJ" name="DualTremolo.h" compile="0" resource="0" file="Source/dsp/DualTremolo.h"/>
+        <FILE id="Ld40Mp" name="HarmonicTremolo.cpp" compile="1" resource="0"
+              file="Source/dsp/HarmonicTremolo.cpp"/>
+        <FILE id="UDRWXI" name="HarmonicTremolo.h" compile="0" resource="0"
+              file="Source/dsp/HarmonicTremolo.h"/>
+        <FILE id="jnMrHO" name="PhaseControlledOscillator.cpp" compile="1"
+              resource="0" file="Source/dsp/PhaseControlledOscillator.cpp"/>
+        <FILE id="IiqVyh" name="PhaseControlledOscillator.h" compile="0" resource="0"
+              file="Source/dsp/PhaseControlledOscillator.h"/>
+        <FILE id="B6dhee" name="Tremolo.cpp" compile="1" resource="0" file="Source/dsp/Tremolo.cpp"/>
+        <FILE id="DD31YC" name="Tremolo.h" compile="0" resource="0" file="Source/dsp/Tremolo.h"/>
+      </GROUP>
+      <GROUP id="{BDB92388-2DF1-EC37-2481-088492CBE9C8}" name="editor">
+        <FILE id="sMzEIy" name="ToggleWrapper.cpp" compile="1" resource="0"
+              file="Source/editor/ToggleWrapper.cpp"/>
+        <FILE id="Mg1QsF" name="ToggleWrapper.h" compile="0" resource="0" file="Source/editor/ToggleWrapper.h"/>
+        <FILE id="qw7T9g" name="Editor.cpp" compile="1" resource="0" file="Source/editor/Editor.cpp"/>
+        <FILE id="EfD6z5" name="Editor.h" compile="0" resource="0" file="Source/editor/Editor.h"/>
+        <FILE id="RpvsEP" name="KnobWrapper.cpp" compile="1" resource="0" file="Source/editor/KnobWrapper.cpp"/>
+        <FILE id="v7VzTj" name="KnobWrapper.h" compile="0" resource="0" file="Source/editor/KnobWrapper.h"/>
+      </GROUP>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2019 targetFolder="Builds/VisualStudio2019">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="HyperTremolo"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="HyperTremolo"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="C:/Users/Utente/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="C:/Users/Utente/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2019>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
