@@ -70,24 +70,33 @@ jobs:
             plugin_buildir: "Builds/LinuxMakefile"
             build_cmd: make -j4
             build_prefix: "build"
+            label: linux
           - os: macos-latest
             jucer: "JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/MacOSX"
             plugin_buildir: "Builds/MacOSX"
             build_cmd: xcodebuild -project *.xcodeproj -jobs 4 -configuration Release | xcpretty
             build_prefix: "build/Release"
+            standalone_ext: .app
+            label: macos
           - os: windows-latest
             jucer: "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Release/App/Projucer.exe"
             jucer_buildir: "JUCE/extras/Projucer/Builds/VisualStudio2019"
             plugin_buildir: "Builds/VisualStudio2019"
             build_cmd: msbuild.exe -m:4 *.sln /property:Configuration=Release
+            standalone_ext: .exe
+            standalone_prefix: "Standalone Plugin/"
+            vst3_prefix: "VST3/"
           - platform: x64
             win_plt_property: /property:Platform=x64
             build_prefix: "x64/Release"
+            label: win64
           - platform: Win32
             win_plt_property: /property:Platform=Win32
             build_prefix: "Win32/Release"
+            label: win32
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.label }}
 
     steps:
     - name: Install Linux Deps
@@ -138,3 +147,15 @@ jobs:
       shell: bash
       run: ls
       working-directory: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}
+
+    - name: Upload VST3
+      uses: actions/upload-artifact@v2
+      with:
+        name: HyperTremolo_${{ matrix.label }}_vst3
+        path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3
+
+    - name: Upload Standalone
+      uses: actions/upload-artifact@v2
+      with:
+        name: HyperTremolo_${{ matrix.label }}_standalone
+        path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.standalone_prefix }}HyperTremolo${{ matrix.standalone_ext }}
