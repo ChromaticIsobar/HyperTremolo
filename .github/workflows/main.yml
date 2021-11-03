@@ -55,15 +55,18 @@ jobs:
           - os: ubuntu-latest
             jucer: "JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/LinuxMakefile"
-            jucer_build: make -j4
+            plugin_buildir: "Builds/LinuxMakefile"
+            build_cmd: make -j4
           - os: macos-latest
             jucer: "JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/MacOSX"
-            jucer_build: xcodebuild -project Projucer.xcodeproj -jobs 4 | xcpretty
+            plugin_buildir: "Builds/MacOSX"
+            build_cmd: xcodebuild -project *.xcodeproj -jobs 4 | xcpretty
           - os: windows-latest
             jucer: "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Debug/App/Projucer.exe"
             jucer_buildir: "JUCE/extras/Projucer/Builds/VisualStudio2019"
-            jucer_build: msbuild.exe -v:normal -m:4 Projucer.sln
+            plugin_buildir: "Builds/VisualStudio2019"
+            build_cmd: msbuild.exe -v:normal -m:4 *.sln
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -91,7 +94,7 @@ jobs:
 
     - name: Build Projucer
       shell: bash
-      run: ${{ matrix.jucer_build }}
+      run: ${{ matrix.build_cmd }}
       working-directory: ${{ matrix.jucer_buildir }}
 
     - name: Log jucer project status
@@ -105,3 +108,8 @@ jobs:
       run: $PROJUCER --resave *.jucer
       env:
         PROJUCER: ${{ matrix.jucer }}
+
+    - name: Build Plugin
+      shell: bash
+      run: ${{ matrix.build_cmd }}
+      working-directory: ${{ matrix.plugin_buildir }}
