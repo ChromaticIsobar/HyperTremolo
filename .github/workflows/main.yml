@@ -145,8 +145,15 @@ jobs:
 
     - name: List artifacts in build directory
       shell: bash
-      run: ls
+      run: ls -l
       working-directory: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}
+
+    - name: Move VST3 artifacts (macos)
+      if: runner.os == 'MacOS'
+      run: mv ${{ env.VST3_PATH }} ${{ env.TMP_PATH }} && cp -vRL ${{ env.TMP_PATH }} ${{ env.VST3_PATH }}
+      env:
+        TMP_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3_tmp
+        VST3_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3
 
     - name: Upload VST3
       uses: actions/upload-artifact@v2
