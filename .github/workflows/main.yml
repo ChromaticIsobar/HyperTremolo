@@ -69,11 +69,13 @@ jobs:
             jucer_buildir: "JUCE/extras/Projucer/Builds/LinuxMakefile"
             plugin_buildir: "Builds/LinuxMakefile"
             build_cmd: make -j4
+            build_prefix: "build"
           - os: macos-latest
             jucer: "JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/MacOSX"
             plugin_buildir: "Builds/MacOSX"
             build_cmd: xcodebuild -project *.xcodeproj -jobs 4 -configuration Release | xcpretty
+            build_prefix: "build/Release"
           - os: windows-latest
             jucer: "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Release/App/Projucer.exe"
             jucer_buildir: "JUCE/extras/Projucer/Builds/VisualStudio2019"
@@ -81,8 +83,10 @@ jobs:
             build_cmd: msbuild.exe -m:4 *.sln /property:Configuration=Release
           - platform: x64
             win_plt_property: /property:Platform=x64
+            build_prefix: "x64/Release"
           - platform: Win32
             win_plt_property: /property:Platform=Win32
+            build_prefix: "Win32/Release"
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -129,3 +133,8 @@ jobs:
       shell: bash
       run: ${{ matrix.build_cmd }} ${{ matrix.win_plt_property }}
       working-directory: ${{ matrix.plugin_buildir }}
+
+    - name: List artifacts in build directory
+      shell: bash
+      run: ls
+      working-directory: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}
