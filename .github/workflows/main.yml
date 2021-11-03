@@ -63,10 +63,10 @@ jobs:
             plugin_buildir: "Builds/MacOSX"
             build_cmd: xcodebuild -project *.xcodeproj -jobs 4 | xcpretty
           - os: windows-latest
-            jucer: "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Debug/App/Projucer.exe"
+            jucer: "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Release/App/Projucer.exe"
             jucer_buildir: "JUCE/extras/Projucer/Builds/VisualStudio2019"
             plugin_buildir: "Builds/VisualStudio2019"
-            build_cmd: msbuild.exe -v:normal -m:4 *.sln
+            build_cmd: msbuild.exe -m:4 /property:Configuration=Release /property:Platform=x64 *.sln
     runs-on: ${{ matrix.os }}
 
     steps:
