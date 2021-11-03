@@ -70,10 +70,10 @@ jobs:
             plugin_buildir: "Builds/LinuxMakefile"
             build_cmd: make -j4
           - os: macos-latest
-            jucer: "JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer"
+            jucer: "JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/MacOSX"
             plugin_buildir: "Builds/MacOSX"
-            build_cmd: xcodebuild -project *.xcodeproj -jobs 4 | xcpretty
+            build_cmd: xcodebuild -project *.xcodeproj -jobs 4 -configuration Release | xcpretty
           - os: windows-latest
             jucer: "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Release/App/Projucer.exe"
             jucer_buildir: "JUCE/extras/Projucer/Builds/VisualStudio2019"
