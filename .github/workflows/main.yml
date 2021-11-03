@@ -94,6 +94,12 @@ jobs:
       run: ${{ matrix.jucer_build }}
       working-directory: ${{ matrix.jucer_buildir }}
 
+    - name: Log jucer project status
+      shell: bash
+      run: $PROJUCER --status *.jucer
+      env:
+        PROJUCER: ${{ matrix.jucer }}
+
     - name: Resave jucer file
       shell: bash
       run: $PROJUCER --resave *.jucer
