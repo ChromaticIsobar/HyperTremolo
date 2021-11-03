@@ -51,6 +51,18 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        platform: ["", Win32, x64]
+        exclude:
+          - os: ubuntu-latest
+            platform: Win32
+          - os: ubuntu-latest
+            platform: x64
+          - os: macos-latest
+            platform: Win32
+          - os: macos-latest
+            platform: x64
+          - os: windows-latest
+            platform: ""
         include:
           - os: ubuntu-latest
             jucer: "JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer"
@@ -66,7 +78,11 @@ jobs:
             jucer: "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Release/App/Projucer.exe"
             jucer_buildir: "JUCE/extras/Projucer/Builds/VisualStudio2019"
             plugin_buildir: "Builds/VisualStudio2019"
-            build_cmd: msbuild.exe -m:4 /property:Configuration=Release /property:Platform=x64 *.sln
+            build_cmd: msbuild.exe -m:4 *.sln /property:Configuration=Release
+          - platform: x64
+            win_plt_property: /property:Platform=x64
+          - platform: Win32
+            win_plt_property: /property:Platform=Win32
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -111,5 +127,5 @@ jobs:
 
     - name: Build Plugin
       shell: bash
-      run: ${{ matrix.build_cmd }}
+      run: ${{ matrix.build_cmd }} ${{ matrix.win_plt_property }}
       working-directory: ${{ matrix.plugin_buildir }}
