@@ -251,6 +251,9 @@ jobs:
       with:
         path: artifacts
 
+    - name: List artifacts
+      run: ls artifacts/*
+
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
