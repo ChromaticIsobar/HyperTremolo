@@ -195,19 +195,18 @@ jobs:
       with:
         submodules: false
 
-    - name: Prepare input directory
-      run: mkdir .docs
+    - uses: actions/setup-node@v2
+
+    - name: Install converter
+      run: npm install mdpdf -g
 
     - name: Make input file
-      run: echo > .docs/README.md && grep -v "Projucer CI/CD Badge" README.md >> .docs/README.md
+      run: grep -v "Projucer CI/CD Badge" README.md > README.in.md
 
-    - uses: baileyjm02/markdown-to-pdf@v1
-      with:
-        input_dir: .docs
-        output_dir: .pdfs
-        build_html: false
+    - name: Convert
+      run: mdpdf README.in.md HyperTremolo_UserManual.pdf
 
-    - uses: actions/upload-artifact@v1
+    - uses: actions/upload-artifact@v2
       with:
-        name: docs
-        path: .pdfs
+        name: HyperTremolo_usermanual
+        path: HyperTremolo_UserManual.pdf
