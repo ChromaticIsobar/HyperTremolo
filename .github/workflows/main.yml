@@ -76,7 +76,7 @@ jobs:
             jucer: "JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/MacOSX"
             plugin_buildir: "Builds/MacOSX"
-            build_cmd: xcodebuild -project *.xcodeproj -jobs 4 -configuration Release | xcpretty
+            build_cmd: xcodebuild -project *.xcodeproj -jobs 4 -configuration Release -alltargets | xcpretty
             build_prefix: "build/Release"
             standalone_ext: .app
             label: macos
@@ -149,12 +149,26 @@ jobs:
       run: ls -l
       working-directory: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}
 
+    - name: Move AU artifacts (macos)
+      if: runner.os == 'MacOS'
+      run: mv ${{ env.AU_PATH }} ${{ env.TMP_PATH }} && cp -vRL ${{ env.TMP_PATH }} ${{ env.AU_PATH }}
+      env:
+        TMP_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component_tmp
+        AU_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component
+
     - name: Move VST3 artifacts (macos)
       if: runner.os == 'MacOS'
       run: mv ${{ env.VST3_PATH }} ${{ env.TMP_PATH }} && cp -vRL ${{ env.TMP_PATH }} ${{ env.VST3_PATH }}
       env:
         TMP_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3_tmp
         VST3_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3
+
+    - name: Upload AU
+      if: runner.os == 'MacOS'
+      uses: actions/upload-artifact@v2
+      with:
+        name: HyperTremolo_${{ matrix.label }}_au
+        path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component
 
     - name: Upload VST3
       uses: actions/upload-artifact@v2
