@@ -205,8 +205,17 @@ jobs:
     - name: Install converter
       run: npm install mdpdf -g
 
+    - name: Checkout gists
+      run: git clone https://gist.github.com/6ce8126b4bc9a02594282bde2909f02b.git gists
+
+    - name: Save gists latest sha
+      id: gists-version
+      run: echo '::set-output name=GISTS_VERSION::'$(git rev-parse HEAD)
+      working-directory: gists
+
     - name: Make input file
-      run: grep -v "Projucer CI/CD Badge" README.md > docs/README.md
+      run: |
+        ./scripts/preprocess_readme ${{ steps.gists-version.outputs.GISTS_VERSION }}  > docs/README.md
 
     - name: Convert
       run: mdpdf README.md HyperTremolo_UserManual.pdf --orientation=landscape --gh-style --style README.css
@@ -217,8 +226,11 @@ jobs:
         name: HyperTremolo_usermanual
         path: docs/HyperTremolo_UserManual.pdf
 
+    outputs:
+      gists_version: ${{ steps.gists-version.outputs.GISTS_VERSION }}
+
   release-create:
-    if: ${{ contains(github.event.head_commit.message, '[RELEASE]') }}
+    if: ${{ contains(github.event.head_commit.message, '[RELEASE]') || contains(github.event.head_commit.message, '[PRERELEASE]') }}
     runs-on: ubuntu-latest
     needs: [build, build-docs]
 
@@ -231,3 +243,20 @@ jobs:
       with:
         tag: v${{ needs.build.outputs.plugin_version }}
         message: ':bookmark: Version ${{ needs.build.outputs.plugin_version }}'
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ needs.build.outputs.plugin_version }}
+        release_name: Version ${{ needs.build.outputs.plugin_version }}
+        body: |
+          HyperTremolo is a Dual Amplitude Modulator effect. It is designed to be an Harmonic Tremolo, but can be tweaked to get a lot of different effects, from haunting Ring Modulations to Rotary Speaker emulations!
+
+          ![Screenshot](https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/${{ needs.build-docs.outputs.gists_version }}/HyperTremolo.png)
+
+          [Read more](https://github.com/ChromaticIsobar/HyperTremolo/blob/v${{ needs.build.outputs.plugin_version }}/README.md)
+        draft: true
+        prerelease: ${{ contains(github.event.head_commit.message, '[PRERELEASE]') }}
