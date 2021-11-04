@@ -43,8 +43,16 @@ on:
       - develop
 
 jobs:
-  build:
+  no-skip:
     if: ${{ !contains(github.event.head_commit.message, '[CI SKIP]') }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dummy step
+      run: echo
+      if: ${{ false }}
+
+  build:
+    needs: no-skip
     strategy:
       fail-fast: false
       matrix:
@@ -178,3 +186,25 @@ jobs:
       with:
         name: HyperTremolo_${{ matrix.label }}_standalone
         path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.standalone_prefix }}HyperTremolo${{ matrix.standalone_ext }}
+
+  build-docs:
+    needs: no-skip
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: false
+
+    - name: Prepare input directory
+      run: mkdir .docs && cp README.md .docs
+
+    - uses: baileyjm02/markdown-to-pdf@v1
+      with:
+        input_dir: .docs
+        output_dir: .pdfs
+        build_html: false
+
+    - uses: actions/upload-artifact@v1
+      with:
+        name: docs
+        path: .pdfs
