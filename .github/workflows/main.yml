@@ -134,15 +134,17 @@ jobs:
 
     - name: Log jucer project status
       shell: bash
-      run: $PROJUCER --status *.jucer
-      env:
-        PROJUCER: ${{ matrix.jucer }}
+      run: ${{ matrix.jucer }} --status *.jucer
+
+    - name: Save jucer project version
+      id: plugin-version
+      if: runner.os == 'Linux'
+      shell: bash
+      run: echo '::set-output name=PLUGIN_VERSION::'$('${{ matrix.jucer }}' --get-version *.jucer)
 
     - name: Resave jucer file
       shell: bash
-      run: $PROJUCER --resave *.jucer
-      env:
-        PROJUCER: ${{ matrix.jucer }}
+      run: ${{ matrix.jucer }} --resave *.jucer
 
     - name: Build Plugin
       shell: bash
@@ -187,6 +189,9 @@ jobs:
         name: HyperTremolo_${{ matrix.label }}_standalone
         path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.standalone_prefix }}HyperTremolo${{ matrix.standalone_ext }}
 
+    outputs:
+      plugin_version: ${{ steps.plugin-version.outputs.PLUGIN_VERSION }}
+
   build-docs:
     needs: no-skip
     runs-on: ubuntu-latest
@@ -211,3 +216,12 @@ jobs:
       with:
         name: HyperTremolo_usermanual
         path: docs/HyperTremolo_UserManual.pdf
+
+  release-create:
+    if: ${{ contains(github.event.head_commit.message, '[RELEASE]') }}
+    runs-on: ubuntu-latest
+    needs: [build, build-docs]
+
+    steps:
+    - name: Log version
+      run: echo ${{ needs.build.outputs.plugin_version }}
