@@ -204,7 +204,7 @@ jobs:
       run: grep -v "Projucer CI/CD Badge" README.md > README.in.md
 
     - name: Convert
-      run: mdpdf README.in.md HyperTremolo_UserManual.pdf
+      run: mdpdf README.in.md HyperTremolo_UserManual.pdf --orientation=landscape
 
     - uses: actions/upload-artifact@v2
       with:

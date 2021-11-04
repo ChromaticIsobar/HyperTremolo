@@ -44,6 +44,8 @@ The parameters are divided in three sections
  - __Gain__: Gain for the wet signal
  - __Mix__: The mix between the wet and dry signals
 
+<div style="page-break-after: always;"></div>
+
 ## Example Settings
 |                    | Through-0 | Rate | Ratio | Sync | Depth | Crossover | Resonance | Balance | Harmonic | Gain | Mix  |
 |--------------------|-----------|------|-------|------|-------|-----------|-----------|---------|----------|------|------|
