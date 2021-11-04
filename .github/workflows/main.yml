@@ -196,7 +196,10 @@ jobs:
         submodules: false
 
     - name: Prepare input directory
-      run: mkdir .docs && cp README.md .docs
+      run: mkdir .docs
+
+    - name: Make input file
+      run: echo > .docs/README.md && grep -v "Projucer CI/CD Badge" README.md >> .docs/README.md
 
     - uses: baileyjm02/markdown-to-pdf@v1
       with:
