@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+if [ -z "$JUCER_PATH" ]; then
+  # Get the root directory of the project
+  if [ -z "$JUCE_ROOT_DIR" ]; then
+    JUCE_ROOT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )/.." &> /dev/null && pwd )"
+  fi
+  # Search for a Jucer under the project root
+  for s in "JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer" \
+           "JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer" \
+           "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Release/App/Projucer.exe" \
+           "JUCE/extras/Projucer/Builds/MacOSX/build/Debug/Projucer.app/Contents/MacOS/Projucer" \
+           "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Debug/App/Projucer.exe" \
+  ; do
+    if [[ -f "$JUCE_ROOT_DIR/$s" ]]; then
+      JUCER_PATH="$JUCE_ROOT_DIR/$s";
+      break;
+    fi
+  done;
+fi
+
+if [ -z "$JUCER_PATH" ]; then
+  echo "No Jucer found under root '$JUCE_ROOT_DIR'";
+  exit 1;
+fi
+
+"$JUCER_PATH" $@
