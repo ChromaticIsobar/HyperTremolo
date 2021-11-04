@@ -1,4 +1,4 @@
-﻿# HyperTremolo
+# HyperTremolo
 
 [![Projucer CI/CD Badge](https://github.com/ChromaticIsobar/HyperTremolo/actions/workflows/main.yml/badge.svg)](https://github.com/ChromaticIsobar/HyperTremolo/actions/workflows/main.yml)
 
