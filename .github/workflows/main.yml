@@ -223,5 +223,11 @@ jobs:
     needs: [build, build-docs]
 
     steps:
-    - name: Log version
-      run: echo ${{ needs.build.outputs.plugin_version }}
+    - uses: actions/checkout@v2
+      with:
+        submodules: false
+
+    - uses: actions-ecosystem/action-push-tag@v1
+      with:
+        tag: v${{ needs.build.outputs.plugin_version }}
+        message: ':bookmark: Version ${{ needs.build.outputs.plugin_version }}'
