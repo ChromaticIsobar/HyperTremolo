@@ -22,6 +22,8 @@ signals is modulated with an amplitude modulator (tremolo). Then the two signals
 TODO
 -->
 
+<div style="page-break-after: always;"></div>
+
 ## Parameters
 The parameters are divided in three sections
 
@@ -51,6 +53,8 @@ The parameters are divided in three sections
 | Rotary Cabinet     |     ✓     | 1.33 | 4.50  |   ✗  | 1.00  |  1000.0   |   1.25    |  0.50   |   1.00   | 0.00 | 1.00 |
 | Dual Trem          |     ✗     | 2.00 | 4.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   0.00   | 0.00 | 1.00 |
 | Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.666  |   0.50   | 3.00 | 1.00 |
+
+<div style="page-break-after: always;"></div>
 
 ## Known Limitations
  - _Sync_ button is not automatable
