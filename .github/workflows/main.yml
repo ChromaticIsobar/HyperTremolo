@@ -226,7 +226,7 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: HyperTremolo_usermanual
+        name: HyperTremolo_UserManual
         path: docs/HyperTremolo_UserManual.pdf
 
     outputs:
@@ -242,17 +242,37 @@ jobs:
       with:
         submodules: false
 
-    - uses: actions-ecosystem/action-push-tag@v1
-      with:
-        tag: v${{ needs.build.outputs.plugin_version }}
-        message: ':bookmark: Version ${{ needs.build.outputs.plugin_version }}'
-
     - uses: actions/download-artifact@v2
       with:
         path: artifacts
 
     - name: List artifacts
       run: ls artifacts/*
+
+    - name: Create assets folder
+      run: mkdir assets
+
+    - name: Move manual to assets
+      run: |
+        mv artifacts/HyperTremolo_UserManual/HyperTremolo_UserManual.pdf \
+           assets/HyperTremolo_UserManual_v${{ needs.build.outputs.plugin_version }}.pdf
+
+    - name: Compress assets
+      working-directory: artifacts
+      run: |
+        for d in HyperTremolo_*_* ; do
+          dest="../assets/${d}_v${{ needs.build.outputs.plugin_version }}.zip" && \
+          echo zip -r $dest $d                                                 && \
+          zip -r $dest $d
+        done;
+
+    - name: List assets
+      run: ls assets/*
+
+    - uses: actions-ecosystem/action-push-tag@v1
+      with:
+        tag: v${{ needs.build.outputs.plugin_version }}
+        message: ':bookmark: Version ${{ needs.build.outputs.plugin_version }}'
 
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -268,4 +288,4 @@ jobs:
         draft: true
         prerelease: ${{ contains(github.event.head_commit.message, '[PRERELEASE]') }}
         files:
-          artifacts/*
+          assets/*
