@@ -262,8 +262,9 @@ jobs:
       run: |
         for d in HyperTremolo_*_* ; do
           dest="../assets/${d}_v${{ needs.build.outputs.plugin_version }}.zip" && \
-          echo zip -r $dest $d                                                 && \
-          zip -r $dest $d
+          if [ -d "${d}" ]; then src="${d}/*"; else src="${d}"; fi             && \
+          echo zip -r $dest $src                                               && \
+          zip -r $dest $src
         done;
 
     - name: List assets
