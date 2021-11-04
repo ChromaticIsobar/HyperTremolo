@@ -1,4 +1,7 @@
 ﻿# HyperTremolo
+
+[![Projucer CI/CD Badge](https://github.com/ChromaticIsobar/HyperTremolo/actions/workflows/main.yml/badge.svg)](https://github.com/ChromaticIsobar/HyperTremolo/actions/workflows/main.yml)
+
 HyperTremolo is a Dual Amplitude Modulator effect. It is designed to be an Harmonic Tremolo, but can be tweaked to get a lot of different effects, from haunting Ring Modulations to Rotary Speaker emulations!
 
 ![Screenshot](https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/HyperTremolo.png)

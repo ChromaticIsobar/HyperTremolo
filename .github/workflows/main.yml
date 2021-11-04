@@ -1,0 +1,180 @@
+# Based on workflow at
+# https://github.com/jatinchowdhury18/plugin-ci-example/blob/a2b34a2ee67c58adb4f26bdf0710f32da38fb4d9/.github/workflows/projucer.yml
+
+# BSD 3-Clause License
+#
+# Copyright (c) 2020, jatinchowdhury18
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this
+#    list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its
+#    contributors may be used to endorse or promote products derived from
+#    this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+name: Projucer CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    if: ${{ !contains(github.event.head_commit.message, '[CI SKIP]') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        platform: ["", Win32, x64]
+        exclude:
+          - os: ubuntu-latest
+            platform: Win32
+          - os: ubuntu-latest
+            platform: x64
+          - os: macos-latest
+            platform: Win32
+          - os: macos-latest
+            platform: x64
+          - os: windows-latest
+            platform: ""
+        include:
+          - os: ubuntu-latest
+            jucer: "JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer"
+            jucer_buildir: "JUCE/extras/Projucer/Builds/LinuxMakefile"
+            plugin_buildir: "Builds/LinuxMakefile"
+            build_cmd: make -j4
+            build_prefix: "build"
+            label: linux
+          - os: macos-latest
+            jucer: "JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer"
+            jucer_buildir: "JUCE/extras/Projucer/Builds/MacOSX"
+            plugin_buildir: "Builds/MacOSX"
+            build_cmd: xcodebuild -project *.xcodeproj -jobs 4 -configuration Release -alltargets | xcpretty
+            build_prefix: "build/Release"
+            standalone_ext: .app
+            label: macos
+          - os: windows-latest
+            jucer: "JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Release/App/Projucer.exe"
+            jucer_buildir: "JUCE/extras/Projucer/Builds/VisualStudio2019"
+            plugin_buildir: "Builds/VisualStudio2019"
+            build_cmd: msbuild.exe -m:4 *.sln /property:Configuration=Release
+            standalone_ext: .exe
+            standalone_prefix: "Standalone Plugin/"
+            vst3_prefix: "VST3/"
+          - platform: x64
+            win_plt_property: /property:Platform=x64
+            build_prefix: "x64/Release"
+            label: win64
+          - platform: Win32
+            win_plt_property: /property:Platform=Win32
+            build_prefix: "Win32/Release"
+            label: win32
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.label }}
+
+    steps:
+    - name: Install Linux Deps
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt install libasound2-dev libcurl4-openssl-dev libx11-dev libxinerama-dev libxext-dev libfreetype6-dev libwebkit2gtk-4.0-dev libglu1-mesa-dev libjack-jackd2-dev lv2-dev
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 9
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 9
+
+    - name: Add msbuild to PATH
+      if: runner.os == 'Windows'
+      uses: microsoft/setup-msbuild@v1.0.3
+
+    - name: Set up Xcode
+      if: runner.os == 'MacOS'
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Build Projucer
+      shell: bash
+      run: ${{ matrix.build_cmd }}
+      working-directory: ${{ matrix.jucer_buildir }}
+
+    - name: Log jucer project status
+      shell: bash
+      run: $PROJUCER --status *.jucer
+      env:
+        PROJUCER: ${{ matrix.jucer }}
+
+    - name: Resave jucer file
+      shell: bash
+      run: $PROJUCER --resave *.jucer
+      env:
+        PROJUCER: ${{ matrix.jucer }}
+
+    - name: Build Plugin
+      shell: bash
+      run: ${{ matrix.build_cmd }} ${{ matrix.win_plt_property }}
+      working-directory: ${{ matrix.plugin_buildir }}
+
+    - name: List artifacts in build directory
+      shell: bash
+      run: ls -l
+      working-directory: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}
+
+    - name: Move AU artifacts (macos)
+      if: runner.os == 'MacOS'
+      run: mv ${{ env.AU_PATH }} ${{ env.TMP_PATH }} && cp -vRL ${{ env.TMP_PATH }} ${{ env.AU_PATH }}
+      env:
+        TMP_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component_tmp
+        AU_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component
+
+    - name: Move VST3 artifacts (macos)
+      if: runner.os == 'MacOS'
+      run: mv ${{ env.VST3_PATH }} ${{ env.TMP_PATH }} && cp -vRL ${{ env.TMP_PATH }} ${{ env.VST3_PATH }}
+      env:
+        TMP_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3_tmp
+        VST3_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3
+
+    - name: Upload AU
+      if: runner.os == 'MacOS'
+      uses: actions/upload-artifact@v2
+      with:
+        name: HyperTremolo_${{ matrix.label }}_au
+        path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component
+
+    - name: Upload VST3
+      uses: actions/upload-artifact@v2
+      with:
+        name: HyperTremolo_${{ matrix.label }}_vst3
+        path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3
+
+    - name: Upload Standalone
+      uses: actions/upload-artifact@v2
+      with:
+        name: HyperTremolo_${{ matrix.label }}_standalone
+        path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.standalone_prefix }}HyperTremolo${{ matrix.standalone_ext }}
