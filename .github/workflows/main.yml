@@ -215,7 +215,13 @@ jobs:
 
     - name: Make input file
       run: |
-        ./scripts/preprocess_readme ${{ steps.gists-version.outputs.GISTS_VERSION }}  > docs/README.md
+        ./scripts/preprocess_readme ${{ steps.gists-version.outputs.GISTS_VERSION }} > docs/README.md
+
+    - name: Upload input file
+      uses: actions/upload-artifact@v2
+      with:
+        name: README_forzen
+        path: docs/README.md
 
     - name: Convert
       run: mdpdf README.md HyperTremolo_UserManual.pdf --orientation=landscape --gh-style --style README.css
