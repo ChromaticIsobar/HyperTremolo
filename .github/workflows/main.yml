@@ -201,12 +201,13 @@ jobs:
       run: npm install mdpdf -g
 
     - name: Make input file
-      run: grep -v "Projucer CI/CD Badge" README.md > README.in.md
+      run: grep -v "Projucer CI/CD Badge" README.md > docs/README.md
 
     - name: Convert
-      run: mdpdf README.in.md HyperTremolo_UserManual.pdf --orientation=landscape
+      run: mdpdf README.md HyperTremolo_UserManual.pdf --orientation=landscape --gh-style --style README.css
+      working-directory: docs
 
     - uses: actions/upload-artifact@v2
       with:
         name: HyperTremolo_usermanual
-        path: HyperTremolo_UserManual.pdf
+        path: docs/HyperTremolo_UserManual.pdf
