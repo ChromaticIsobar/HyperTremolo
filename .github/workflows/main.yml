@@ -43,16 +43,8 @@ on:
       - develop
 
 jobs:
-  no-skip:
-    if: ${{ !contains(github.event.head_commit.message, '[CI SKIP]') }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Dummy step
-      run: echo
-      if: ${{ false }}
-
   build:
-    needs: no-skip
+    if: ${{ !contains(github.event.head_commit.message, '[CI SKIP]') }}
     strategy:
       fail-fast: false
       matrix:
@@ -193,7 +185,7 @@ jobs:
       plugin_version: ${{ steps.plugin-version.outputs.PLUGIN_VERSION }}
 
   build-docs:
-    needs: no-skip
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -205,17 +197,22 @@ jobs:
     - name: Install converter
       run: npm install mdpdf -g
 
-    - name: Checkout gists
-      run: git clone https://gist.github.com/6ce8126b4bc9a02594282bde2909f02b.git gists
+    - name: Checkout gist
+      run: git clone https://gist.github.com/6ce8126b4bc9a02594282bde2909f02b.git gist
 
-    - name: Save gists latest sha
-      id: gists-version
-      run: echo '::set-output name=GISTS_VERSION::'$(git rev-parse HEAD)
-      working-directory: gists
+    - name: Checkout gist tag
+      run: git checkout v${{ needs.build.outputs.plugin_version }}
+      working-directory: gist
+      continue-on-error: true
+
+    - name: Save gists version sha
+      id: gist-version
+      run: echo '::set-output name=GIST_VERSION::'$(git rev-parse HEAD)
+      working-directory: gist
 
     - name: Make input file
       run: |
-        ./scripts/preprocess_readme ${{ steps.gists-version.outputs.GISTS_VERSION }} > docs/README.md
+        ./scripts/preprocess_readme ${{ steps.gist-version.outputs.GIST_VERSION }} > docs/README.md
 
     - name: Upload input file
       uses: actions/upload-artifact@v2
@@ -233,7 +230,7 @@ jobs:
         path: docs/HyperTremolo_UserManual.pdf
 
     outputs:
-      gists_version: ${{ steps.gists-version.outputs.GISTS_VERSION }}
+      gist_version: ${{ steps.gist-version.outputs.GIST_VERSION }}
 
   release-create:
     if: ${{ contains(github.event.head_commit.message, '[RELEASE]') || contains(github.event.head_commit.message, '[PRERELEASE]') }}
@@ -261,7 +258,7 @@ jobs:
         body: |
           HyperTremolo is a Dual Amplitude Modulator effect. It is designed to be an Harmonic Tremolo, but can be tweaked to get a lot of different effects, from haunting Ring Modulations to Rotary Speaker emulations!
 
-          ![Screenshot](https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/${{ needs.build-docs.outputs.gists_version }}/HyperTremolo.png)
+          ![Screenshot](https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/${{ needs.build-docs.outputs.gist_version }}/HyperTremolo.png)
 
           [Read more](https://github.com/ChromaticIsobar/HyperTremolo/blob/v${{ needs.build.outputs.plugin_version }}/README.md)
         draft: true
