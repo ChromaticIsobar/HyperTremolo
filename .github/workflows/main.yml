@@ -243,15 +243,24 @@ jobs:
         path: artifacts
 
     - name: List artifacts
-      run: ls artifacts/*
+      run: tree artifacts
 
     - name: Create assets folder
       run: mkdir assets
 
-    - name: Move manual to assets
+    - name: Prepare folder for LIM Plugin Collection Specs zip file
+      run: mkdir -p collection/Windows/Win32 collection/Windows/x64 collection/MacOS collection/Linux
+
+    - name: Copy changelog to zip folder
+      run: cp Changelog.txt collection
+
+    - name: Copy manual to assets
       run: |
-        mv artifacts/HyperTremolo_UserManual/HyperTremolo_UserManual.pdf \
+        cp artifacts/HyperTremolo_UserManual/HyperTremolo_UserManual.pdf \
            assets/HyperTremolo_UserManual_v${{ needs.build.outputs.plugin_version }}.pdf
+
+    - name: Copy manual to zip folder
+      run: cp assets/HyperTremolo_UserManual*.pdf collection
 
     - name: Compress assets
       working-directory: artifacts
@@ -264,8 +273,30 @@ jobs:
           cd ..
         done;
 
+    - name: Copy assets to zip folder
+      run: |
+        for d in artifacts/HyperTremolo_*_* ; do
+          case "$d" in
+            *_linux_*) ZIP_PREFIX="Linux/" ;;
+            *_win32_*) ZIP_PREFIX="Windows/Win32/" ;;
+            *_win64_*) ZIP_PREFIX="Windows/x64/" ;;
+            *_macos_*) ZIP_PREFIX="MacOS/" ;;
+            *) ZIP_PREFIX="" ;;
+          esac                                                                    && \
+          dest="collection/${ZIP_PREFIX}"                                         && \
+          echo cp -r "${d}"/* "${dest}"                                           && \
+          cp -r "${d}"/* "${dest}"
+        done;
+
+    - name: List zip folder
+      run: tree collection
+
+    - name: Compress LIM Plugin Collection Specs zip file
+      working-directory: collection
+      run: zip -r ../assets/HyperTremolo.zip *
+
     - name: List assets
-      run: ls assets/*
+      run: ls assets
 
     - name: Initialize relase body file
       run: sed "3q;d" docs/HyperTremolo.txt > RELEASE_BODY.txt
