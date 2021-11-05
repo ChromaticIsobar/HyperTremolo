@@ -267,6 +267,18 @@ jobs:
     - name: List assets
       run: ls assets/*
 
+    - name: Initialize relase body file
+      run: sed "3q;d" docs/HyperTremolo.txt > RELEASE_BODY.txt
+
+    - name: Add changelog header to release body file
+      run: printf "\nChangelog\u003A\n" >> RELEASE_BODY.txt
+
+    - name: Add changelog to release body file
+      run: ./scripts/extract_changelog v${{ needs.build.outputs.plugin_version }} | tail -n +2 >> RELEASE_BODY.txt
+
+    - name: Add screenshot to release body file
+      run: printf "\n\u0021[Screenshot](https\u003A//gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/${{ needs.build-docs.outputs.gist_version }}/HyperTremolo.png)\n" >> RELEASE_BODY.txt
+
     - uses: actions-ecosystem/action-push-tag@v1
       with:
         tag: v${{ needs.build.outputs.plugin_version }}
@@ -277,12 +289,7 @@ jobs:
       with:
         tag_name: v${{ needs.build.outputs.plugin_version }}
         name: Version ${{ needs.build.outputs.plugin_version }}
-        body: |
-          HyperTremolo is a Dual Amplitude Modulator effect. It is designed to be an Harmonic Tremolo, but can be tweaked to get a lot of different effects, from haunting Ring Modulations to Rotary Speaker emulations!
-
-          ![Screenshot](https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/${{ needs.build-docs.outputs.gist_version }}/HyperTremolo.png)
-
-          [Read more](https://github.com/ChromaticIsobar/HyperTremolo/blob/v${{ needs.build.outputs.plugin_version }}/README.md)
+        body_path: RELEASE_BODY.txt
         draft: true
         prerelease: ${{ contains(github.event.head_commit.message, '[PRERELEASE]') }}
         files:
