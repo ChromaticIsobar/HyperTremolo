@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+OLD_PATTERN="https\:\/\/gist.githubusercontent.com\/ChromaticIsobar\/6ce8126b4bc9a02594282bde2909f02b\/raw\/"
+NEW_STRING="https\:\/\/gist.githubusercontent.com\/ChromaticIsobar\/6ce8126b4bc9a02594282bde2909f02b\/raw\/$1\/"
+
+grep -v "Projucer CI/CD Badge" README.md | sed "s/$OLD_PATTERN/$NEW_STRING/"

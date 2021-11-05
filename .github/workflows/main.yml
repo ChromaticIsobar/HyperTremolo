@@ -43,16 +43,8 @@ on:
       - develop
 
 jobs:
-  no-skip:
-    if: ${{ !contains(github.event.head_commit.message, '[CI SKIP]') }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Dummy step
-      run: echo
-      if: ${{ false }}
-
   build:
-    needs: no-skip
+    if: ${{ !contains(github.event.head_commit.message, '[CI SKIP]') }}
     strategy:
       fail-fast: false
       matrix:
@@ -134,15 +126,17 @@ jobs:
 
     - name: Log jucer project status
       shell: bash
-      run: $PROJUCER --status *.jucer
-      env:
-        PROJUCER: ${{ matrix.jucer }}
+      run: ${{ matrix.jucer }} --status *.jucer
+
+    - name: Save jucer project version
+      id: plugin-version
+      if: runner.os == 'Linux'
+      shell: bash
+      run: echo '::set-output name=PLUGIN_VERSION::'$('${{ matrix.jucer }}' --get-version *.jucer)
 
     - name: Resave jucer file
       shell: bash
-      run: $PROJUCER --resave *.jucer
-      env:
-        PROJUCER: ${{ matrix.jucer }}
+      run: ${{ matrix.jucer }} --resave *.jucer
 
     - name: Build Plugin
       shell: bash
@@ -154,19 +148,15 @@ jobs:
       run: ls -l
       working-directory: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}
 
-    - name: Move AU artifacts (macos)
+    - name: Move AU artifacts
       if: runner.os == 'MacOS'
-      run: mv ${{ env.AU_PATH }} ${{ env.TMP_PATH }} && cp -vRL ${{ env.TMP_PATH }} ${{ env.AU_PATH }}
-      env:
-        TMP_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component_tmp
-        AU_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component
+      run: ./scripts/nest -cd ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.au_prefix }}HyperTremolo.component
 
-    - name: Move VST3 artifacts (macos)
-      if: runner.os == 'MacOS'
-      run: mv ${{ env.VST3_PATH }} ${{ env.TMP_PATH }} && cp -vRL ${{ env.TMP_PATH }} ${{ env.VST3_PATH }}
-      env:
-        TMP_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3_tmp
-        VST3_PATH: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3
+    - name: Move VST3 artifacts
+      run: ./scripts/nest -cd ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.vst3_prefix }}HyperTremolo.vst3
+
+    - name: Move Standalone artifacts
+      run: ./scripts/nest -cd ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.standalone_prefix }}HyperTremolo${{ matrix.standalone_ext }}
 
     - name: Upload AU
       if: runner.os == 'MacOS'
@@ -187,8 +177,11 @@ jobs:
         name: HyperTremolo_${{ matrix.label }}_standalone
         path: ${{ matrix.plugin_buildir }}/${{ matrix.build_prefix }}/${{ matrix.standalone_prefix }}HyperTremolo${{ matrix.standalone_ext }}
 
+    outputs:
+      plugin_version: ${{ steps.plugin-version.outputs.PLUGIN_VERSION }}
+
   build-docs:
-    needs: no-skip
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -200,8 +193,28 @@ jobs:
     - name: Install converter
       run: npm install mdpdf -g
 
+    - name: Checkout gist
+      run: git clone https://gist.github.com/6ce8126b4bc9a02594282bde2909f02b.git gist
+
+    - name: Checkout gist tag
+      run: git checkout v${{ needs.build.outputs.plugin_version }}
+      working-directory: gist
+      continue-on-error: true
+
+    - name: Save gists version sha
+      id: gist-version
+      run: echo '::set-output name=GIST_VERSION::'$(git rev-parse HEAD)
+      working-directory: gist
+
     - name: Make input file
-      run: grep -v "Projucer CI/CD Badge" README.md > docs/README.md
+      run: |
+        ./scripts/preprocess_readme ${{ steps.gist-version.outputs.GIST_VERSION }} > docs/README.md
+
+    - name: Upload input file
+      uses: actions/upload-artifact@v2
+      with:
+        name: README_frozen
+        path: docs/README.md
 
     - name: Convert
       run: mdpdf README.md HyperTremolo_UserManual.pdf --orientation=landscape --gh-style --style README.css
@@ -209,5 +222,106 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: HyperTremolo_usermanual
+        name: HyperTremolo_UserManual
         path: docs/HyperTremolo_UserManual.pdf
+
+    outputs:
+      gist_version: ${{ steps.gist-version.outputs.GIST_VERSION }}
+
+  release:
+    if: ${{ contains(github.event.head_commit.message, '[RELEASE]') || contains(github.event.head_commit.message, '[PRERELEASE]') }}
+    runs-on: ubuntu-latest
+    needs: [build, build-docs]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: false
+
+    - uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+
+    - name: List artifacts
+      run: tree artifacts
+
+    - name: Create assets folder
+      run: mkdir assets
+
+    - name: Prepare folder for LIM Plugin Collection Specs zip file
+      run: mkdir -p collection/Windows/Win32 collection/Windows/x64 collection/MacOS collection/Linux
+
+    - name: Copy changelog to zip folder
+      run: cp Changelog.txt collection
+
+    - name: Copy manual to assets
+      run: |
+        cp artifacts/HyperTremolo_UserManual/HyperTremolo_UserManual.pdf \
+           assets/HyperTremolo_UserManual_v${{ needs.build.outputs.plugin_version }}.pdf
+
+    - name: Copy manual to zip folder
+      run: cp assets/HyperTremolo_UserManual*.pdf collection
+
+    - name: Compress assets
+      working-directory: artifacts
+      run: |
+        for d in HyperTremolo_*_* ; do
+          cd "${d}"                                                               && \
+          dest="../../assets/${d}_v${{ needs.build.outputs.plugin_version }}.zip" && \
+          echo zip -r "${dest}" *                                                 && \
+          zip -r "${dest}" *                                                      && \
+          cd ..
+        done;
+
+    - name: Copy assets to zip folder
+      run: |
+        for d in artifacts/HyperTremolo_*_* ; do
+          case "$d" in
+            *_linux_*) ZIP_PREFIX="Linux/" ;;
+            *_win32_*) ZIP_PREFIX="Windows/Win32/" ;;
+            *_win64_*) ZIP_PREFIX="Windows/x64/" ;;
+            *_macos_*) ZIP_PREFIX="MacOS/" ;;
+            *) ZIP_PREFIX="" ;;
+          esac                                                                    && \
+          dest="collection/${ZIP_PREFIX}"                                         && \
+          echo cp -r "${d}"/* "${dest}"                                           && \
+          cp -r "${d}"/* "${dest}"
+        done;
+
+    - name: List zip folder
+      run: tree collection
+
+    - name: Compress LIM Plugin Collection Specs zip file
+      working-directory: collection
+      run: zip -r ../assets/HyperTremolo.zip *
+
+    - name: List assets
+      run: ls assets
+
+    - name: Initialize relase body file
+      run: sed "3q;d" docs/HyperTremolo.txt > RELEASE_BODY.txt
+
+    - name: Add changelog header to release body file
+      run: printf "\nChangelog\u003A\n" >> RELEASE_BODY.txt
+
+    - name: Add changelog to release body file
+      run: ./scripts/extract_changelog v${{ needs.build.outputs.plugin_version }} | tail -n +2 >> RELEASE_BODY.txt
+
+    - name: Add screenshot to release body file
+      run: printf "\n\u0021[Screenshot](https\u003A//gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/${{ needs.build-docs.outputs.gist_version }}/HyperTremolo.png)\n" >> RELEASE_BODY.txt
+
+    - uses: actions-ecosystem/action-push-tag@v1
+      with:
+        tag: v${{ needs.build.outputs.plugin_version }}
+        message: ':bookmark: Version ${{ needs.build.outputs.plugin_version }}'
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ needs.build.outputs.plugin_version }}
+        name: Version ${{ needs.build.outputs.plugin_version }}
+        body_path: RELEASE_BODY.txt
+        draft: true
+        prerelease: ${{ contains(github.event.head_commit.message, '[PRERELEASE]') }}
+        files:
+          assets/*

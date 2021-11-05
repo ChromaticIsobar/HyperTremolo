@@ -6,21 +6,10 @@ HyperTremolo is a Dual Amplitude Modulator effect. It is designed to be an Harmo
 
 ![Screenshot](https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/HyperTremolo.png)
 
-<!--
-## Download instructions
-TODO
--->
-
 ## The Effect
-HyperTremolo splits your input signal into a low-passed and a high-passed signal. Each of these
-signals is modulated with an amplitude modulator (tremolo). Then the two signals are mixed back together.
+HyperTremolo splits your input signal into a low-passed and a high-passed signal. Each of these signals is modulated with an amplitude modulator (tremolo). Then the two signals are mixed back together.
 
 ![Diagram](https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/HyperTremoloDiagram.png)
-
-<!--
-## Installation guide
-TODO
--->
 
 <div style="page-break-after: always;"></div>
 
@@ -46,6 +35,9 @@ The parameters are divided in three sections
 
 <div style="page-break-after: always;"></div>
 
+## Known Limitations
+ - _Sync_ button is not automatable
+
 ## Example Settings
 |                    | Through-0 | Rate | Ratio | Sync | Depth | Crossover | Resonance | Balance | Harmonic | Gain | Mix  |
 |--------------------|-----------|------|-------|------|-------|-----------|-----------|---------|----------|------|------|
@@ -56,10 +48,40 @@ The parameters are divided in three sections
 | Dual Trem          |     ✗     | 2.00 | 4.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   0.00   | 0.00 | 1.00 |
 | Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.666  |   0.50   | 3.00 | 1.00 |
 
-<div style="page-break-after: always;"></div>
+## Setup instructions
+You can find the latest release on GitHub at https://github.com/ChromaticIsobar/HyperTremolo/releases
 
-## Known Limitations
- - _Sync_ button is not automatable
+### Download
+You can either download only the specific plugin (standalone, VST3, or  Audio Unit) for your OS or the whole release in a single zip file. This file contains:
+- `HyperTremolo_UserManual_v<x>.<y>.<z>.pdf`: the user manual PDF file for the specific version
+- `Changelog.txt`: a summary of changes between different plugin versions
+- `Windows`: a folder of precompiled binaries for Windows
+  - `Win32`: a folder of precompiled binaries for 32 bit Windows
+      - `HyperTremolo.exe`: the standalone executable for 32 bit Windows
+      - `HyperTremolo.vst3`: the VST3 plugin for 32 bit Windows
+  - `x64`: a folder of precompiled binaries for 64 bit Windows
+      - `HyperTremolo.exe`: the standalone executable for 64 bit Windows
+      - `HyperTremolo.vst3`: the VST3 plugin for 64 bit Windows
+- `MacOS`: a folder of precompiled binaries for MacOS
+  - `HyperTremolo.app`: the standalone executable for MacOS
+  - `HyperTremolo.vst3`: the VST3 plugin for MacOS
+  - `HyperTremolo.component`: the Audio Unit plugin for MacOS
+- `Linux`: a folder of precompiled binaries for Ubuntu
+  - `HyperTremolo`: the standalone executable for Ubuntu
+  - `HyperTremolo.vst3`: the VST3 plugin for Ubuntu
+
+### Install
+Standalone applications require no installation. Plugins must be copied to the proper directory to be installed
+
+|    OS   |    Plugin    |                   Path                   |
+|---------|--------------|------------------------------------------|
+| Windows | VST3 (x64)   | C:\Program Files\Common Files\VST3       |
+| Windows | VST3 (Win32) | C:\Program Files (x86)\Common Files\VST3 |
+| Ubuntu  | VST3         | ~/.vst                                   |
+| MacOS   | VST3         | Library/Audio/Plug-ins/VST3              |
+| MacOS   | AU           | Library/Audio/Plug-ins/Components        |
+
+<div style="page-break-after: always;"></div>
 
 ## Contacts
 This software was developed by Marco Tiraboschi at the _Laboratorio di Informatica Musicale_
