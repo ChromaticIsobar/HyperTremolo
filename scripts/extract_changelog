@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+CSPLIT_PREFIX=".tmp.csplit"
+
+mkdir "${CSPLIT_PREFIX}"
+
+csplit -zqf "${CSPLIT_PREFIX}"/ Changelog.txt "/^v.*$/0" "{*}"
+
+for f in "${CSPLIT_PREFIX}"/* ; do
+  h="$(head -n 1 "$f")" && \
+  if [[ -z "${FNAME}" && (-z "$1" || "$h" == "$1") ]]; then
+    FNAME="$f"
+    cat $f
+  fi && \
+  rm "$f"
+done
+
+rm -rf "${CSPLIT_PREFIX}"
+
