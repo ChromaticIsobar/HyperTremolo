@@ -52,7 +52,7 @@ The parameters are divided in three sections
 You can find the latest release on GitHub at https://github.com/ChromaticIsobar/HyperTremolo/releases
 
 ### Download
-You can either download only the specific plugin (standalone, VST3, or  Audio Unit) for your OS or the whole release in a single zip file. This file contains:
+You can either download only the specific plugin (standalone, VST3, or  Audio Unit) for your OS or the whole release in a single zip file: `HyperTremolo_v<x>.<y>.<z>.zip`. This file contains:
 - `HyperTremolo_UserManual_v<x>.<y>.<z>.pdf`: the user manual PDF file for the specific version
 - `Changelog.txt`: a summary of changes between different plugin versions
 - `Windows`: a folder of precompiled binaries for Windows
