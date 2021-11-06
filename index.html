@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      request = new XMLHttpRequest();
+      request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200) {
+          releases = JSON.parse(request.responseText);
+          asset_url = "";
+          for (const release of releases) {
+            for (const asset of release.assets) {
+              if (asset.name == "HyperTremolo_" + release.tag_name + ".zip") {
+                asset_url = asset.browser_download_url;
+                break;
+              }
+            }
+            if (asset_url) break;
+          }
+          if (asset_url) window.location.replace(asset_url);
+        }
+      };
+      request.open(
+        "GET",
+        "https://api.github.com/repos/ChromaticIsobar/HyperTremolo/releases",
+        true
+      );
+      request.setRequestHeader("accept", "application/vnd.github.v3+json");
+      request.send(null);
+    </script>
+  </head>
+</html>
