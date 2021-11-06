@@ -1,7 +1,7 @@
 HyperTremolo
 HyperTremolo è un effetto di modulazione d'ampiezza su due bande. Progettato come Tremolo Armonico, può essere usato per altri tipi di effetto, da Modulazioni ad Anello a emulazioni di Rotary Speaker!
 HyperTremolo is a Dual Amplitude Modulator effect. It is designed to be an Harmonic Tremolo, but can be tweaked to get a lot of different effects, from haunting Ring Modulations to Rotary Speaker emulations!
-https://github.com/ChromaticIsobar/HyperTremolo/releases
+https://chromaticisobar.github.io/HyperTremolo/
 https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/HyperTremolo.png
 Marco Tiraboschi
 marco.tiraboschi@unimi.it
@@ -12,4 +12,3 @@ marco.tiraboschi@unimi.it
 1
 1
 0
-

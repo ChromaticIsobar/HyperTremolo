@@ -293,7 +293,7 @@ jobs:
 
     - name: Compress LIM Plugin Collection Specs zip file
       working-directory: collection
-      run: zip -r ../assets/HyperTremolo.zip *
+      run: zip -r ../assets/HyperTremolo_v${{ needs.build.outputs.plugin_version }}.zip *
 
     - name: List assets
       run: ls assets
