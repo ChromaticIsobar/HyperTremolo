@@ -45,7 +45,7 @@ SampleType sawtoothWaveFunc (SampleType phase)
 //==============================================================================
 template <typename SampleType>
 PhaseControlledOscillator<SampleType>::PhaseControlledOscillator()
-    : waveShapeFunc (sineWaveFunc<SampleType>)
+    : waveShapeFunc (sineWaveFunc<SampleType>), offset(0)
 {
 }
 
@@ -88,6 +88,7 @@ template <typename SampleType>
 void PhaseControlledOscillator<SampleType>::prepare (const juce::dsp::ProcessSpec& spec)
 {
     sampleRate = (SampleType) spec.sampleRate;
+    offset.reset (sampleRate, 0.050);
 }
 
 template <typename SampleType>
@@ -100,6 +101,43 @@ template <typename SampleType>
 void PhaseControlledOscillator<SampleType>::advance (SampleType p)
 {
     phase.advance (p);
+}
+
+template <typename SampleType>
+void PhaseControlledOscillator<SampleType>::setOffset (SampleType tv, SampleType cv)
+{
+    offset.setCurrentAndTargetValue (cv);
+    offset.setTargetValue (tv);
+}
+
+template <typename SampleType>
+SampleType moduloTwoPi (SampleType a)
+{
+    SampleType c = std::fmod (a, juce::MathConstants<SampleType>::twoPi); // This is actually the remainder
+    if (c < 0)
+        c += juce::MathConstants<SampleType>::twoPi;
+    return c;
+}
+
+template <typename SampleType>
+void PhaseControlledOscillator<SampleType>::setOffset (SampleType v)
+{
+    SampleType curr = moduloTwoPi (offset.getCurrentValue());
+    v = moduloTwoPi (v);
+    auto diff = v - curr;
+    if (diff < -juce::MathConstants<SampleType>::pi)
+        curr -= juce::MathConstants<SampleType>::twoPi;
+    else if (diff > juce::MathConstants<SampleType>::pi)
+        v -= juce::MathConstants<SampleType>::twoPi;
+    jassert (std::fabs (curr - v) <= juce::MathConstants<SampleType>::pi);
+    DBG (curr << " ---> " << v);
+    setOffset (v, curr);
+}
+
+template <typename SampleType>
+SampleType PhaseControlledOscillator<SampleType>::getOffset()
+{
+    return offset.getTargetValue();
 }
 
 //==============================================================================

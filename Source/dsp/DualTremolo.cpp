@@ -59,17 +59,18 @@ template <typename SampleType>
 void DualTremolo<SampleType>::sync()
 {
     DBG ("Syncing DualTremolo:");
-    DBG ("  Current phases:           " << this->lpfTrem.getPhase() << " (L) " << this->hpfTrem.getPhase() << " (H)");
+    DBG ("  Current phases:           " << this->lpfTrem.getPhase() << " (L) " << this->hpfTrem.getPhase() + this->hpfTrem.getOffset() << " (H)");
+    DBG ("  Current offset:           " << this->hpfTrem.getOffset());
     DBG ("  Current phase difference: " << std::fmod (
-        juce::MathConstants<SampleType>::twoPi + this->hpfTrem.getPhase() - this->lpfTrem.getPhase(),
-        juce::MathConstants<SampleType>::twoPi));
-    auto p = juce::MathConstants<SampleType>::twoPi + this->phase;
-    p += this->lpfTrem.getPhase() - this->hpfTrem.getPhase();
-    DBG ("  Advancing HPF tremolo by: " << p);
-    this->hpfTrem.advance (p);
-    DBG ("  New phases:               " << this->lpfTrem.getPhase() << " (L) " << this->hpfTrem.getPhase() << " (H)");
+             this->hpfTrem.getOffset() + this->hpfTrem.getPhase() - this->lpfTrem.getPhase(),
+             juce::MathConstants<SampleType>::twoPi));
+
+    this->hpfTrem.setOffset (this->lpfTrem.getPhase() + this->phase - this->hpfTrem.getPhase());
+
+    DBG ("  New phases:               " << this->lpfTrem.getPhase() << " (L) " << this->hpfTrem.getPhase() + this->hpfTrem.getOffset() << " (H)");
+    DBG ("  New offset:               " << this->hpfTrem.getOffset());
     DBG ("  New phase difference:     " << std::fmod (
-             juce::MathConstants<SampleType>::twoPi + this->hpfTrem.getPhase() - this->lpfTrem.getPhase(),
+             this->hpfTrem.getOffset() + this->hpfTrem.getPhase() - this->lpfTrem.getPhase(),
              juce::MathConstants<SampleType>::twoPi));
     DBG ("  Target phase difference:  " << this->phase);
 }
