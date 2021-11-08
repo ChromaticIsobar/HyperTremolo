@@ -72,3 +72,17 @@ void ThroughZeroAndFrequencySetterListener::parameterChanged (const juce::String
     }
     frequencySetterFunction (freq / (throughZero + 1.0f));
 }
+
+//==============================================================================
+TremSyncSetterListener::TremSyncSetterListener (
+    std::function<void()> sync)
+    : sync (sync)
+{
+}
+
+void TremSyncSetterListener::parameterChanged (const juce::String& id, float newValue)
+{
+    DBG ("TremSyncSetterListener: " << id << " -> " << newValue);
+    if (newValue)
+        sync();
+}

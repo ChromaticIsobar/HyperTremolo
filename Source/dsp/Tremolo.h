@@ -67,6 +67,15 @@ public:
     */
     void setMix (SampleType newMix);
 
+    /** Sets the phase offset target value */
+    void setOffset (SampleType);
+
+    /** Sets the phase offset target and current value */
+    void setOffset (SampleType, SampleType);
+
+    /** Gets the phase offset target value */
+    SampleType getOffset();
+
     //==============================================================================
     /** Gets the current phase of the modulant LFO. */
     SampleType getPhase();

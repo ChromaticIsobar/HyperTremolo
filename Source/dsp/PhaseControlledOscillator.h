@@ -75,6 +75,15 @@ public:
     /** Advances the oscillator by the given phase amount. */
     void advance (SampleType);
 
+    /** Sets the phase offset target value */
+    void setOffset (SampleType);
+
+    /** Sets the phase offset target and current value */
+    void setOffset (SampleType, SampleType);
+
+    /** Gets the phase offset target value */
+    SampleType getOffset();
+
     //==============================================================================
     /** Writes the output samples for the oscillator waveshape. */
     template <typename ProcessContext>
@@ -99,7 +108,7 @@ public:
             auto* outputSamples = outputBlock.getChannelPointer (0);
 
             for (size_t i = 0; i < numSamples; ++i)
-                outputSamples[i] = waveShapeFunc (getPhase (i));
+                outputSamples[i] = waveShapeFunc (getPhase (i) + offset.getNextValue());
             auto firstChannelBlock = outputBlock.getSingleChannelBlock (0);
             for (size_t channel = 1; channel < numChannels; ++channel)
                 outputBlock.getSingleChannelBlock (channel).copyFrom (firstChannelBlock);
@@ -121,6 +130,7 @@ private:
 
     //==============================================================================
     juce::dsp::Phase<SampleType> phase;
+    juce::SmoothedValue<SampleType, juce::ValueSmoothingTypes::Linear> offset;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PhaseControlledOscillator<SampleType>)
 };
