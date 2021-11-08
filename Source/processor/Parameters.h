@@ -76,3 +76,19 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThroughZeroAndFrequencySetterListener)
 };
+
+/**
+    A listener for triggering the tremolo sync function
+*/
+class TremSyncSetterListener  : public juce::AudioProcessorValueTreeState::Listener
+{
+public:
+    TremSyncSetterListener (std::function<void()> sync);
+    void parameterChanged (const juce::String&, float) override;
+
+private:
+    std::function<juce::Value (juce::StringRef)> valueGetterFunction;
+    std::function<void()> sync;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TremSyncSetterListener)
+};

@@ -86,6 +86,7 @@ private:
     juce::AudioProcessorValueTreeState valueTreeState;
     SetterListener gainSetter, mixSetter, tremRatioSetter, tremMixSetter, xoverFreqSetter, xoverResonSetter, xoverBalanceSetter, xoverMixSetter;
     ThroughZeroAndFrequencySetterListener tremT0AndFSetter;
+    TremSyncSetterListener tremSyncSetter;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HyperTremoloPlugin)
