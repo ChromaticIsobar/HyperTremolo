@@ -36,8 +36,7 @@ The parameters are divided in three sections
 
 <div style="page-break-after: always;"></div>
 
-## Known Limitations
- - _Sync_ button is not automatable
+<!--## Known Limitations -->
 
 ## Example Settings
 |                    | Through-0 | Rate | Ratio | Sync | Depth | Crossover | Resonance | Balance | Harmonic | Gain | Mix  |

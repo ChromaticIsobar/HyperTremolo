@@ -1,3 +1,6 @@
+v0.2.0
+- Made 'sync' button automatable
+
 v0.1.0
 - Now built with GitHub Actions!
 - Added MacOS Audio Unit
