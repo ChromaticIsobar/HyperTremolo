@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8" />
@@ -12,62 +13,8 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
     />
-    <style>
-      body,
-      h1,
-      h2,
-      h3,
-      h4,
-      h5,
-      h6 {
-        font-family: "Montserrat", sans-serif;
-      }
-      .w3-row-padding img {
-        margin-bottom: 12px;
-      }
-    </style>
-    <script>
-      history_length = history.length;
-      request = new XMLHttpRequest();
-      request.onreadystatechange = function () {
-        if (request.readyState == 4 && request.status == 200) {
-          releases = JSON.parse(request.responseText);
-          asset_url = "";
-          asset_tag = "";
-          for (const release of releases) {
-            for (const asset of release.assets) {
-              if (asset.name == "HyperTremolo_" + release.tag_name + ".zip") {
-                asset_url = asset.browser_download_url;
-                asset_tag = release.tag_name;
-                break;
-              }
-            }
-            if (asset_url) break;
-          }
-          if (asset_url) {
-            a = document.getElementById("here");
-            a.setAttribute("href", asset_url);
-            a.setAttribute("download", asset_url);
-            a.click();
-            if (asset_tag) {
-              p = document.getElementById("firstline");
-              p.innerText += " (" + asset_tag + ")";
-            }
-            setTimeout(() => {
-              p = document.getElementById("noredirect");
-              p.hidden = false;
-            }, 5000);
-          }
-        }
-      };
-      request.open(
-        "GET",
-        "https://api.github.com/repos/ChromaticIsobar/HyperTremolo/releases",
-        true
-      );
-      request.setRequestHeader("accept", "application/vnd.github.v3+json");
-      request.send(null);
-    </script>
+    <link rel="stylesheet" href="index.css" />
+    <script src="index.js"></script>
   </head>
   <body>
     <div class="w3-main w3-padding-large">
@@ -77,15 +24,27 @@
         id="home"
       >
         <h1 class="w3-jumbo"><b>HyperTremolo</b></h1>
-        <p id="firstline">
+        <p>
           Automatically redirecting you to the download URL of the latest
           release of HyperTremolo
         </p>
-        <p id="noredirect" hidden="true">
+        <p hidden="true">
           If your browser does not automatically redirect you, please click
           <a id="here"> here </a>
         </p>
       </header>
+      <div id="release-body"></div>
     </div>
+    <script>
+      populate_page(
+        "https://api.github.com/repos/ChromaticIsobar/HyperTremolo/releases",
+        (release) => {
+          return "HyperTremolo_" + release.tag_name + ".zip";
+        },
+        document.getElementById("release-body"),
+        document.getElementById("here"),
+        document.getElementById("here").parentElement
+      );
+    </script>
   </body>
 </html>
