@@ -1,6 +1,31 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+    <title>HyperTremolo Download Redirect Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <style>
+      body,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-family: "Montserrat", sans-serif;
+      }
+      .w3-row-padding img {
+        margin-bottom: 12px;
+      }
+    </style>
     <script>
       history_length = history.length;
       request = new XMLHttpRequest();
@@ -8,20 +33,31 @@
         if (request.readyState == 4 && request.status == 200) {
           releases = JSON.parse(request.responseText);
           asset_url = "";
+          asset_tag = "";
           for (const release of releases) {
             for (const asset of release.assets) {
               if (asset.name == "HyperTremolo_" + release.tag_name + ".zip") {
                 asset_url = asset.browser_download_url;
+                asset_tag = release.tag_name;
                 break;
               }
             }
             if (asset_url) break;
           }
-          a = document.createElement("a");
-          a.setAttribute("href", asset_url);
-          a.setAttribute("download", asset_url);
-          a.click();
-          setTimeout(() => window.history.back(), 1000);
+          if (asset_url) {
+            a = document.getElementById("here");
+            a.setAttribute("href", asset_url);
+            a.setAttribute("download", asset_url);
+            a.click();
+            if (asset_tag) {
+              p = document.getElementById("firstline");
+              p.innerText += " (" + asset_tag + ")";
+            }
+            setTimeout(() => {
+              p = document.getElementById("noredirect");
+              p.hidden = false;
+            }, 5000);
+          }
         }
       };
       request.open(
@@ -33,4 +69,23 @@
       request.send(null);
     </script>
   </head>
+  <body>
+    <div class="w3-main w3-padding-large">
+      <header
+        class="w3-container w3-center"
+        style="padding: 128px 16px"
+        id="home"
+      >
+        <h1 class="w3-jumbo"><b>HyperTremolo</b></h1>
+        <p id="firstline">
+          Automatically redirecting you to the download URL of the latest
+          release of HyperTremolo
+        </p>
+        <p id="noredirect" hidden="true">
+          If your browser does not automatically redirect you, please click
+          <a id="here"> here </a>
+        </p>
+      </header>
+    </div>
+  </body>
 </html>
