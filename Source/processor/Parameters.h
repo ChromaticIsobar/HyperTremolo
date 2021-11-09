@@ -92,3 +92,8 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TremSyncSetterListener)
 };
+
+
+/** Send a ValueChangedMessage to listeners for all params in the ValueTreeState
+*/
+void sendValueChangedMessageToAllListeners(juce::AudioProcessorValueTreeState&);

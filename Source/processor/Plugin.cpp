@@ -51,17 +51,14 @@ HyperTremoloPlugin::HyperTremoloPlugin()
       xoverResonSetter (std::bind (&DualTremolo<float>::setCrossoverResonance, &processor, std::placeholders::_1)),
       xoverBalanceSetter (std::bind (&DualTremolo<float>::setCrossoverBalance, &processor, std::placeholders::_1)),
       xoverMixSetter (std::bind (&DualTremolo<float>::setCrossoverMix, &processor, std::placeholders::_1)),
-          tremT0AndFSetter (
-              std::bind (&DualTremolo<float>::setTremoloRate, &processor, std::placeholders::_1),
-              std::bind (&DualTremolo<float>::setTremoloThroughZero, &processor, std::placeholders::_1),
-              std::bind (&juce::AudioProcessorValueTreeState::getRawParameterValue, &valueTreeState, std::placeholders::_1),
-              "tremRate",
+      tremT0AndFSetter (
+          std::bind (&DualTremolo<float>::setTremoloRate, &processor, std::placeholders::_1),
+          std::bind (&DualTremolo<float>::setTremoloThroughZero, &processor, std::placeholders::_1),
+          std::bind (&juce::AudioProcessorValueTreeState::getRawParameterValue, &valueTreeState, std::placeholders::_1),
+          "tremRate",
           "tremZero"),
       tremSyncSetter (std::bind (&DualTremolo<float>::sync, &processor))
 {
-    // Set gain to 0 (problem with default value == 0)
-    gain.setGainDecibels (0);
-
     // Mixer
     valueTreeState.addParameterListener ("gain", &gainSetter);
     valueTreeState.addParameterListener ("mix", &mixSetter);
@@ -154,6 +151,9 @@ void HyperTremoloPlugin::prepareToPlay (double sampleRate, int samplesPerBlock)
     gain.prepare (spec);
     dryWet.prepare (spec);
     processor.prepare (spec);
+
+    // Enforce parameter value update
+    sendValueChangedMessageToAllListeners (valueTreeState);
 }
 
 void HyperTremoloPlugin::releaseResources()
@@ -223,15 +223,14 @@ juce::AudioProcessorEditor* HyperTremoloPlugin::createEditor()
 //==============================================================================
 void HyperTremoloPlugin::getStateInformation (juce::MemoryBlock& destData)
 {
-    auto state = valueTreeState.copyState();
-    std::unique_ptr<juce::XmlElement> xml (state.createXml());
+    std::unique_ptr<juce::XmlElement> xml (valueTreeState.copyState().createXml());
     copyXmlToBinary (*xml, destData);
 }
 
 void HyperTremoloPlugin::setStateInformation (const void* data, int sizeInBytes)
 {
-    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
-    if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (valueTreeState.state.getType()))
-            valueTreeState.replaceState (juce::ValueTree::fromXml (*xmlState));
+    std::unique_ptr<juce::XmlElement> xml (getXmlFromBinary (data, sizeInBytes));
+    if (xml.get() != nullptr)
+        if (xml->hasTagName (valueTreeState.state.getType()))
+            valueTreeState.replaceState (juce::ValueTree::fromXml (*xml));
 }
