@@ -127,21 +127,14 @@ public:
 
 private:
     //==============================================================================
-    /** Update the parameters of the filters */
-    void update();
-
-    //==============================================================================
-    juce::dsp::ProcessorDuplicator<
-        juce::dsp::StateVariableFilter::Filter<SampleType>,
-        juce::dsp::StateVariableFilter::Parameters<SampleType>>
-        lpf, hpf;
+    juce::dsp::StateVariableTPTFilter<SampleType> lpf, hpf;
     juce::dsp::DryWetMixer<SampleType> dryWet;
 
     //==============================================================================
     std::unique_ptr<juce::AudioBuffer<SampleType>> lpfBuffer, hpfBuffer;
 
     //==============================================================================
-    SampleType resonance = 1.0, cutOffFrequency = 1000.0, balance = 0.5;
+    SampleType balance = 0.5;
     double sampleRate = 44100.0;
     std::function<void (juce::dsp::ProcessContextReplacing<SampleType>)> process_lpf,
         process_hpf;

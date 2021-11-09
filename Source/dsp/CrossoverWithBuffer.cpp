@@ -33,23 +33,23 @@ CrossoverWithBuffer<SampleType>::CrossoverWithBuffer()
     : process_lpf ([] (juce::dsp::ProcessContextReplacing<SampleType>) {}),
       process_hpf ([] (juce::dsp::ProcessContextReplacing<SampleType>) {})
 {
-    lpf.state->type = juce::dsp::StateVariableFilter::Parameters<SampleType>::Type::lowPass;
-    hpf.state->type = juce::dsp::StateVariableFilter::Parameters<SampleType>::Type::highPass;
+    lpf.setType (juce::dsp::StateVariableTPTFilterType::lowpass);
+    hpf.setType (juce::dsp::StateVariableTPTFilterType::highpass);
 }
 
 //==============================================================================
 template <typename SampleType>
 void CrossoverWithBuffer<SampleType>::setCutOffFrequency (SampleType newCutOffFrequency)
 {
-    cutOffFrequency = newCutOffFrequency;
-    update();
+    lpf.setCutoffFrequency (newCutOffFrequency);
+    hpf.setCutoffFrequency (newCutOffFrequency);
 }
 
 template <typename SampleType>
 void CrossoverWithBuffer<SampleType>::setResonance (SampleType newResonance)
 {
-    resonance = newResonance;
-    update();
+    lpf.setResonance (newResonance);
+    hpf.setResonance (newResonance);
 }
 
 template <typename SampleType>
@@ -90,7 +90,6 @@ void CrossoverWithBuffer<SampleType>::prepare (const juce::dsp::ProcessSpec& spe
     hpfBuffer.reset (
         new juce::AudioBuffer<SampleType> (
             spec.numChannels, spec.maximumBlockSize));
-    update();
 }
 
 template <typename SampleType>
@@ -99,14 +98,6 @@ void CrossoverWithBuffer<SampleType>::reset()
     dryWet.reset();
     lpf.reset();
     hpf.reset();
-}
-
-//==============================================================================
-template <typename SampleType>
-void CrossoverWithBuffer<SampleType>::update()
-{
-    lpf.state->setCutOffFrequency (sampleRate, cutOffFrequency, resonance);
-    hpf.state->setCutOffFrequency (sampleRate, cutOffFrequency, resonance);
 }
 
 //==============================================================================
