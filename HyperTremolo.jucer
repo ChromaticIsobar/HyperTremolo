@@ -33,6 +33,7 @@
               companyEmail="marco.tiraboschi@unimi.it">
   <MAINGROUP id="ZafoNp" name="HyperTremolo">
     <GROUP id="{EBBF67A8-FA47-5B0B-BE9E-7AA1024B3821}" name="Source">
+      <FILE id="bDolX5" name="Commons.h" compile="0" resource="0" file="Source/Commons.h"/>
       <FILE id="zX6gx0" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <GROUP id="{A055111E-CEFD-DE47-313C-10A2B011B73A}" name="processor">
         <FILE id="toYSWP" name="Parameters.cpp" compile="1" resource="0" file="Source/processor/Parameters.cpp"/>

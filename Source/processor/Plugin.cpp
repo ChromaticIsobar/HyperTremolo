@@ -45,19 +45,19 @@ HyperTremoloPlugin::HyperTremoloPlugin()
       valueTreeState (*this, nullptr, "HyperTremolo", { std::make_unique<juce::AudioParameterFloat> ("gain", "Gain", juce::NormalisableRange<float> (-20.0f, 20.0f, 0.01f), 0.0f, "dB"), std::make_unique<juce::AudioParameterFloat> ("mix", "Mix", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f), std::make_unique<juce::AudioParameterFloat> ("tremRate", "Rate", juce::NormalisableRange<float> (0.0f, 20.0f, 0.0001f, 0.333f), 2.5f, "Hz"), std::make_unique<juce::AudioParameterFloat> ("tremRatio", "Ratio", LogRange<float> (0.1f, 10.0f, 0.001f), 1.0f), std::make_unique<juce::AudioParameterFloat> ("tremMix", "Depth", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f), std::make_unique<juce::AudioParameterBool> ("tremZero", "Through-0", false), std::make_unique<juce::AudioParameterBool> ("tremSync", "Sync", false), std::make_unique<juce::AudioParameterFloat> ("xoverFreq", "Crossover", LogRange<float> (50.0f, 20000.0f, 0.01f), 1000.0f, "Hz"), std::make_unique<juce::AudioParameterFloat> ("xoverReson", "Resonance", LogRange<float> (0.125f, 4.0f, 0.001f), 1.0f / juce::MathConstants<float>::sqrt2), std::make_unique<juce::AudioParameterFloat> ("xoverBalance", "Balance", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f), std::make_unique<juce::AudioParameterFloat> ("xoverMix", "Harmonic", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f) }),
       gainSetter (std::bind (&juce::dsp::Gain<float>::setGainDecibels, &gain, std::placeholders::_1)),
       mixSetter (std::bind (&juce::dsp::DryWetMixer<float>::setWetMixProportion, &dryWet, std::placeholders::_1)),
-      tremT0AndFSetter (
-          std::bind (&DualTremolo<float>::setTremoloRate, &processor, std::placeholders::_1),
-          std::bind (&DualTremolo<float>::setTremoloThroughZero, &processor, std::placeholders::_1),
-          std::bind (&juce::AudioProcessorValueTreeState::getRawParameterValue, &valueTreeState, std::placeholders::_1),
-          "tremRate",
-          "tremZero"),
       tremRatioSetter (std::bind (&DualTremolo<float>::setTremoloRatio, &processor, std::placeholders::_1)),
-      tremSyncSetter (std::bind (&DualTremolo<float>::sync, &processor)),
       tremMixSetter (std::bind (&DualTremolo<float>::setTremoloMix, &processor, std::placeholders::_1)),
       xoverFreqSetter (std::bind (&DualTremolo<float>::setCrossoverFrequency, &processor, std::placeholders::_1)),
       xoverResonSetter (std::bind (&DualTremolo<float>::setCrossoverResonance, &processor, std::placeholders::_1)),
       xoverBalanceSetter (std::bind (&DualTremolo<float>::setCrossoverBalance, &processor, std::placeholders::_1)),
-      xoverMixSetter (std::bind (&DualTremolo<float>::setCrossoverMix, &processor, std::placeholders::_1))
+      xoverMixSetter (std::bind (&DualTremolo<float>::setCrossoverMix, &processor, std::placeholders::_1)),
+          tremT0AndFSetter (
+              std::bind (&DualTremolo<float>::setTremoloRate, &processor, std::placeholders::_1),
+              std::bind (&DualTremolo<float>::setTremoloThroughZero, &processor, std::placeholders::_1),
+              std::bind (&juce::AudioProcessorValueTreeState::getRawParameterValue, &valueTreeState, std::placeholders::_1),
+              "tremRate",
+          "tremZero"),
+      tremSyncSetter (std::bind (&DualTremolo<float>::sync, &processor))
 {
     // Set gain to 0 (problem with default value == 0)
     gain.setGainDecibels (0);
