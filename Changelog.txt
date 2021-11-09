@@ -1,3 +1,7 @@
+v1.0.0
+- Enforce parameter loading for all parameters
+- Optimize oscillator with lookup table approximation
+
 v0.2.0
 - Made 'sync' button automatable
 - Make 'balance' knob smoother and turned it around to make it more conventional: turn left for darker sound, turn right for brighter sound

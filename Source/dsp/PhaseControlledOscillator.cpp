@@ -29,6 +29,16 @@
 
 //==============================================================================
 template <typename SampleType>
+SampleType moduloTwoPi (SampleType a)
+{
+    SampleType c = std::fmod (a, juce::MathConstants<SampleType>::twoPi); // This is actually the remainder
+    if (c < 0)
+        c += juce::MathConstants<SampleType>::twoPi;
+    return c;
+}
+
+//==============================================================================
+template <typename SampleType>
 SampleType sineWaveFunc (SampleType phase)
 {
     return (std::sin (phase) + ((SampleType) 1)) / ((SampleType) 2);
@@ -45,15 +55,16 @@ SampleType sawtoothWaveFunc (SampleType phase)
 //==============================================================================
 template <typename SampleType>
 PhaseControlledOscillator<SampleType>::PhaseControlledOscillator()
-    : waveShapeFunc (sineWaveFunc<SampleType>), offset(0)
+    : lookup(), offset(0)
 {
+    setShape(PhaseControlledOscillatorWaveShape::sine);
 }
 
 //==============================================================================
 template <typename SampleType>
 void PhaseControlledOscillator<SampleType>::setShape (std::function<SampleType (SampleType)> newWaveShapeFunc)
 {
-    waveShapeFunc = newWaveShapeFunc;
+    lookup.initialise(newWaveShapeFunc, 0, juce::MathConstants<SampleType>::twoPi, lookup_size);
 }
 
 template <typename SampleType>
@@ -68,6 +79,12 @@ void PhaseControlledOscillator<SampleType>::setShape (PhaseControlledOscillatorW
             setShape (sawtoothWaveFunc<SampleType>);
             break;
     }
+}
+
+template <typename SampleType>
+SampleType PhaseControlledOscillator<SampleType>::waveShapeFunc (SampleType p)
+{
+    return lookup.processSampleUnchecked(moduloTwoPi(p));
 }
 
 template <typename SampleType>
@@ -108,15 +125,6 @@ void PhaseControlledOscillator<SampleType>::setOffset (SampleType tv, SampleType
 {
     offset.setCurrentAndTargetValue (cv);
     offset.setTargetValue (tv);
-}
-
-template <typename SampleType>
-SampleType moduloTwoPi (SampleType a)
-{
-    SampleType c = std::fmod (a, juce::MathConstants<SampleType>::twoPi); // This is actually the remainder
-    if (c < 0)
-        c += juce::MathConstants<SampleType>::twoPi;
-    return c;
 }
 
 template <typename SampleType>

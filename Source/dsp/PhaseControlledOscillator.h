@@ -55,6 +55,9 @@ public:
     /** Sets the wave shape function of the oscillator. */
     void setShape (PhaseControlledOscillatorWaveShape);
 
+    /** Call the approximated wave shape function */
+    SampleType waveShapeFunc (SampleType);
+
     /** Sets the rate (in Hz) of the oscillator */
     void setRate (SampleType);
 
@@ -118,7 +121,8 @@ private:
     SampleType samplesToPhase (size_t);
 
     //==============================================================================
-    std::function<SampleType (SampleType)> waveShapeFunc;
+    const size_t lookup_size = 64;
+    juce::dsp::LookupTableTransform<SampleType> lookup;
 
     SampleType sampleRate = 44100.0;
     // Phase derivative (not frequency)

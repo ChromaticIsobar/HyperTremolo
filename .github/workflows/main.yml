@@ -73,7 +73,7 @@ jobs:
             jucer: "JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/MacOSX"
             plugin_buildir: "Builds/MacOSX"
-            build_cmd: xcodebuild -project *.xcodeproj -jobs 4 -configuration Release -alltargets | xcpretty
+            build_cmd: xcodebuild -project *.xcodeproj -parallelizeTargets -alltargets -configuration Release | xcpretty
             build_prefix: "build/Release"
             standalone_ext: .app
             label: macos
