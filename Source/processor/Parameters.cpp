@@ -45,7 +45,11 @@ ThroughZeroAndFrequencySetterListener::ThroughZeroAndFrequencySetterListener (
     std::function<std::atomic<float>*(juce::StringRef)> vtsGetter,
     juce::String freqID,
     juce::String tzeroID)
-    : frequencySetterFunction (frequencySetter), throughZeroSetterFunction (throughZeroSetter), valueTreeStateGetterFunction (vtsGetter), frequencyParameterID (freqID), throughZeroParameterID (tzeroID)
+    : frequencyParameterID (freqID),
+      throughZeroParameterID (tzeroID),
+      frequencySetterFunction (frequencySetter),
+      throughZeroSetterFunction (throughZeroSetter),
+      valueTreeStateGetterFunction (vtsGetter)
 {
 }
 

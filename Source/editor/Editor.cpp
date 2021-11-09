@@ -30,10 +30,19 @@
 //==============================================================================
 HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
                                                     juce::AudioProcessorValueTreeState& vts)
-    : AudioProcessorEditor (&p), valueTreeState (vts), mixKnob ("mix"), gainKnob ("gain"),
-    tremZeroToggle ("tremZero"), tremRateKnob ("tremRate"), tremRatioKnob ("tremRatio"), tremMixKnob ("tremMix"),
-    xoverFreqKnob ("xoverFreq"), xoverResonKnob ("xoverReson"), xoverBalanceKnob ("xoverBalance"), xoverMixKnob ("xoverMix"),
-    tremSyncButton ("tremSync")
+    : AudioProcessorEditor (&p),
+      mixKnob ("mix"),
+      gainKnob ("gain"),
+      tremRateKnob ("tremRate"),
+      tremRatioKnob ("tremRatio"),
+      tremMixKnob ("tremMix"),
+      xoverFreqKnob ("xoverFreq"),
+      xoverResonKnob ("xoverReson"),
+      xoverBalanceKnob ("xoverBalance"),
+      xoverMixKnob ("xoverMix"),
+      tremZeroToggle ("tremZero"),
+      tremSyncButton ("tremSync"),
+      valueTreeState (vts)
 {
     // Set up button images
     auto offColour = getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId);
