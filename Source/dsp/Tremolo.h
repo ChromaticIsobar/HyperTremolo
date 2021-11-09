@@ -128,7 +128,7 @@ private:
     juce::dsp::Bias<SampleType> amBias;
     PhaseControlledOscillator<SampleType> lfo;
     std::unique_ptr<juce::AudioBuffer<SampleType>> amBuffer;
-    SampleType rampLength = 0.005;
+    SampleType rampLength = static_cast<SampleType> (0.005);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Tremolo<SampleType>)
 };
