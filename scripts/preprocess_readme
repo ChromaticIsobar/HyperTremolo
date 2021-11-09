@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 
-OLD_PATTERN="https\:\/\/gist.githubusercontent.com\/ChromaticIsobar\/6ce8126b4bc9a02594282bde2909f02b\/raw\/"
-NEW_STRING="https\:\/\/gist.githubusercontent.com\/ChromaticIsobar\/6ce8126b4bc9a02594282bde2909f02b\/raw\/$1\/"
+OLD_GIST_URL="https\:\/\/gist.githubusercontent.com\/ChromaticIsobar\/6ce8126b4bc9a02594282bde2909f02b\/raw\/"
+NEW_GIST_URL="https\:\/\/gist.githubusercontent.com\/ChromaticIsobar\/6ce8126b4bc9a02594282bde2909f02b\/raw\/$1\/"
 
-grep -v "<!-- DELETE -->" README.md | sed "s/$OLD_PATTERN/$NEW_STRING/"
+OLD_VERSION="<x>.<y>.<z>"
+if [[ -z "$2" ]]; then
+  NEW_VERESION="$OLD_VERSION";
+else
+  NEW_VERSION="$2";
+fi
+
+grep -v "<!-- DELETE -->" README.md | sed "s/$OLD_GIST_URL/$NEW_GIST_URL/" | sed "s/$OLD_VERSION/$NEW_VERSION/"
