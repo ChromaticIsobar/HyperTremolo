@@ -33,8 +33,9 @@ SetterListener::SetterListener (std::function<void (float)> f)
 {
 }
 
-void SetterListener::parameterChanged (const juce::String&, float newValue)
+void SetterListener::parameterChanged (const juce::String& ONLY_ON_DEBUG(id), float newValue)
 {
+    DBG ("SetterListener: " << id << " <- " << newValue);
     setterFunction (newValue);
 }
 
@@ -55,6 +56,7 @@ ThroughZeroAndFrequencySetterListener::ThroughZeroAndFrequencySetterListener (
 
 void ThroughZeroAndFrequencySetterListener::parameterChanged (const juce::String& id, float newValue)
 {
+    DBG ("ThroughZeroAndFrequencySetterListener: " << id << " <- " << newValue);
     float freq;
     bool throughZero;
     if (id.compare (frequencyParameterID) == 0)
@@ -87,7 +89,23 @@ TremSyncSetterListener::TremSyncSetterListener (
 
 void TremSyncSetterListener::parameterChanged (const juce::String& ONLY_ON_DEBUG(id), float newValue)
 {
-    DBG ("TremSyncSetterListener: " << id << " -> " << newValue);
+    DBG ("TremSyncSetterListener: " << id << " <- " << newValue);
     if (newValue)
         sync();
+}
+
+//==============================================================================
+void sendValueChangedMessageToAllListeners (juce::AudioProcessorValueTreeState& valueTreeState)
+{
+    DBG ("--- sendValueChangedMessageToAllListeners ------------------------");
+    std::unique_ptr<juce::XmlElement> xml (valueTreeState.copyState().createXml());
+    for (auto* element : xml->getChildWithTagNameIterator ("PARAM"))
+    {
+        const juce::String& id = element->getStringAttribute ("id");
+        auto* param = valueTreeState.getParameter (id);
+        auto val = param->getValue();
+        DBG (id << "->sendValueChangedMessageToListeners (" << val << ")");
+        param->sendValueChangedMessageToListeners (val);
+    }
+    DBG ("------------------------------------------------------------------");
 }
