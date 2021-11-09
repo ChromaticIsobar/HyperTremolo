@@ -98,43 +98,37 @@ public:
             return;
         }
 
-        juce::dsp::AudioBlock<float> lpfBlock (*lpfBuffer), hpfBlock (*hpfBuffer);
-
+        juce::dsp::AudioBlock<float> lpfBlock (*lpfBuffer);
         jassert (lpfBlock.getNumSamples() >= numSamples);
-        jassert (hpfBlock.getNumSamples() >= numSamples);
 
-        // Split signals
+        // Process LPF path (non-replacing)
+        dryWet.pushDrySamples (inputBlock);
         lpf.process (juce::dsp::ProcessContextNonReplacing<SampleType> (inputBlock, lpfBlock));
-        hpf.process (juce::dsp::ProcessContextNonReplacing<SampleType> (inputBlock, hpfBlock));
-
-        // Dry/wet mix on filters
-        dryWet.pushDrySamples (inputBlock);
         dryWet.mixWetSamples (lpfBlock);
+
+        // Process HPF path (replacing)
         dryWet.pushDrySamples (inputBlock);
-        dryWet.mixWetSamples (hpfBlock);
+        hpf.process (context);
+        dryWet.mixWetSamples (outputBlock);
 
         // Apply band-wise process functions
         process_lpf (juce::dsp::ProcessContextReplacing<SampleType> (lpfBlock));
-        process_hpf (juce::dsp::ProcessContextReplacing<SampleType> (hpfBlock));
+        process_hpf (juce::dsp::ProcessContextReplacing<SampleType> (outputBlock));
 
         // Mix signals
-        SampleType b = 2;
-        b *= balance;
-        outputBlock.replaceWithProductOf (lpfBlock, b);
-        b = 2 - b;
-        outputBlock.addProductOf (hpfBlock, b);
+        balance.pushDrySamples (lpfBlock);
+        balance.mixWetSamples (outputBlock);
     }
 
 private:
     //==============================================================================
     juce::dsp::StateVariableTPTFilter<SampleType> lpf, hpf;
-    juce::dsp::DryWetMixer<SampleType> dryWet;
+    juce::dsp::DryWetMixer<SampleType> dryWet, balance;
 
     //==============================================================================
-    std::unique_ptr<juce::AudioBuffer<SampleType>> lpfBuffer, hpfBuffer;
+    std::unique_ptr<juce::AudioBuffer<SampleType>> lpfBuffer;
 
     //==============================================================================
-    SampleType balance = 0.5;
     double sampleRate = 44100.0;
     std::function<void (juce::dsp::ProcessContextReplacing<SampleType>)> process_lpf,
         process_hpf;

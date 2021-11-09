@@ -35,6 +35,8 @@ CrossoverWithBuffer<SampleType>::CrossoverWithBuffer()
 {
     lpf.setType (juce::dsp::StateVariableTPTFilterType::lowpass);
     hpf.setType (juce::dsp::StateVariableTPTFilterType::highpass);
+    balance.setMixingRule (juce::dsp::DryWetMixingRule::sin3dB);
+    balance.setWetMixProportion (0.5);
 }
 
 //==============================================================================
@@ -61,7 +63,7 @@ void CrossoverWithBuffer<SampleType>::setMix (SampleType newMix)
 template <typename SampleType>
 void CrossoverWithBuffer<SampleType>::setBalance (SampleType newBalance)
 {
-    balance = juce::jmin (juce::jmax (newBalance, (SampleType) 0), (SampleType) 1);
+    balance.setWetMixProportion (newBalance);
 }
 
 template <typename SampleType>
@@ -82,12 +84,10 @@ void CrossoverWithBuffer<SampleType>::prepare (const juce::dsp::ProcessSpec& spe
 {
     sampleRate = spec.sampleRate;
     dryWet.prepare (spec);
+    balance.prepare (spec);
     lpf.prepare (spec);
     hpf.prepare (spec);
     lpfBuffer.reset (
-        new juce::AudioBuffer<SampleType> (
-            spec.numChannels, spec.maximumBlockSize));
-    hpfBuffer.reset (
         new juce::AudioBuffer<SampleType> (
             spec.numChannels, spec.maximumBlockSize));
 }
@@ -96,6 +96,7 @@ template <typename SampleType>
 void CrossoverWithBuffer<SampleType>::reset()
 {
     dryWet.reset();
+    balance.reset();
     lpf.reset();
     hpf.reset();
 }
