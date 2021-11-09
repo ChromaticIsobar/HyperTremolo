@@ -82,10 +82,10 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
     // Apply controls to the editor
     mixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     gainKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
-    tremZeroToggle.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    tremZeroToggle.applyTo (*this, valueTreeState, knobLabelHeight);
     tremRateKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremRatioKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
-    tremSyncButton.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight, false);
+    tremSyncButton.applyTo (*this, valueTreeState, knobLabelHeight, false);
     tremMixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverFreqKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverResonKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);

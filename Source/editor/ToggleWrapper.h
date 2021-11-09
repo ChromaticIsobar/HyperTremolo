@@ -61,7 +61,6 @@ public:
     /** Apply a knob onto a processor editor. */
     void applyTo (juce::AudioProcessorEditor&,
                   juce::AudioProcessorValueTreeState&,
-                  int labelWidth,
                   int newLabelHeight,
                   bool setName = true);
 

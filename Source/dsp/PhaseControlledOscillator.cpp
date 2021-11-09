@@ -78,7 +78,7 @@ void PhaseControlledOscillator<SampleType>::setRate (SampleType newRate)
 
 //==============================================================================
 template <typename SampleType>
-SampleType PhaseControlledOscillator<SampleType>::getPhase (int delay)
+SampleType PhaseControlledOscillator<SampleType>::getPhase (size_t delay)
 {
     return phase.phase + samplesToPhase (delay);
 }
@@ -142,7 +142,7 @@ SampleType PhaseControlledOscillator<SampleType>::getOffset()
 
 //==============================================================================
 template <typename SampleType>
-SampleType PhaseControlledOscillator<SampleType>::samplesToPhase (int samples)
+SampleType PhaseControlledOscillator<SampleType>::samplesToPhase (size_t samples)
 {
     return rate * samples / sampleRate;
 }

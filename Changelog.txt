@@ -1,5 +1,7 @@
 v0.2.0
 - Made 'sync' button automatable
+- Make 'balance' knob smoother and turned it around to make it more conventional: turn left for darker sound, turn right for brighter sound
+- Fixed compiler warnings under windows
 
 v0.1.0
 - Now built with GitHub Actions!
@@ -7,4 +9,3 @@ v0.1.0
 
 v0.0.0
 - First pre-release
-

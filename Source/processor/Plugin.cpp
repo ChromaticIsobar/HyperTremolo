@@ -126,16 +126,16 @@ int HyperTremoloPlugin::getCurrentProgram()
     return 0;
 }
 
-void HyperTremoloPlugin::setCurrentProgram (int index)
+void HyperTremoloPlugin::setCurrentProgram (int)
 {
 }
 
-const juce::String HyperTremoloPlugin::getProgramName (int index)
+const juce::String HyperTremoloPlugin::getProgramName (int)
 {
     return {};
 }
 
-void HyperTremoloPlugin::changeProgramName (int index, const juce::String& newName)
+void HyperTremoloPlugin::changeProgramName (int, const juce::String&)
 {
 }
 
@@ -186,7 +186,7 @@ bool HyperTremoloPlugin::isBusesLayoutSupported (const BusesLayout& layouts) con
 }
 #endif
 
-void HyperTremoloPlugin::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+void HyperTremoloPlugin::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
     juce::ScopedNoDenormals noDenormals;
     auto totalNumInputChannels = getTotalNumInputChannels();

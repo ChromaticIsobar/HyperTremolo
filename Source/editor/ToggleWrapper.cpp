@@ -84,7 +84,6 @@ ToggleWrapper::ToggleWrapper (juce::String id, bool clickingTogglesState)
 
 void ToggleWrapper::applyTo (juce::AudioProcessorEditor& editor,
                              juce::AudioProcessorValueTreeState& vts,
-                             int labelWidth,
                              int newLabelHeight,
                              bool setName)
 {
