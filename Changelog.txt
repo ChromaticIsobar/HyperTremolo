@@ -1,4 +1,5 @@
 - Enforce parameter loading for all parameters
+- Optimize oscillator with lookup table approximation
 
 v0.2.0
 - Made 'sync' button automatable
