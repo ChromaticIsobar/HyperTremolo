@@ -26,6 +26,7 @@
 */
 
 #include "Parameters.h"
+#include "../Commons.h"
 
 SetterListener::SetterListener (std::function<void (float)> f)
     : setterFunction (f)
@@ -80,7 +81,7 @@ TremSyncSetterListener::TremSyncSetterListener (
 {
 }
 
-void TremSyncSetterListener::parameterChanged (const juce::String& id, float newValue)
+void TremSyncSetterListener::parameterChanged (const juce::String& ONLY_ON_DEBUG(id), float newValue)
 {
     DBG ("TremSyncSetterListener: " << id << " -> " << newValue);
     if (newValue)
