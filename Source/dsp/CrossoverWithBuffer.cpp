@@ -30,8 +30,8 @@
 //==============================================================================
 template <typename SampleType>
 CrossoverWithBuffer<SampleType>::CrossoverWithBuffer()
-    : process_lpf ([] (juce::dsp::ProcessContextReplacing<SampleType> context) {}),
-      process_hpf ([] (juce::dsp::ProcessContextReplacing<SampleType> context) {})
+    : process_lpf ([] (juce::dsp::ProcessContextReplacing<SampleType>) {}),
+      process_hpf ([] (juce::dsp::ProcessContextReplacing<SampleType>) {})
 {
     lpf.state->type = juce::dsp::StateVariableFilter::Parameters<SampleType>::Type::lowPass;
     hpf.state->type = juce::dsp::StateVariableFilter::Parameters<SampleType>::Type::highPass;

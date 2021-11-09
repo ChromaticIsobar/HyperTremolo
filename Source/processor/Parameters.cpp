@@ -32,7 +32,7 @@ SetterListener::SetterListener (std::function<void (float)> f)
 {
 }
 
-void SetterListener::parameterChanged (const juce::String& id, float newValue)
+void SetterListener::parameterChanged (const juce::String&, float newValue)
 {
     setterFunction (newValue);
 }
