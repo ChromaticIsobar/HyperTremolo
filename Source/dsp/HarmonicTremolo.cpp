@@ -32,6 +32,11 @@ HarmonicTremolo<SampleType>::HarmonicTremolo()
 {
 }
 
+template <typename SampleType>
+HarmonicTremolo<SampleType>::~HarmonicTremolo()
+{
+}
+
 //==============================================================================
 template <typename SampleType>
 void HarmonicTremolo<SampleType>::setCrossoverFrequency (SampleType f)

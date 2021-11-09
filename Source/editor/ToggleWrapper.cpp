@@ -84,12 +84,13 @@ ToggleWrapper::ToggleWrapper (juce::String id, bool clickingTogglesState)
 
 void ToggleWrapper::applyTo (juce::AudioProcessorEditor& editor,
                              juce::AudioProcessorValueTreeState& vts,
-                             int labelWidth,
-                             int newLabelHeight)
+                             int newLabelHeight,
+                             bool setName)
 {
     labelHeight = newLabelHeight;
     auto param = vts.getParameter (id);
-    label.setText (param->getName (32), juce::dontSendNotification);
+    if (setName)
+        label.setText (param->getName (32), juce::dontSendNotification);
     attachment.reset (
         new juce::AudioProcessorValueTreeState::ButtonAttachment (
             vts, id, toggle));
@@ -160,6 +161,27 @@ void ToggleWrapper::setImages (bool resizeButtonNowToFitThisImage,
 void ToggleWrapper::setOnClick (std::function<void()> f)
 {
     toggle.onClick = f;
+}
+
+void ToggleWrapper::setOnStateChange (std::function<void()> f)
+{
+    toggle.onStateChange = f;
+}
+
+void ToggleWrapper::setOnStateChange (juce::Button::ButtonState state)
+{
+    setOnStateChange (std::bind (&ToggleWrapper::triggerOn, this, state));
+}
+
+void ToggleWrapper::triggerOn (juce::Button::ButtonState state)
+{
+    if (turnNext && toggle.getState() == state)
+    {
+        toggle.triggerClick();
+        turnNext = false;
+    }
+    else
+        turnNext = true;
 }
 
 void ToggleWrapper::setTooltip (const juce::String& newToolTip)

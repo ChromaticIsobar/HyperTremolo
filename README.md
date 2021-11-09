@@ -1,6 +1,7 @@
 # HyperTremolo
 
-[![Projucer CI/CD Badge](https://github.com/ChromaticIsobar/HyperTremolo/actions/workflows/main.yml/badge.svg)](https://github.com/ChromaticIsobar/HyperTremolo/actions/workflows/main.yml)
+[![Projucer CI/CD Badge](https://github.com/ChromaticIsobar/HyperTremolo/actions/workflows/main.yml/badge.svg)](https://github.com/ChromaticIsobar/HyperTremolo/actions/workflows/main.yml)<!-- DELETE -->
+[![Download Badge](https://img.shields.io/badge/download-zip-blueviolet)](https://chromaticisobar.github.io/HyperTremolo/)<!-- DELETE -->
 
 HyperTremolo is a Dual Amplitude Modulator effect. It is designed to be an Harmonic Tremolo, but can be tweaked to get a lot of different effects, from haunting Ring Modulations to Rotary Speaker emulations!
 
@@ -26,7 +27,7 @@ The parameters are divided in three sections
 ### Filter
  - __Crossover__: the cutoff frequency of the low-pass and high-pass filters
  - __Resonance__: the resonance of the low-pass and high-pass filters
- - __Balance__: the mix of the low-pass and high-pass signals. With a balance of 1, only the low-pass signal is mixed. With a balance of 0, only the hi-pass signal is mixed
+ - __Balance__: the mix of the low-pass and high-pass signals. With a balance of 0, only the low-pass signal is mixed. With a balance of 1, only the hi-pass signal is mixed
  - __Harmonic__:  The mix between the filtered signal and the bypassed signal. With values close to 1, the effect is more similar to an _harmonic tremolo_. With values close to 0, the effect is more similar to an ordinary _tremolo_
 
 ### Mixer
@@ -35,18 +36,17 @@ The parameters are divided in three sections
 
 <div style="page-break-after: always;"></div>
 
-## Known Limitations
- - _Sync_ button is not automatable
+<!--## Known Limitations -->
 
 ## Example Settings
 |                    | Through-0 | Rate | Ratio | Sync | Depth | Crossover | Resonance | Balance | Harmonic | Gain | Mix  |
 |--------------------|-----------|------|-------|------|-------|-----------|-----------|---------|----------|------|------|
 | Fast Pulsar        |     ✗     | 6.00 | 1.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   1.00   | 3.00 | 1.00 |
 | Slow Phaser        |     ✗     | 0.75 | 1.00  |   ✓  | 0.90  |  1000.0   |   0.707   |  0.50   |   1.00   | 3.00 | 1.00 |
-| Subtle Rotary      |     ✗     | 1.33 | 4.50  |   ✗  | 0.75  |  1000.0   |   0.707   |  0.40   |   1.00   | 3.00 | 1.00 |
+| Subtle Rotary      |     ✗     | 1.33 | 4.50  |   ✗  | 0.75  |  1000.0   |   0.707   |  0.60   |   1.00   | 3.00 | 1.00 |
 | Rotary Cabinet     |     ✓     | 1.33 | 4.50  |   ✗  | 1.00  |  1000.0   |   1.25    |  0.50   |   1.00   | 0.00 | 1.00 |
 | Dual Trem          |     ✗     | 2.00 | 4.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   0.00   | 0.00 | 1.00 |
-| Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.666  |   0.50   | 3.00 | 1.00 |
+| Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.333  |   0.50   | 3.00 | 1.00 |
 
 ## Setup instructions
 You can find the latest release on GitHub at https://github.com/ChromaticIsobar/HyperTremolo/releases

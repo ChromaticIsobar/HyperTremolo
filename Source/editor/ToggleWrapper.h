@@ -61,8 +61,8 @@ public:
     /** Apply a knob onto a processor editor. */
     void applyTo (juce::AudioProcessorEditor&,
                   juce::AudioProcessorValueTreeState&,
-                  int labelWidth,
-                  int newLabelHeight);
+                  int newLabelHeight,
+                  bool setName = true);
 
     /** Set the bounding boxes of the slider and label. */
     void setBounds (juce::Rectangle<int>);
@@ -85,11 +85,21 @@ public:
     /** Sets the callback function. */
     void setOnClick (std::function<void()>);
 
+    /** Sets the onStateChange callback function */
+    void setOnStateChange (std::function<void()>);
+
+    /** Sets the callback function to 'triggerOn' */
+    void setOnStateChange (juce::Button::ButtonState state = juce::Button::ButtonState::buttonDown);
+
+    /** Trigger click if on a specific state */
+    void triggerOn (juce::Button::ButtonState state = juce::Button::ButtonState::buttonDown);
+
     /** Sets the tooltip for the button.  */
     void setTooltip (const juce::String&);
 
 private:
     //==============================================================================
+    bool turnNext = true;
     int labelHeight = 16;
     juce::String id;
     juce::Label label;

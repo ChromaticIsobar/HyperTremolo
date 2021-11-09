@@ -75,6 +75,24 @@ void Tremolo<SampleType>::setMix (SampleType newMix)
     dryWet.setWetMixProportion (newMix);
 }
 
+template <typename SampleType>
+void Tremolo<SampleType>::setOffset (SampleType v)
+{
+    lfo.setOffset (v);
+}
+
+template <typename SampleType>
+void Tremolo<SampleType>::setOffset (SampleType tv, SampleType cv)
+{
+    lfo.setOffset (tv, cv);
+}
+
+template <typename SampleType>
+SampleType Tremolo<SampleType>::getOffset()
+{
+    return lfo.getOffset();
+}
+
 //==============================================================================
 template <typename SampleType>
 SampleType Tremolo<SampleType>::getPhase()

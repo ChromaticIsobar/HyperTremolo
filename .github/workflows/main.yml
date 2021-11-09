@@ -208,7 +208,7 @@ jobs:
 
     - name: Make input file
       run: |
-        ./scripts/preprocess_readme ${{ steps.gist-version.outputs.GIST_VERSION }} > docs/README.md
+        ./scripts/preprocess_readme ${{ steps.gist-version.outputs.GIST_VERSION }} ${{ needs.build.outputs.plugin_version }} > docs/README.md
 
     - name: Upload input file
       uses: actions/upload-artifact@v2

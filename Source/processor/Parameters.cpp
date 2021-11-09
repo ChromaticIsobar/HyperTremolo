@@ -26,13 +26,14 @@
 */
 
 #include "Parameters.h"
+#include "../Commons.h"
 
 SetterListener::SetterListener (std::function<void (float)> f)
     : setterFunction (f)
 {
 }
 
-void SetterListener::parameterChanged (const juce::String& id, float newValue)
+void SetterListener::parameterChanged (const juce::String&, float newValue)
 {
     setterFunction (newValue);
 }
@@ -44,7 +45,11 @@ ThroughZeroAndFrequencySetterListener::ThroughZeroAndFrequencySetterListener (
     std::function<std::atomic<float>*(juce::StringRef)> vtsGetter,
     juce::String freqID,
     juce::String tzeroID)
-    : frequencySetterFunction (frequencySetter), throughZeroSetterFunction (throughZeroSetter), valueTreeStateGetterFunction (vtsGetter), frequencyParameterID (freqID), throughZeroParameterID (tzeroID)
+    : frequencyParameterID (freqID),
+      throughZeroParameterID (tzeroID),
+      frequencySetterFunction (frequencySetter),
+      throughZeroSetterFunction (throughZeroSetter),
+      valueTreeStateGetterFunction (vtsGetter)
 {
 }
 
@@ -71,4 +76,18 @@ void ThroughZeroAndFrequencySetterListener::parameterChanged (const juce::String
         return;
     }
     frequencySetterFunction (freq / (throughZero + 1.0f));
+}
+
+//==============================================================================
+TremSyncSetterListener::TremSyncSetterListener (
+    std::function<void()> sync)
+    : sync (sync)
+{
+}
+
+void TremSyncSetterListener::parameterChanged (const juce::String& ONLY_ON_DEBUG(id), float newValue)
+{
+    DBG ("TremSyncSetterListener: " << id << " -> " << newValue);
+    if (newValue)
+        sync();
 }

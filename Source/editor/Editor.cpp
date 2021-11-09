@@ -30,10 +30,19 @@
 //==============================================================================
 HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
                                                     juce::AudioProcessorValueTreeState& vts)
-    : AudioProcessorEditor (&p), valueTreeState (vts), mixKnob ("mix"), gainKnob ("gain"),
-    tremZeroToggle ("tremZero"), tremRateKnob ("tremRate"), tremRatioKnob ("tremRatio"), tremMixKnob ("tremMix"),
-    xoverFreqKnob ("xoverFreq"), xoverResonKnob ("xoverReson"), xoverBalanceKnob ("xoverBalance"), xoverMixKnob ("xoverMix"),
-    tremSyncButton ("tremSync", false)
+    : AudioProcessorEditor (&p),
+      mixKnob ("mix"),
+      gainKnob ("gain"),
+      tremRateKnob ("tremRate"),
+      tremRatioKnob ("tremRatio"),
+      tremMixKnob ("tremMix"),
+      xoverFreqKnob ("xoverFreq"),
+      xoverResonKnob ("xoverReson"),
+      xoverBalanceKnob ("xoverBalance"),
+      xoverMixKnob ("xoverMix"),
+      tremZeroToggle ("tremZero"),
+      tremSyncButton ("tremSync"),
+      valueTreeState (vts)
 {
     // Set up button images
     auto offColour = getLookAndFeel().findColour (juce::Slider::ColourIds::rotarySliderFillColourId);
@@ -52,9 +61,9 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
 
     tremSyncButton.setImages (
         true, false, true, offImg, 1.0f, {}, onImg, 0.333f, {}, onImg, 1.0f, {}, 0.9f);
-    tremSyncButton.setOnClick (std::bind (&HyperTremoloPlugin::sync, &p));
     addAndMakeVisible (tooltipWindow);
     tremSyncButton.setTooltip ("Sync the two tremolos. Click\nthis when setting ratio to 1");
+    tremSyncButton.setOnStateChange();
 
     // Footer
     auto footerLabelColor = getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId);
@@ -82,10 +91,10 @@ HyperTremoloPluginEditor::HyperTremoloPluginEditor (HyperTremoloPlugin& p,
     // Apply controls to the editor
     mixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     gainKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
-    tremZeroToggle.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    tremZeroToggle.applyTo (*this, valueTreeState, knobLabelHeight);
     tremRateKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     tremRatioKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
-    tremSyncButton.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
+    tremSyncButton.applyTo (*this, valueTreeState, knobLabelHeight, false);
     tremMixKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverFreqKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);
     xoverResonKnob.applyTo (*this, valueTreeState, knobWidth, knobLabelHeight);

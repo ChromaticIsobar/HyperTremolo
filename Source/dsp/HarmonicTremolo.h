@@ -45,6 +45,7 @@ class HarmonicTremolo
 public:
     //==============================================================================
     HarmonicTremolo();
+    virtual ~HarmonicTremolo();
 
     //==============================================================================
     /** Sets the cutoff frequency (in Hz) of the crossover filters. */
@@ -99,11 +100,9 @@ public:
     {
         const auto& inputBlock = context.getInputBlock();
         auto& outputBlock = context.getOutputBlock();
-        const auto numChannels = outputBlock.getNumChannels();
-        const auto numSamples = outputBlock.getNumSamples();
 
-        jassert (inputBlock.getNumChannels() == numChannels);
-        jassert (inputBlock.getNumSamples() == numSamples);
+        jassert (inputBlock.getNumChannels() == outputBlock.getNumChannels());
+        jassert (inputBlock.getNumSamples() == outputBlock.getNumSamples());
 
         if (context.isBypassed)
         {

@@ -67,6 +67,15 @@ public:
     */
     void setMix (SampleType newMix);
 
+    /** Sets the phase offset target value */
+    void setOffset (SampleType);
+
+    /** Sets the phase offset target and current value */
+    void setOffset (SampleType, SampleType);
+
+    /** Gets the phase offset target value */
+    SampleType getOffset();
+
     //==============================================================================
     /** Gets the current phase of the modulant LFO. */
     SampleType getPhase();
@@ -88,11 +97,9 @@ public:
     {
         const auto& inputBlock = context.getInputBlock();
         auto& outputBlock = context.getOutputBlock();
-        const auto numChannels = outputBlock.getNumChannels();
-        const auto numSamples = outputBlock.getNumSamples();
 
-        jassert (inputBlock.getNumChannels() == numChannels);
-        jassert (inputBlock.getNumSamples() == numSamples);
+        jassert (inputBlock.getNumChannels() == outputBlock.getNumChannels());
+        jassert (inputBlock.getNumSamples() == outputBlock.getNumSamples());
 
         if (context.isBypassed)
         {
@@ -119,7 +126,7 @@ private:
     juce::dsp::Bias<SampleType> amBias;
     PhaseControlledOscillator<SampleType> lfo;
     std::unique_ptr<juce::AudioBuffer<SampleType>> amBuffer;
-    SampleType rampLength = 0.005;
+    SampleType rampLength = static_cast<SampleType> (0.005);
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Tremolo<SampleType>)
 };
