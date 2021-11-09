@@ -45,6 +45,7 @@ class HarmonicTremolo
 public:
     //==============================================================================
     HarmonicTremolo();
+    virtual ~HarmonicTremolo();
 
     //==============================================================================
     /** Sets the cutoff frequency (in Hz) of the crossover filters. */
