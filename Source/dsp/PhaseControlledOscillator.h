@@ -63,7 +63,7 @@ public:
             If a delay in samples is specified, then it gets the phase of the
             oscillator after said delay
         */
-    SampleType getPhase (int delay = 0);
+    SampleType getPhase (size_t delay = 0);
 
     //==============================================================================
     /** Initialises the oscillator. */
@@ -119,7 +119,7 @@ public:
 private:
     //==============================================================================
     /** Convert a value in samples to the corresponding oscillator phase */
-    SampleType samplesToPhase (int);
+    SampleType samplesToPhase (size_t);
 
     //==============================================================================
     std::function<SampleType (SampleType)> waveShapeFunc;

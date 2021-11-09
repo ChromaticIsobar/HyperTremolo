@@ -141,8 +141,8 @@ private:
     std::unique_ptr<juce::AudioBuffer<SampleType>> lpfBuffer, hpfBuffer;
 
     //==============================================================================
-    SampleType sampleRate = 44100.0, resonance = 1.0, cutOffFrequency = 1000.0,
-               balance = 0.5;
+    SampleType resonance = 1.0, cutOffFrequency = 1000.0, balance = 0.5;
+    double sampleRate = 44100.0;
     std::function<void (juce::dsp::ProcessContextReplacing<SampleType>)> process_lpf,
         process_hpf;
 
