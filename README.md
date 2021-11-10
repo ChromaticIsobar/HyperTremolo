@@ -81,6 +81,9 @@ Standalone applications require no installation. Plugins must be copied to the p
 | MacOS   | VST3         | Library/Audio/Plug-ins/VST3              |
 | MacOS   | AU           | Library/Audio/Plug-ins/Components        |
 
+### Build from source<!-- DELETE -->
+Check out [`BUILD.md`](BUILD.md) for instructions on how to build from source<!-- DELETE -->
+
 <div style="page-break-after: always;"></div>
 
 ## Contacts

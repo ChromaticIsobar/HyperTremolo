@@ -39,6 +39,7 @@ class HyperTremoloPlugin  : public juce::AudioProcessor
 public:
     //==============================================================================
     HyperTremoloPlugin();
+    ~HyperTremoloPlugin();
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -78,15 +79,18 @@ public:
 
 private:
     //==============================================================================
+    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
+    void initializeListeners();
+
+    //==============================================================================
     juce::dsp::DryWetMixer<float> dryWet;
     DualTremolo<float> processor;
     juce::dsp::Gain<float> gain;
 
     //==============================================================================
     juce::AudioProcessorValueTreeState valueTreeState;
-    SetterListener gainSetter, mixSetter, tremRatioSetter, tremMixSetter, xoverFreqSetter, xoverResonSetter, xoverBalanceSetter, xoverMixSetter;
-    ThroughZeroAndFrequencySetterListener tremT0AndFSetter;
-    TremSyncSetterListener tremSyncSetter;
+    std::vector<juce::String> listeners_ids;
+    std::vector<juce::AudioProcessorValueTreeState::Listener*> listeners;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HyperTremoloPlugin)

@@ -48,12 +48,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-18.04, macos-latest, windows-latest]
         platform: ["", Win32, x64]
         exclude:
-          - os: ubuntu-latest
+          - os: ubuntu-18.04
             platform: Win32
-          - os: ubuntu-latest
+          - os: ubuntu-18.04
             platform: x64
           - os: macos-latest
             platform: Win32
@@ -62,11 +62,11 @@ jobs:
           - os: windows-latest
             platform: ""
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-18.04
             jucer: "JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/LinuxMakefile"
             plugin_buildir: "Builds/LinuxMakefile"
-            build_cmd: make -j4
+            build_cmd: make -j4 CONFIG=Release
             build_prefix: "build"
             label: linux
           - os: macos-latest
@@ -182,7 +182,7 @@ jobs:
 
   build-docs:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
       with:
@@ -230,7 +230,7 @@ jobs:
 
   release:
     if: ${{ contains(github.event.head_commit.message, '[RELEASE]') || contains(github.event.head_commit.message, '[PRERELEASE]') }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: [build, build-docs]
 
     steps:
