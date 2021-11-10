@@ -45,3 +45,37 @@ You will find the build artifacts under the `build` subfolder
 | Standalone | Builds/LinuxMakefile/build/HyperTremolo      |
 | VST3       | Builds/LinuxMakefile/build/HyperTremolo.vst3 |
 
+
+## MacOS
+For building under MacOS you'll need `xcodebuild`
+
+### Building the projucer
+Build the projucer using `xcodebuild`.
+From the repository root directory run
+```
+cd "JUCE/extras/Projucer/Builds/MacOSX"
+xcodebuild -project *.xcodeproj -parallelizeTargets -alltargets | xcpretty
+```
+
+### Exporting the build configuration
+Use the projucer to export a build configuration for the plugin.
+From the repository root directory run
+```
+"JUCE/extras/Projucer/Builds/MacOSX/build/Release/Projucer.app/Contents/MacOS/Projucer" --resave *.jucer
+```
+
+### Building the plugin
+Use the exported build configuration to build the plugin.
+From the repository root directory run
+```
+cd "Builds/MacOSX"
+xcodebuild -project *.xcodeproj -parallelizeTargets -alltargets -configuration Release | xcpretty
+```
+
+You will find the build artifacts under the `build` subfolder
+| Artifact   | Path                                               |
+|------------|----------------------------------------------------|
+| Standalone | Builds/MacOSX/build/Release/HyperTremolo.app       |
+| VST3       | Builds/MacOSX/build/Release/HyperTremolo.vst3      |
+| AU         | Builds/MacOSX/build/Release/HyperTremolo.component |
+
