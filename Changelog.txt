@@ -1,3 +1,5 @@
+- Added instructions for building from source
+
 v1.0.0
 - Enforce parameter loading for all parameters
 - Optimize oscillator with lookup table approximation
