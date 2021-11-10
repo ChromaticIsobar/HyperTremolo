@@ -1,3 +1,4 @@
+- Refactored parameters definition
 - Added instructions for building from source
 
 v1.0.0
