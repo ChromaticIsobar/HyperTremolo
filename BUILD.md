@@ -79,3 +79,45 @@ You will find the build artifacts under the `build` subfolder
 | VST3       | Builds/MacOSX/build/Release/HyperTremolo.vst3      |
 | AU         | Builds/MacOSX/build/Release/HyperTremolo.component |
 
+
+## Windows
+For building under Windows you'll need MSBuild. In the following instructions, substitute `<msbuild>` with the path to your MSBuild executable
+
+### Building the projucer
+Build the projucer using MSBuild.
+From the repository root directory run
+```
+cd "JUCE/extras/Projucer/Builds/VisualStudio2019"
+<msbuild> -m:4 *.sln /property:Configuration=Release
+```
+
+### Exporting the build configuration
+Use the projucer to export a build configuration for the plugin.
+From the repository root directory run
+```
+"JUCE/extras/Projucer/Builds/VisualStudio2019/x64/Release/App/Projucer.exe" --resave *.jucer
+```
+
+### Building the plugin
+Use the exported build configuration to build the plugin.
+From the repository root directory run
+```
+cd "Builds/VisualStudio2019"
+```
+
+#### x64
+```
+<msbuild> -m:4 *.sln /property:Configuration=Release /property:Platform=x64
+```
+
+#### Win32
+```
+<msbuild> -m:4 *.sln /property:Configuration=Release /property:Platform=Win32
+```
+
+You will find the build artifacts under a platform-specific subfolder
+| Artifact   | Platform     | Path                                                                                |
+|------------|--------------|------------------------------------------------------------------------------------|
+| Standalone | x64<br>Win32 | Builds/VisualStudio2019/x64/Release/HyperTremolo.exe<br>Builds/VisualStudio2019/Win32/Release/HyperTremolo.exe   |
+| VST3       | x64<br>Win32 | Builds/VisualStudio2019/x64/Release/HyperTremolo.vst3<br>Builds/VisualStudio2019/Win23/Release/HyperTremolo.vst3 |
+
