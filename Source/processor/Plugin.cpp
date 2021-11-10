@@ -50,10 +50,10 @@ HyperTremoloPlugin::HyperTremoloPlugin()
 HyperTremoloPlugin::~HyperTremoloPlugin()
 {
     auto n = listeners.size();
-    for (int i = 0; i < n; ++i)
+    for (unsigned int i = 0; i < n; ++i)
         if (listeners[i] != nullptr)
         {
-            for (int j = i + 1; j < n; ++j)
+            for (unsigned int j = i + 1; j < n; ++j)
                 if (listeners[i] == listeners[j])
                     listeners[j] = nullptr;
             delete listeners[i];
@@ -307,6 +307,6 @@ void HyperTremoloPlugin::initializeListeners()
     jassert (listeners_ids.size() == listeners.size());
 
     auto n = listeners.size();
-    for (int i = 0; i < n; ++i)
+    for (unsigned int i = 0; i < n; ++i)
         valueTreeState.addParameterListener (listeners_ids[i], listeners[i]);
 }
