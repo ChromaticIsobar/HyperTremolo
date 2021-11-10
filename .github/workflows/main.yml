@@ -66,7 +66,7 @@ jobs:
             jucer: "JUCE/extras/Projucer/Builds/LinuxMakefile/build/Projucer"
             jucer_buildir: "JUCE/extras/Projucer/Builds/LinuxMakefile"
             plugin_buildir: "Builds/LinuxMakefile"
-            build_cmd: make -j4
+            build_cmd: make -j4 CONFIG=Release
             build_prefix: "build"
             label: linux
           - os: macos-latest
