@@ -262,6 +262,12 @@ jobs:
     - name: Copy manual to zip folder
       run: cp assets/HyperTremolo_UserManual*.pdf collection
 
+    - name: Set permissions for executables
+      run: |
+        chmod +x \
+          artifacts/HyperTremolo_linux_standalone/HyperTremolo \
+          artifacts/HyperTremolo_macos_standalone/HyperTremolo.app/Contents/MacOS/HyperTremolo
+
     - name: Compress assets
       working-directory: artifacts
       run: |

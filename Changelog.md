@@ -1,3 +1,5 @@
+- Set permissions for executables
+
 v1.0.1
 - Fixed build for linux: release configuration
 - Refactored parameters definition
