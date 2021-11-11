@@ -252,7 +252,7 @@ jobs:
       run: mkdir -p collection/Windows/Win32 collection/Windows/x64 collection/MacOS collection/Linux
 
     - name: Copy changelog to zip folder
-      run: cp Changelog.txt collection
+      run: cp Changelog.md collection/Changelog.txt
 
     - name: Copy manual to assets
       run: |
