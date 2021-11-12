@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Download and install HyperTremolo"""
+import functools
 import tempfile
 import argparse
 import requests
@@ -11,6 +12,40 @@ import stat
 import sys
 import os
 from typing import Sequence
+
+logger = logging.getLogger("HyperTremolo Installer")
+
+
+class ReturnException(Exception):
+  """Exception that represents the will to immediately exit"""
+  value: int = 0
+
+
+class ReturnFailException(ReturnException):
+  """Exception that represents the will to immediately exit
+  because of a failure"""
+  value: int = 1
+
+
+def exit_on_code(func):
+  """Decorator that makes the program exit on a :cls:`ReturnException`"""
+
+  @functools.wraps(func)
+  def func_(*args, **kwargs):
+    rv = s = None
+    try:
+      rv = func(*args, **kwargs)
+    except ReturnException as e:
+      rv = e.value
+      s = str(e)
+    if rv is not None:
+      if rv == 0:
+        logger.info("Done!")
+      else:
+        logger.error(s)
+      sys.exit(rv)
+
+  return func_
 
 
 class ArgParser(argparse.ArgumentParser):
@@ -71,13 +106,17 @@ class ArgParser(argparse.ArgumentParser):
                       default=logging.INFO,
                       help="Log debug messages too")
 
-  def parse_args(self, argv: Sequence[str]):
-    """Parse CLI arguments"""
+  def parse_args(self, argv: Sequence[str]) -> argparse.Namespace:
+    """Parse CLI arguments
+
+    Args:
+      argv (sequence of str): CLI arguments
+
+    Returns:
+      Namespace, int: Parsed arguments and exit code (or :data:`None`)"""
     args = super().parse_args(argv)
-    args.return_val = 0
 
     # Set up logger
-    args.logger = logging.getLogger("HyperTremolo Installer")
     logging.basicConfig(
         level=args.log_level,
         format="%(asctime)s %(name)-12s %(levelname)-8s: %(message)s",
@@ -101,10 +140,9 @@ class ArgParser(argparse.ArgumentParser):
         if args.user:
           args.prefix = os.path.expanduser("~/.vst3")
         else:
-          args.logger.error(
+          raise ReturnFailException(
               "No default system-wide path defined for VST3 plugins. "
               "Please, specify an installation prefix")
-          args.return_val = 1
       args.dest_path = os.path.join(args.prefix, "HyperTremolo.vst3")
     return args
 
@@ -126,38 +164,48 @@ def download_to_file(file, url: str, chunk_size: int = 1 << 13) -> int:
     return r.status_code
 
 
-def main(*argv):
-  args = ArgParser(description=__doc__).parse_args(argv)
-  if args.return_val != 0:
-    return args.return_val
-  logger = args.logger
+def uninstall(args: argparse.Namespace):
+  """Uninstall script
 
-  # Uninstall
-  if args.uninstall:
-    logger.info("Uninstalling HyperTremolo: %s", args.dest_path)
-    if args.standalone:
-      if not os.path.isfile(args.dest_path):
-        logger.error("File not found: %s", args.dest_path)
-        return 1
-      os.remove(args.dest_path)
-    else:
-      if not os.path.isdir(args.dest_path):
-        logger.error("File not found: %s", args.dest_path)
-        return 1
-      shutil.rmtree(args.dest_path)
-    logger.info("Done!")
-    return 0
+  Args:
+    args (Namespace): CLI arguments"""
+  if not args.uninstall:
+    return
+  logger.info("Uninstalling HyperTremolo: %s", args.dest_path)
+  if args.standalone:
+    if not os.path.isfile(args.dest_path):
+      raise ReturnFailException(f"File not found: {args.dest_path}")
+    os.remove(args.dest_path)
+  else:
+    if not os.path.isdir(args.dest_path):
+      raise ReturnFailException(f"File not found: {args.dest_path}")
+    shutil.rmtree(args.dest_path)
+  raise ReturnException()
 
-  # Check installation prefix
+
+def check_prefix_exists(args: argparse.Namespace):
+  """Check that the installation prefix exists
+
+  Args:
+    args (Namespace): CLI arguments"""
   if not os.path.isdir(args.prefix):
-    logger.error("Installation prefix does not exist: %s", args.prefix)
-    logger.error("Please, check that the path is correct and, "
-                 "eventually, create it")
-    return 1
+    raise ReturnFailException(
+        f"Installation prefix does not exist: '{args.prefix}'. "
+        "Please, check that the path is correct and, "
+        "eventually, create it")
   else:
     if not args.list:
       logger.info("Installing HyperTremolo: %s", args.dest_path)
 
+
+def lookup(args: argparse.Namespace) -> str:
+  """Look for a release asset that matches the requirements
+
+  Args:
+    args (Namespace): CLI arguments
+
+  Returns:
+    str: The asset download URL"""
   # Get releases information
   releases = requests.get(args.release_endpoint,
                           headers={"Accept": "application/vnd.github.v3+json"})
@@ -183,15 +231,21 @@ def main(*argv):
     break
   else:
     if args.list:
-      return 0
-    logger.error("No matching asset found")
-    return 1
+      raise ReturnException()
+    raise ReturnFailException("No matching asset found")
   logger.info("Installing HyperTremolo %s", r["tag_name"])
   logger.debug("Asset URL:            %s", a["browser_download_url"])
+  return a["browser_download_url"]
 
-  # Download asset zip
+
+def download_and_install(args: argparse.Namespace, url: str):
+  """Download the asset and install it
+
+  Args:
+    args (Namespace): CLI arguments
+    url (str): The asset download URL"""
   with tempfile.TemporaryFile() as zip_file_w:
-    download_to_file(zip_file_w, a["browser_download_url"])
+    download_to_file(zip_file_w, url)
     with zipfile.ZipFile(zip_file_w, mode="r") as zip_file_r:
       zip_file_r.extractall(args.prefix)
     if args.standalone:
@@ -199,8 +253,19 @@ def main(*argv):
       s = os.stat(args.dest_path).st_mode
       s |= stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
       os.chmod(args.dest_path, s)
-  logger.info("Done!")
+
+
+@exit_on_code
+def main(*argv):
+  """Main script"""
+  args = ArgParser(description=__doc__).parse_args(argv)
+
+  uninstall(args)
+  check_prefix_exists(args)
+  download_and_install(args, lookup(args))
+
+  return 0
 
 
 if __name__ == "__main__":
-  sys.exit(main(*sys.argv[1:]) or 0)
+  main(*sys.argv[1:])
