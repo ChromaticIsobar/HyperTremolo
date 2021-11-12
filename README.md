@@ -48,10 +48,24 @@ The parameters are divided in three sections
 | Dual Trem          |     ✗     | 2.00 | 4.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   0.00   | 0.00 | 1.00 |
 | Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.333  |   0.50   | 3.00 | 1.00 |
 
-## Setup instructions
+<div style="page-break-after: always;"></div>
+
+## Installation
+
+### Installer
+To download and install HyperTremolo, you can use the provided installer
+
+#### Linux
+From the command line, run
+```
+curl -s https://raw.githubusercontent.com/ChromaticIsobar/HyperTremolo/main/installers/linux/install.py | python3 -
+```
+Run the command with the `--help` option to get information about the available options
+
+### Manual instalation
 You can find the latest release on GitHub at https://github.com/ChromaticIsobar/HyperTremolo/releases
 
-### Download
+#### Download
 You can either download only the specific plugin (standalone, VST3, or  Audio Unit) for your OS or the whole release in a single zip file: `HyperTremolo_v<x>.<y>.<z>.zip`. This file contains:
 - `HyperTremolo_UserManual_v<x>.<y>.<z>.pdf`: the user manual PDF file for the specific version
 - `Changelog.txt`: a summary of changes between different plugin versions
@@ -70,7 +84,7 @@ You can either download only the specific plugin (standalone, VST3, or  Audio Un
   - `HyperTremolo`: the standalone executable for Ubuntu
   - `HyperTremolo.vst3`: the VST3 plugin for Ubuntu
 
-### Install
+#### Install
 Standalone applications require no installation. Plugins must be copied to the proper directory to be installed
 
 |    OS   |    Plugin    |                   Path                   |
@@ -81,8 +95,8 @@ Standalone applications require no installation. Plugins must be copied to the p
 | MacOS   | VST3         | Library/Audio/Plug-ins/VST3              |
 | MacOS   | AU           | Library/Audio/Plug-ins/Components        |
 
-### Build from source<!-- DELETE -->
-Check out [`BUILD.md`](BUILD.md) for instructions on how to build from source<!-- DELETE -->
+### Build from source
+You can find instructions on how to build from source at https://github.com/ChromaticIsobar/HyperTremolo/blob/main/BUILD.md
 
 <div style="page-break-after: always;"></div>
 
