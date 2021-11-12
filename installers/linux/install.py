@@ -234,7 +234,8 @@ def lookup(args: argparse.Namespace) -> str:
       raise ReturnException()
     raise ReturnFailException("No matching asset found")
   logger.info("Installing HyperTremolo %s", r["tag_name"])
-  logger.debug("Asset URL:            %s", a["browser_download_url"])
+  logger.debug("Asset URL: %s (downloaded %d times)", a["browser_download_url"],
+               a["download_count"])
   return a["browser_download_url"]
 
 
