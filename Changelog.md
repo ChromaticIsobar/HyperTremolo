@@ -1,4 +1,5 @@
 - Set permissions for executables
+- Add linux installer
 
 v1.0.1
 - Fixed build for linux: release configuration
