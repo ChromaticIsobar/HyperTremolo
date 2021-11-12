@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Download and install HyperTremolo"""
 import tempfile
 import argparse
 import requests
@@ -9,9 +10,12 @@ import json
 import stat
 import sys
 import os
+from typing import Sequence
 
 
 class ArgParser(argparse.ArgumentParser):
+  """Argument parser for the installer options"""
+
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
     self.add_argument("--release-endpoint",
@@ -23,12 +27,14 @@ class ArgParser(argparse.ArgumentParser):
                       metavar="PATH",
                       default=None,
                       help="Installation prefix path")
-    self.add_argument("-U", "--user",
+    self.add_argument("-U",
+                      "--user",
                       action="store_const",
                       const=True,
                       default=True,
                       help="Install under user directory (default)")
-    self.add_argument("-G", "--global",
+    self.add_argument("-G",
+                      "--global",
                       dest="user",
                       action="store_const",
                       const=False,
@@ -43,10 +49,9 @@ class ArgParser(argparse.ArgumentParser):
                       const=False,
                       default=False,
                       help="Install VST3 (default)")
-    self.add_argument("-V", "--version",
-                      default=None,
-                      help="Version number")
-    self.add_argument("-q", "--quiet",
+    self.add_argument("-V", "--version", default=None, help="Version number")
+    self.add_argument("-q",
+                      "--quiet",
                       dest="log_level",
                       action="store_const",
                       const=logging.ERROR,
@@ -58,23 +63,30 @@ class ArgParser(argparse.ArgumentParser):
     self.add_argument("--uninstall",
                       action="store_true",
                       help="Uninstall the software")
-    self.add_argument("-v", "--verbose",
+    self.add_argument("-v",
+                      "--verbose",
                       dest="log_level",
                       action="store_const",
                       const=logging.DEBUG,
                       default=logging.INFO,
                       help="Log debug messages too")
 
-  def parse_args(self, argv):
+  def parse_args(self, argv: Sequence[str]):
+    """Parse CLI arguments"""
     args = super().parse_args(argv)
     args.return_val = 0
+
+    # Set up logger
     args.logger = logging.getLogger("HyperTremolo Installer")
     logging.basicConfig(
-      level=args.log_level,
-      format="%(asctime)s %(name)-12s %(levelname)-8s: %(message)s",
-      datefmt="%Y-%m-%d %H:%M:%S")
+        level=args.log_level,
+        format="%(asctime)s %(name)-12s %(levelname)-8s: %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
+
     if args.standalone:
-      args.asset_name_fn = lambda release: f"HyperTremolo_linux_standalone_{release['tag_name']}.zip"
+      # Settings for standalone executble
+      args.asset_name_fn = lambda release:"HyperTremolo_linux_standalone_" \
+                                         f"{release['tag_name']}.zip"
       if args.prefix is None:
         if args.user:
           args.prefix = os.path.expanduser("~/.local/bin")
@@ -82,27 +94,29 @@ class ArgParser(argparse.ArgumentParser):
           args.prefix = os.path.expanduser("/usr/bin")
       args.dest_path = os.path.join(args.prefix, "HyperTremolo")
     else:
-      args.asset_name_fn = lambda release: f"HyperTremolo_linux_vst3_{release['tag_name']}.zip"
+      # Settings for VST3 plugin
+      args.asset_name_fn = lambda release: "HyperTremolo_linux_vst3_" \
+                                          f"{release['tag_name']}.zip"
       if args.prefix is None:
         if args.user:
           args.prefix = os.path.expanduser("~/.vst3")
         else:
           args.logger.error(
-            "No default system-wide path defined for VST3 plugins. "
-            "Please, specify an installation prefix")
+              "No default system-wide path defined for VST3 plugins. "
+              "Please, specify an installation prefix")
           args.return_val = 1
       args.dest_path = os.path.join(args.prefix, "HyperTremolo.vst3")
     return args
 
 
-def download_to_file(file,
-                     url: str,
-                     chunk_size: int = 1 << 13) -> int:
+def download_to_file(file, url: str, chunk_size: int = 1 << 13) -> int:
   """Download file from URL
+
   Args:
     file: Writable stream
     url (str): URL of the file to download
     chunk_size (int): Chunk size for download stream
+
   Returns:
     int: Status code"""
   with requests.get(url, stream=True) as r:
@@ -150,6 +164,7 @@ def main(*argv):
   releases = json.loads(releases.text)
 
   # Look for matching assets
+  r = a = None
   for r in releases:
     if args.list:
       print(r["tag_name"][1:])
@@ -181,11 +196,9 @@ def main(*argv):
       zip_file_r.extractall(args.prefix)
     if args.standalone:
       logger.debug("Setting executable permissions")
-      os.chmod(
-        args.dest_path,
-        os.stat(
-          args.dest_path
-          ).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+      s = os.stat(args.dest_path).st_mode
+      s |= stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
+      os.chmod(args.dest_path, s)
   logger.info("Done!")
 
 
