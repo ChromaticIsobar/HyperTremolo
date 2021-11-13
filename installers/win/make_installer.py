@@ -90,9 +90,11 @@ class ArgParser(argparse.ArgumentParser):
                       "/raw/HyperTremolo.ico",
                       help="Icon file URL")
     self.add_argument("--vst3-64-path",
+                      metavar="PATH",
                       default=None,
                       help="Path of the x64 VST3 plugin")
     self.add_argument("--vst3-32-path",
+                      metavar="PATH",
                       default=None,
                       help="Path of the Win32 VST3 plugin")
     self.add_argument("-q",
