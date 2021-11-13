@@ -50,10 +50,11 @@ class ArgParser(argparse.ArgumentParser):
 
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
+    root_dir = os.path.realpath(
+        os.path.join(os.path.dirname(__file__), "..", ".."))
     self.add_argument("--jucer",
                       metavar="PATH",
-                      default=os.path.join(os.path.dirname(__file__), "..",
-                                           "..", "HyperTremolo.jucer"),
+                      default=os.path.join(root_dir, "HyperTremolo.jucer"),
                       help="Jucer project path")
     self.add_argument("-O",
                       "--output",
@@ -62,22 +63,12 @@ class ArgParser(argparse.ArgumentParser):
                       help="Output file path")
     self.add_argument("--license",
                       metavar="PATH",
-                      default=os.path.realpath(
-                          os.path.join(os.path.dirname(__file__), "..", "..",
-                                       "LICENSE")),
+                      default=os.path.join(root_dir, "LICENSE"),
                       help="License file path")
     self.add_argument("--icon",
                       metavar="PATH",
-                      default=os.path.realpath(
-                          os.path.join(os.path.dirname(__file__), "..", "..",
-                                       "HyperTremolo.ico")),
+                      default=os.path.join(root_dir, "HyperTremolo.ico"),
                       help="Icon file path")
-    self.add_argument("--body",
-                      metavar="PATH",
-                      default=os.path.realpath(
-                          os.path.join(os.path.dirname(__file__),
-                                       "HyperTremolo.iss.in")),
-                      help="ISS body file path")
     self.add_argument("--pub-url",
                       metavar="URL",
                       default="https://www.lim.di.unimi.it",
@@ -98,6 +89,12 @@ class ArgParser(argparse.ArgumentParser):
                       "/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b"
                       "/raw/HyperTremolo.ico",
                       help="Icon file URL")
+    self.add_argument("--vst3-64-path",
+                      default=None,
+                      help="Path of the x64 VST3 plugin")
+    self.add_argument("--vst3-32-path",
+                      default=None,
+                      help="Path of the Win32 VST3 plugin")
     self.add_argument("-q",
                       "--quiet",
                       dest="log_level",
@@ -252,6 +249,85 @@ def write_setup(jucer: ET.Element,
   )
 
 
+@section_from_file("Types.txt")
+def write_types(text: str = "") -> str:
+  """Write the [Types] portion of the installer script
+
+  Args:
+    text (str): Prototype of the [Types] portion to format
+
+  Returns:
+    str: The formatted [Types] portion of the installer script"""
+  return text
+
+
+@section_from_file("File.txt", text_var="file")
+@section_from_file("Component.txt", text_var="component")
+def write_components_files(args: argparse.Namespace,
+                           component: str = "",
+                           file: str = "") -> str:
+  """Write the [Components] and [Files] portions of the installer script
+
+  Args:
+    args (Namespace): CLI arguments
+    component (str): Prototype of a component row to format
+    file (str): Prototype of a file row to format
+
+  Returns:
+    str: The [Components] and [Files] portions of the installer script"""
+  r = ["[Components]"]
+  if args.vst3_64_path is not None:
+    r.append(component.format(name="VST3_64", description="VST3 Plugin 64-bit"))
+  if args.vst3_32_path is not None:
+    r.append(component.format(name="VST3_32", description="VST3 Plugin 32-bit"))
+  if len(r) < 2:
+    raise ReturnFailException("No Plugin file specified")
+  r.extend(("", "[Files]"))
+  if args.vst3_64_path is not None:
+    r.append(
+        file.format(name="VST3_64",
+                    path=os.path.realpath(args.vst3_64_path),
+                    lb="{",
+                    rb="}"))
+  if args.vst3_32_path is not None:
+    r.append(
+        file.format(name="VST3_32",
+                    path=os.path.realpath(args.vst3_32_path),
+                    lb="{",
+                    rb="}"))
+  r.append("")
+  return "\n".join(r)
+
+
+@section_from_file("Icons.txt")
+def write_icons(jucer: ET.Element, text: str = "") -> str:
+  """Write the [Icons] portion of the installer script
+
+  Args:
+    jucer (Element): Jucer project XML root
+    text (str): Prototype of the [Icons] portion to format
+
+  Returns:
+    str: The formatted [Icons] portion of the installer script"""
+  return text.format(
+      lb="{",
+      rb="}",
+      name=jucer.attrib["name"],
+  )
+
+
+@section_from_file("Code.txt")
+def write_code(text: str = "") -> str:
+  """Write the [Code] portion of the installer script
+
+  Args:
+    text (str): Prototype of the [Code] portion to format
+
+  Returns:
+    str: The formatted [Code] portion of the installer script"""
+  return text
+
+
 @exit_on_code
 def main(*argv):
   """Main script"""
@@ -261,6 +337,14 @@ def main(*argv):
   download_icon(args)
   with open_or_stdout(args.output) as outf:
     outf.write(write_setup(jucer, args))
+    outf.write("\n")
+    outf.write(write_types())
+    outf.write("\n")
+    outf.write(write_components_files(args))
+    outf.write("\n")
+    outf.write(write_icons(jucer))
+    outf.write("\n")
+    outf.write(write_code())
 
   return 0
 
