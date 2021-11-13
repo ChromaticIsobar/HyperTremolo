@@ -288,6 +288,12 @@ jobs:
     - name: Create assets folder
       run: mkdir assets
 
+    - name: Move installer to assets folder
+      run: mv artifacts/HyperTremolo_win_installer/* assets
+
+    - name: Clean up installer artifact folder
+      run: rm -r artifacts/HyperTremolo_win_installer
+
     - name: Prepare folder for LIM Plugin Collection Specs zip file
       run: mkdir -p collection/Windows/Win32 collection/Windows/x64 collection/MacOS collection/Linux
 
