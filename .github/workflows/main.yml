@@ -228,10 +228,50 @@ jobs:
     outputs:
       gist_version: ${{ steps.gist-version.outputs.GIST_VERSION }}
 
+  make-win-installer:
+    runs-on: windows-latest
+    needs: [build, build-docs]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: false
+
+    - uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+
+    - name: Setup python
+      run: python3 -m pip install -U requests
+      shell: bash
+
+    - name: Make installer script
+      run: |
+        ./installers/win/make_installer.py -O HyperTremolo.iss \
+        --vst3-64-path ./artifacts/HyperTremolo_win64_vst3/HyperTremolo.vst3 \
+        --vst3-32-path ./artifacts/HyperTremolo_win32_vst3/HyperTremolo.vst3 \
+        --icon-url https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/${{ needs.build-docs.outputs.gist_version }}/HyperTremolo.ico
+      shell: bash
+
+    - name: Building the installer
+      run: |
+        "%programfiles(x86)%\Inno Setup 6\iscc.exe" "HyperTremolo.iss"
+      shell: cmd
+
+    - name: Upload Installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: HyperTremolo_win_installer
+        path: HyperTremolo_win_installer_v${{ needs.build.outputs.plugin_version }}.exe
+
   release:
     if: ${{ contains(github.event.head_commit.message, '[RELEASE]') || contains(github.event.head_commit.message, '[PRERELEASE]') }}
     runs-on: ubuntu-18.04
-    needs: [build, build-docs]
+    needs: [build, build-docs, make-win-installer]
 
     steps:
     - uses: actions/checkout@v2
