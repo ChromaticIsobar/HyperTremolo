@@ -1,4 +1,12 @@
+# Build artifacts
 Builds
 JuceLibraryCode
-._*
 *.pdf
+
+# Distribution files
+*.ico
+*.exe
+*.iss
+
+# Mac files
+._*
