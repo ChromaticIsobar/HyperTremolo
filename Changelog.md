@@ -1,5 +1,6 @@
 - Set permissions for executables
 - Add linux installer
+- Add windows installer
 
 v1.0.1
 - Fixed build for linux: release configuration
