@@ -1,0 +1,1 @@
+Source: {path}; DestDir: "{lb}code:GetDir|{name}{rb}"; Components: {name}; Flags: ignoreversion recursesubdirs createallsubdirs

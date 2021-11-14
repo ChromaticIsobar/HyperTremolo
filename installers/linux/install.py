@@ -113,7 +113,7 @@ class ArgParser(argparse.ArgumentParser):
       argv (sequence of str): CLI arguments
 
     Returns:
-      Namespace, int: Parsed arguments and exit code (or :data:`None`)"""
+      Namespace: Parsed arguments"""
     args = super().parse_args(argv)
 
     # Set up logger
