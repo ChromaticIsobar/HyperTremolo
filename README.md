@@ -62,7 +62,7 @@ Extract and execute `HyperTremolo_win_installer_v<x>.<y>.<z>.exe` for a guided i
 
 #### Linux
 From the command line, run
-```
+```bash
 curl -s https://raw.githubusercontent.com/ChromaticIsobar/HyperTremolo/main/installers/linux/install.py | python3 -
 ```
 Run the command with the `--help` option to get information about the available options
