@@ -51,9 +51,14 @@ The parameters are divided in three sections
 <div style="page-break-after: always;"></div>
 
 ## Installation
+You can find the latest release on GitHub at https://github.com/ChromaticIsobar/HyperTremolo/releases
 
 ### Installer
-To download and install HyperTremolo, you can use the provided installer
+To download and install HyperTremolo, you can use an installer
+
+#### Windows
+You can either download the installer only (`HyperTremolo_win_installer_v<x>.<y>.<z>.zip`) or the the whole release (`HyperTremolo_v<x>.<y>.<z>.zip`, see [Download](#download)).
+Extract and execute `HyperTremolo_win_installer_v<x>.<y>.<z>.exe` for a guided installation
 
 #### Linux
 From the command line, run
@@ -63,13 +68,12 @@ curl -s https://raw.githubusercontent.com/ChromaticIsobar/HyperTremolo/main/inst
 Run the command with the `--help` option to get information about the available options
 
 ### Manual instalation
-You can find the latest release on GitHub at https://github.com/ChromaticIsobar/HyperTremolo/releases
-
 #### Download
 You can either download only the specific plugin (standalone, VST3, or  Audio Unit) for your OS or the whole release in a single zip file: `HyperTremolo_v<x>.<y>.<z>.zip`. This file contains:
 - `HyperTremolo_UserManual_v<x>.<y>.<z>.pdf`: the user manual PDF file for the specific version
 - `Changelog.txt`: a summary of changes between different plugin versions
 - `Windows`: a folder of precompiled binaries for Windows
+  - `HyperTremolo_win_installer_v<x>.<y>.<z>.exe`: installer for Windows VST3 plugins
   - `Win32`: a folder of precompiled binaries for 32 bit Windows
       - `HyperTremolo.exe`: the standalone executable for 32 bit Windows
       - `HyperTremolo.vst3`: the VST3 plugin for 32 bit Windows
@@ -87,13 +91,11 @@ You can either download only the specific plugin (standalone, VST3, or  Audio Un
 #### Install
 Standalone applications require no installation. Plugins must be copied to the proper directory to be installed
 
-|    OS   |    Plugin    |                   Path                   |
-|---------|--------------|------------------------------------------|
-| Windows | VST3 (x64)   | C:\Program Files\Common Files\VST3       |
-| Windows | VST3 (Win32) | C:\Program Files (x86)\Common Files\VST3 |
+|    OS   |    Plugin    |                   Path                   |    Plugin    |                   Path                   |
+|---------|--------------|------------------------------------------|--------------|------------------------------------------|
+| Windows | VST3 (x64)   | C:\Program Files\Common Files\VST3       | VST3 (Win32) | C:\Program Files (x86)\Common Files\VST3 |
+| MacOS   | VST3         | Library/Audio/Plug-ins/VST3              | AU           | Library/Audio/Plug-ins/Components        |
 | Ubuntu  | VST3         | ~/.vst                                   |
-| MacOS   | VST3         | Library/Audio/Plug-ins/VST3              |
-| MacOS   | AU           | Library/Audio/Plug-ins/Components        |
 
 ### Build from source
 You can find instructions on how to build from source at https://github.com/ChromaticIsobar/HyperTremolo/blob/main/BUILD.md
