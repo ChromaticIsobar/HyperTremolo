@@ -1,6 +1,8 @@
+v1.0.2
 - Set permissions for executables
-- Add linux installer
-- Add windows installer
+- Added linux installer
+- Added windows installer
+- Tweaked presets
 
 v1.0.1
 - Fixed build for linux: release configuration
