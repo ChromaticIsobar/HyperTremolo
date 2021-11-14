@@ -1,3 +1,4 @@
+v1.0.2
 - Set permissions for executables
 - Add linux installer
 - Add windows installer

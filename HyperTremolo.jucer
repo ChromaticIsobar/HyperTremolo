@@ -28,7 +28,7 @@
 <JUCERPROJECT id="Kf9WwY" name="HyperTremolo" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="0" jucerFormatVersion="1"
               companyName="ChromaticIsobar" pluginVST3Category="Modulation"
-              pluginRTASCategory="32" pluginAAXCategory="32" version="1.0.1"
+              pluginRTASCategory="32" pluginAAXCategory="32" version="1.0.2"
               pluginManufacturer="LIM" pluginManufacturerCode="LIM" pluginDesc="Dual Amplitude Modulator effect. It is designed to be an Harmonic Tremolo, but can be tweaked to get a lot of different effects, e.g. a Rotary Simulator"
               companyEmail="marco.tiraboschi@unimi.it">
   <MAINGROUP id="ZafoNp" name="HyperTremolo">
