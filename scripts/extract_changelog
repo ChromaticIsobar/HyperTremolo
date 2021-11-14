@@ -4,7 +4,7 @@ CSPLIT_PREFIX=".tmp.csplit"
 
 mkdir "${CSPLIT_PREFIX}"
 
-csplit -zqf "${CSPLIT_PREFIX}"/ Changelog.txt "/^v.*$/0" "{*}"
+csplit -zqf "${CSPLIT_PREFIX}"/ Changelog.md "/^v.*$/0" "{*}"
 
 for f in "${CSPLIT_PREFIX}"/* ; do
   h="$(head -n 1 "$f")" && \

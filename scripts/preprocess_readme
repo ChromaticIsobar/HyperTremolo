@@ -10,4 +10,8 @@ else
   NEW_VERSION="$2";
 fi
 
-grep -v "<!-- DELETE -->" README.md | sed "s/$OLD_GIST_URL/$NEW_GIST_URL/" | sed "s/$OLD_VERSION/$NEW_VERSION/"
+grep -v "<!-- DELETE -->" README.md     \
+ | sed "s/$OLD_GIST_URL/$NEW_GIST_URL/" \
+ | sed "s/$OLD_VERSION/$NEW_VERSION/"   \
+ | sed "s/$OLD_VERSION/$NEW_VERSION/"   \
+ | sed "s/$OLD_VERSION/$NEW_VERSION/"

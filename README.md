@@ -41,21 +41,39 @@ The parameters are divided in three sections
 ## Example Settings
 |                    | Through-0 | Rate | Ratio | Sync | Depth | Crossover | Resonance | Balance | Harmonic | Gain | Mix  |
 |--------------------|-----------|------|-------|------|-------|-----------|-----------|---------|----------|------|------|
-| Fast Pulsar        |     ✗     | 6.00 | 1.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   1.00   | 3.00 | 1.00 |
-| Slow Phaser        |     ✗     | 0.75 | 1.00  |   ✓  | 0.90  |  1000.0   |   0.707   |  0.50   |   1.00   | 3.00 | 1.00 |
-| Subtle Rotary      |     ✗     | 1.33 | 4.50  |   ✗  | 0.75  |  1000.0   |   0.707   |  0.60   |   1.00   | 3.00 | 1.00 |
-| Rotary Cabinet     |     ✓     | 1.33 | 4.50  |   ✗  | 1.00  |  1000.0   |   1.25    |  0.50   |   1.00   | 0.00 | 1.00 |
-| Dual Trem          |     ✗     | 2.00 | 4.00  |   ✓  | 1.00  |  1000.0   |   0.707   |  0.50   |   0.00   | 0.00 | 1.00 |
-| Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.333  |   0.50   | 3.00 | 1.00 |
+| Fast Pulsar        |     ✗     | 6.00 | 1.00  |   ✓  | 0.50  |  1000.0   |   0.707   |  0.50   |   1.00   | 7.00 | 1.00 |
+| Slow Phaser        |     ✗     | 0.75 | 1.00  |   ✓  | 0.67  |  1000.0   |   0.707   |  0.50   |   1.00   | 7.00 | 1.00 |
+| Subtle Rotary      |     ✗     | 1.33 | 4.50  |   ✗  | 0.90  |  1000.0   |   0.707   |  0.60   |   1.00   | 7.00 | 1.00 |
+| Rotary Cabinet     |     ✓     | 1.33 | 4.50  |   ✗  | 0.90  |  1000.0   |   1.25    |  0.60   |   1.00   | 6.00 | 1.00 |
+| Dual Trem          |     ✗     | 2.00 | 4.00  |   ✓  | 0.75  |  1000.0   |   0.707   |  0.50   |   0.00   | 7.00 | 1.00 |
+| Glitchy Resonances |           | 6.28 | 10.00 |   ✗  | 1.00  |   200.0   |   0.707   |  0.333  |   0.50   | 7.00 | 1.00 |
 
-## Setup instructions
+<div style="page-break-after: always;"></div>
+
+## Installation
 You can find the latest release on GitHub at https://github.com/ChromaticIsobar/HyperTremolo/releases
 
-### Download
+### Installer
+To download and install HyperTremolo, you can use an installer
+
+#### Windows
+You can either download the installer only (`HyperTremolo_win_installer_v<x>.<y>.<z>.zip`) or the the whole release (`HyperTremolo_v<x>.<y>.<z>.zip`, see [Download](#download)).
+Extract and execute `HyperTremolo_win_installer_v<x>.<y>.<z>.exe` for a guided installation
+
+#### Linux
+From the command line, run
+```bash
+curl -s https://raw.githubusercontent.com/ChromaticIsobar/HyperTremolo/main/installers/linux/install.py | python3 -
+```
+Run the command with the `--help` option to get information about the available options
+
+### Manual instalation
+#### Download
 You can either download only the specific plugin (standalone, VST3, or  Audio Unit) for your OS or the whole release in a single zip file: `HyperTremolo_v<x>.<y>.<z>.zip`. This file contains:
 - `HyperTremolo_UserManual_v<x>.<y>.<z>.pdf`: the user manual PDF file for the specific version
 - `Changelog.txt`: a summary of changes between different plugin versions
 - `Windows`: a folder of precompiled binaries for Windows
+  - `HyperTremolo_win_installer_v<x>.<y>.<z>.exe`: installer for Windows VST3 plugins
   - `Win32`: a folder of precompiled binaries for 32 bit Windows
       - `HyperTremolo.exe`: the standalone executable for 32 bit Windows
       - `HyperTremolo.vst3`: the VST3 plugin for 32 bit Windows
@@ -70,19 +88,17 @@ You can either download only the specific plugin (standalone, VST3, or  Audio Un
   - `HyperTremolo`: the standalone executable for Ubuntu
   - `HyperTremolo.vst3`: the VST3 plugin for Ubuntu
 
-### Install
+#### Install
 Standalone applications require no installation. Plugins must be copied to the proper directory to be installed
 
-|    OS   |    Plugin    |                   Path                   |
-|---------|--------------|------------------------------------------|
-| Windows | VST3 (x64)   | C:\Program Files\Common Files\VST3       |
-| Windows | VST3 (Win32) | C:\Program Files (x86)\Common Files\VST3 |
+|    OS   |    Plugin    |                   Path                   |    Plugin    |                   Path                   |
+|---------|--------------|------------------------------------------|--------------|------------------------------------------|
+| Windows | VST3 (x64)   | C:\Program Files\Common Files\VST3       | VST3 (Win32) | C:\Program Files (x86)\Common Files\VST3 |
+| MacOS   | VST3         | Library/Audio/Plug-ins/VST3              | AU           | Library/Audio/Plug-ins/Components        |
 | Ubuntu  | VST3         | ~/.vst                                   |
-| MacOS   | VST3         | Library/Audio/Plug-ins/VST3              |
-| MacOS   | AU           | Library/Audio/Plug-ins/Components        |
 
-### Build from source<!-- DELETE -->
-Check out [`BUILD.md`](BUILD.md) for instructions on how to build from source<!-- DELETE -->
+### Build from source
+You can find instructions on how to build from source at https://github.com/ChromaticIsobar/HyperTremolo/blob/main/BUILD.md
 
 <div style="page-break-after: always;"></div>
 

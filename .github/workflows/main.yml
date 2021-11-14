@@ -228,10 +228,50 @@ jobs:
     outputs:
       gist_version: ${{ steps.gist-version.outputs.GIST_VERSION }}
 
+  make-win-installer:
+    runs-on: windows-latest
+    needs: [build, build-docs]
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: false
+
+    - uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+
+    - uses: actions/setup-python@v2
+      with:
+        python-version: "3.x"
+
+    - name: Setup python
+      run: python3 -m pip install -U requests
+      shell: bash
+
+    - name: Make installer script
+      run: |
+        ./installers/win/make_installer.py -O HyperTremolo.iss \
+        --vst3-64-path ./artifacts/HyperTremolo_win64_vst3/HyperTremolo.vst3 \
+        --vst3-32-path ./artifacts/HyperTremolo_win32_vst3/HyperTremolo.vst3 \
+        --icon-url https://gist.githubusercontent.com/ChromaticIsobar/6ce8126b4bc9a02594282bde2909f02b/raw/${{ needs.build-docs.outputs.gist_version }}/HyperTremolo.ico
+      shell: bash
+
+    - name: Building the installer
+      run: |
+        "%programfiles(x86)%\Inno Setup 6\iscc.exe" "HyperTremolo.iss"
+      shell: cmd
+
+    - name: Upload Installer
+      uses: actions/upload-artifact@v2
+      with:
+        name: HyperTremolo_win_installer
+        path: HyperTremolo_win_installer_v${{ needs.build.outputs.plugin_version }}.exe
+
   release:
     if: ${{ contains(github.event.head_commit.message, '[RELEASE]') || contains(github.event.head_commit.message, '[PRERELEASE]') }}
     runs-on: ubuntu-18.04
-    needs: [build, build-docs]
+    needs: [build, build-docs, make-win-installer]
 
     steps:
     - uses: actions/checkout@v2
@@ -252,7 +292,7 @@ jobs:
       run: mkdir -p collection/Windows/Win32 collection/Windows/x64 collection/MacOS collection/Linux
 
     - name: Copy changelog to zip folder
-      run: cp Changelog.txt collection
+      run: cp Changelog.md collection/Changelog.txt
 
     - name: Copy manual to assets
       run: |
@@ -261,6 +301,12 @@ jobs:
 
     - name: Copy manual to zip folder
       run: cp assets/HyperTremolo_UserManual*.pdf collection
+
+    - name: Set permissions for executables
+      run: |
+        chmod +x \
+          artifacts/HyperTremolo_linux_standalone/HyperTremolo \
+          artifacts/HyperTremolo_macos_standalone/HyperTremolo.app/Contents/MacOS/HyperTremolo
 
     - name: Compress assets
       working-directory: artifacts
@@ -278,6 +324,7 @@ jobs:
         for d in artifacts/HyperTremolo_*_* ; do
           case "$d" in
             *_linux_*) ZIP_PREFIX="Linux/" ;;
+            *_win_*)   ZIP_PREFIX="Windows/" ;;
             *_win32_*) ZIP_PREFIX="Windows/Win32/" ;;
             *_win64_*) ZIP_PREFIX="Windows/x64/" ;;
             *_macos_*) ZIP_PREFIX="MacOS/" ;;

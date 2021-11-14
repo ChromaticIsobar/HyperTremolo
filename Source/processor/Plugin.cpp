@@ -233,7 +233,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout HyperTremoloPlugin::createPa
         std::make_unique<juce::AudioParameterFloat> (
             "tremRatio", "Ratio", LogRange<float> (0.1f, 10.0f, 0.001f), 1.0f),
         std::make_unique<juce::AudioParameterFloat> (
-            "tremMix", "Depth", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f),
+            "tremMix", "Depth", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.5f),
         std::make_unique<juce::AudioParameterBool> (
             "tremZero", "Through-0", false),
         std::make_unique<juce::AudioParameterBool> (
