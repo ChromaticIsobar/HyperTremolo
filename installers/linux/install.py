@@ -188,14 +188,15 @@ def check_prefix_exists(args: argparse.Namespace):
 
   Args:
     args (Namespace): CLI arguments"""
+  if args.list:
+    return
   if not os.path.isdir(args.prefix):
     raise ReturnFailException(
         f"Installation prefix does not exist: '{args.prefix}'. "
         "Please, check that the path is correct and, "
         "eventually, create it")
   else:
-    if not args.list:
-      logger.info("Installing HyperTremolo: %s", args.dest_path)
+    logger.info("Installing HyperTremolo: %s", args.dest_path)
 
 
 def lookup(args: argparse.Namespace) -> str:
