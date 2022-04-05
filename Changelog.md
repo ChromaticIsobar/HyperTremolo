@@ -1,3 +1,6 @@
+v1.0.3
+- Compile against JUCE 6.1.6
+
 v1.0.2
 - Set permissions for executables
 - Added linux installer
